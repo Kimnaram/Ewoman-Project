@@ -6,4 +6,186 @@
     android:layout_height="match_parent"
     tools:context=".mem_SignupFormActivity">
 
+    <!--상단 툴바-->
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:minHeight="?attr/actionBarSize">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="35dp"
+            android:layout_marginTop="15dp"
+            android:layout_marginRight="10dp"
+            android:text="JOIN"
+            android:fontFamily="@font/nanumbarungothic"
+            android:textStyle="bold"
+            android:textSize="23dp">
+        </TextView>
+
+    </androidx.appcompat.widget.Toolbar>
+
+    <RelativeLayout
+        android:id="@+id/rl_signup_form"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_centerInParent="true">
+
+        <EditText
+            android:id="@+id/et_user_email"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:hint="이메일"
+            android:background="@drawable/btn_style_border_line"
+            android:paddingLeft="10dp"
+            android:gravity="center_vertical"
+            android:fontFamily="@font/nanumbarungothic"
+            android:inputType="textEmailAddress"
+            android:layout_margin="5dp"/>
+
+        <EditText
+            android:id="@+id/et_user_passwd"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:hint="비밀번호"
+            android:background="@drawable/btn_style_border_line"
+            android:paddingLeft="10dp"
+            android:gravity="center_vertical"
+            android:fontFamily="@font/nanumbarungothic"
+            android:layout_below="@+id/et_user_email"
+            android:inputType="textPassword"
+            android:layout_margin="5dp"/>
+
+        <EditText
+            android:id="@+id/et_user_passwd_check"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:hint="비밀번호 확인"
+            android:background="@drawable/btn_style_border_line"
+            android:paddingLeft="10dp"
+            android:gravity="center_vertical"
+            android:fontFamily="@font/nanumbarungothic"
+            android:layout_below="@+id/et_user_passwd"
+            android:inputType="textPassword"
+            android:layout_margin="5dp" />
+
+        <TextView
+            android:id="@+id/tv_alert_passwd"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/colorCocoa"
+            android:fontFamily="@font/nanumbarungothic"
+            android:layout_below="@+id/et_user_passwd_check"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="5dp"
+            android:textSize="15dp"
+            android:visibility="gone"/>
+
+        <TextView
+            android:id="@+id/tv_user_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="이름"
+            android:fontFamily="@font/nanumbarungothic"
+            android:layout_below="@+id/et_user_passwd_check"
+            android:layout_marginTop="20dp"
+            android:layout_marginLeft="5dp"
+            android:textSize="18dp"/>
+
+        <EditText
+            android:id="@+id/et_user_name"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:hint="이름을(를) 입력하세요"
+            android:background="@drawable/btn_style_border_line"
+            android:paddingLeft="10dp"
+            android:gravity="center_vertical"
+            android:fontFamily="@font/nanumbarungothic"
+            android:layout_below="@+id/tv_user_name"
+            android:layout_margin="5dp" />
+
+        <TextView
+            android:id="@+id/tv_user_gender"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="성별"
+            android:fontFamily="@font/nanumbarungothic"
+            android:layout_below="@+id/et_user_name"
+            android:layout_marginTop="20dp"
+            android:layout_marginLeft="5dp"
+            android:textSize="18dp"/>
+
+        <RadioGroup
+            android:id="@+id/rg_user_gender"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:layout_below="@+id/tv_user_gender">
+
+            <RadioButton
+                android:id="@+id/rb_user_male"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="남성"
+                android:textSize="17dp"
+                android:textColor="@color/colorGray"
+                android:fontFamily="@font/nanumbarungothic" />
+
+            <RadioButton
+                android:id="@+id/rb_user_female"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="여성"
+                android:textSize="17dp"
+                android:textColor="@color/colorGray"
+                android:fontFamily="@font/nanumbarungothic" />
+
+        </RadioGroup>
+
+        <TextView
+            android:id="@+id/tv_user_pnumber"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="연락처"
+            android:fontFamily="@font/nanumbarungothic"
+            android:layout_below="@+id/rg_user_gender"
+            android:layout_marginTop="20dp"
+            android:layout_marginLeft="5dp"
+            android:textSize="18dp"/>
+
+        <EditText
+            android:id="@+id/et_user_pnumber"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:hint="000-0000-0000"
+            android:background="@drawable/btn_style_border_line"
+            android:paddingLeft="10dp"
+            android:gravity="center_vertical"
+            android:fontFamily="@font/nanumbarungothic"
+            android:layout_below="@+id/tv_user_pnumber"
+            android:inputType="phone"
+            android:layout_margin="5dp" />
+
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/tv_signup_try"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:text="가입하기"
+        android:fontFamily="@font/nanumbarungothic"
+        android:textColor="@color/colorWhite"
+        android:background="@drawable/btn_style_border_line"
+        android:backgroundTint="@color/colorCocoa"
+        android:layout_marginTop="20dp"
+        android:layout_marginLeft="14dp"
+        android:layout_marginRight="14dp"
+        android:gravity="center"
+        android:textSize="18dp"
+        android:layout_below="@+id/rl_signup_form" />
+
 </RelativeLayout>

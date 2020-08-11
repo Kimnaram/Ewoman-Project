@@ -11,7 +11,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -23,8 +22,8 @@ public class mem_SignupAgreementActivity extends AppCompatActivity {
     private CheckBox cb_termsofuse_form;
     private CheckBox cb_personalinfo_form;
 
-    private TextView et_termsofuse_form;
-    private TextView et_personalinfo_form;
+    private TextView tv_termsofuse_form;
+    private TextView tv_personalinfo_form;
 
     private Button btn_signup_cancel;
     private Button btn_signup_try;
@@ -60,24 +59,61 @@ public class mem_SignupAgreementActivity extends AppCompatActivity {
                 "② 회원으로 등록하여 서비스를 이용하려는 자는 사이트 가입신청시 본 약관을 읽고 위에 있는 \"동의합니다\"를 선택하는 것으로 본 약관에 대한 동의 의사 표시를 합니다.\n\n" +
                 "제 5조 서비스 이용 신청\n\n";
 
-        et_termsofuse_form.setText(termsofuse_text);
-        et_termsofuse_form.setMovementMethod(new ScrollingMovementMethod());
+        tv_termsofuse_form.setText(termsofuse_text);
+        tv_termsofuse_form.setMovementMethod(new ScrollingMovementMethod());
 
-        if(cb_termsofuse_form.isChecked() && cb_personalinfo_form.isChecked()) {
-            btn_signup_try.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Toast.makeText(getApplicationContext(), "체크박스 모두 클릭!", Toast.LENGTH_SHORT).show();
-                    btn_signup_try.setVisibility(View.GONE);
+        cb_termsofuse_form.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(cb_termsofuse_form.isChecked() && cb_personalinfo_form.isChecked()) {
+                    btn_signup_try.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            Intent agreement_to_form = new Intent(getApplicationContext(), mem_SignupFormActivity.class);
+
+                            startActivity(agreement_to_form);
+                        }
+                    });
+                } else {
+                    btn_signup_try.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            Toast.makeText(getApplicationContext(), "모두 동의하셔야 합니다.", Toast.LENGTH_SHORT).show();
+                        }
+                    });
                 }
-            });
-        }
+            }
+        });
+
+        cb_personalinfo_form.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(cb_termsofuse_form.isChecked() && cb_personalinfo_form.isChecked()) {
+                    btn_signup_try.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            Intent agreement_to_form = new Intent(getApplicationContext(), mem_SignupFormActivity.class);
+
+                            startActivity(agreement_to_form);
+                        }
+                    });
+                } else {
+                    btn_signup_try.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            Toast.makeText(getApplicationContext(), "모두 동의하셔야 합니다.", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }
+            }
+        });
+
     }
 
     public void InitAllComponent() {
 
-        et_termsofuse_form = findViewById(R.id.et_termsofuse_form);
-        et_personalinfo_form = findViewById(R.id.et_personalinfo_form);
+        tv_termsofuse_form = findViewById(R.id.tv_termsofuse_form);
+        tv_personalinfo_form = findViewById(R.id.tv_personalinfo_form);
         cb_termsofuse_form = findViewById(R.id.cb_termsofuse_form);
         cb_personalinfo_form = findViewById(R.id.cb_personalinfo_form);
         btn_signup_try = findViewById(R.id.btn_signup_try);
@@ -103,7 +139,11 @@ public class mem_SignupAgreementActivity extends AppCompatActivity {
                 return true;
             }
             case R.id.menu_login :
+                Intent main_to_login = new Intent(getApplicationContext(), mem_LoginActivity.class);
+
+                startActivity(main_to_login);
                 return true;
+
             case R.id.menu_signup :
                 Intent main_to_signup = new Intent(getApplicationContext(), mem_SignupActivity.class);
 

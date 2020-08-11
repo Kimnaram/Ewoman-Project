@@ -19,8 +19,8 @@
             android:layout_height="35dp"
             android:layout_marginTop="15dp"
             android:layout_marginRight="10dp"
-            android:text="Sign Up"
-            android:fontFamily="@font/nanummyeongjo"
+            android:text="JOIN"
+            android:fontFamily="@font/nanumbarungothic"
             android:textStyle="bold"
             android:textSize="23dp">
         </TextView>
@@ -50,7 +50,7 @@
 
             <TextView
                 android:id="@+id/tv_naver_signup"
-                android:layout_width="250dp"
+                android:layout_width="300dp"
                 android:layout_height="40dp"
                 android:layout_gravity="center"
                 android:layout_margin="8dp"
@@ -63,7 +63,7 @@
 
             <TextView
                 android:id="@+id/tv_google_signup"
-                android:layout_width="250dp"
+                android:layout_width="300dp"
                 android:layout_height="40dp"
                 android:layout_gravity="center"
                 android:layout_margin="8dp"
@@ -77,7 +77,7 @@
 
             <TextView
                 android:id="@+id/tv_kakao_signup"
-                android:layout_width="250dp"
+                android:layout_width="300dp"
                 android:layout_height="40dp"
                 android:layout_gravity="center"
                 android:layout_margin="8dp"
@@ -91,7 +91,7 @@
 
             <TextView
                 android:id="@+id/tv_facebook_signup"
-                android:layout_width="250dp"
+                android:layout_width="300dp"
                 android:layout_height="40dp"
                 android:layout_gravity="center"
                 android:layout_margin="8dp"
@@ -111,12 +111,12 @@
             android:layout_below="@+id/ll_social_signup_container"
             android:layout_marginTop="30dp">
 
-            <View
-                android:layout_width="100dp"
-                android:layout_height="1dp"
-                android:layout_toLeftOf="@id/tv_social_or"
-                android:background="@color/colorGray"
-                android:layout_marginTop="10dp"/>
+<!--            <View-->
+<!--                android:layout_width="100dp"-->
+<!--                android:layout_height="1dp"-->
+<!--                android:layout_toLeftOf="@id/tv_social_or"-->
+<!--                android:background="@color/colorGray"-->
+<!--                android:layout_marginTop="10dp"/>-->
 
             <TextView
                 android:id="@+id/tv_social_or"
@@ -128,18 +128,18 @@
                 android:layout_marginLeft="5dp"
                 android:layout_marginRight="5dp"
                 android:layout_marginBottom="10dp"
-                android:textSize="17dp" />
+                android:textSize="18dp" />
 
-            <View
-                android:layout_width="100dp"
-                android:layout_height="1dp"
-                android:layout_toRightOf="@id/tv_social_or"
-                android:background="@color/colorGray"
-                android:layout_marginTop="10dp"/>
+<!--            <View-->
+<!--                android:layout_width="100dp"-->
+<!--                android:layout_height="1dp"-->
+<!--                android:layout_toRightOf="@id/tv_social_or"-->
+<!--                android:background="@color/colorGray"-->
+<!--                android:layout_marginTop="10dp"/>-->
 
             <TextView
                 android:id="@+id/tv_normal_signup"
-                android:layout_width="250dp"
+                android:layout_width="300dp"
                 android:layout_height="40dp"
                 android:layout_below="@+id/tv_social_or"
                 android:layout_centerHorizontal="true"

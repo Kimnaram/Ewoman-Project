@@ -4,6 +4,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -12,8 +14,6 @@ import android.widget.ImageButton;
 
 public class MainActivity extends AppCompatActivity {
 
-//    private ImageButton ibtn_signup;
-//    private ImageButton ibtn_login;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,9 +26,7 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar((Toolbar) findViewById(R.id.toolbar));
         getSupportActionBar().setDisplayShowTitleEnabled(false); //xml에서 titleview 설정
         getSupportActionBar().setDisplayShowCustomEnabled(true); //커스터마이징 하기 위해 필요
-//        getSupportActionBar().setDisplayHomeAsUpEnabled(true); //툴바 뒤로가기 생성
-//        getSupportActionBar().setHomeAsUpIndicator(R.drawable.back_icon); //뒤로가기 버튼 모양 설정
-//        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.GRAY)); //툴바 배경색
+//        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.parseColor("#EFE8E4"))); //툴바 배경색
 //
 //        ibtn_signup.setOnClickListener(new View.OnClickListener() {
 //            @Override
@@ -66,6 +64,9 @@ public class MainActivity extends AppCompatActivity {
         switch (item.getItemId())
         {
             case R.id.menu_login :
+                Intent main_to_login = new Intent(getApplicationContext(), mem_LoginActivity.class);
+
+                startActivity(main_to_login);
                 return true;
             case R.id.menu_signup :
                 Intent main_to_signup = new Intent(getApplicationContext(), mem_SignupActivity.class);

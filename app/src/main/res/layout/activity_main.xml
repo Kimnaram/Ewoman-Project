@@ -19,15 +19,15 @@
             android:layout_height="30dp"
             android:src="@drawable/common_menu"
             android:background="@null"
-            android:layout_marginRight="10dp"/>
+            android:layout_marginRight="20dp"/>
 
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="ewoman"
-            android:fontFamily="@font/nanummyeongjo"
+            android:fontFamily="@font/nanumbarungothic"
             android:textStyle="bold"
-            android:textSize="24dp"
+            android:textSize="25dp"
             android:gravity="center">
         </TextView>
 
@@ -63,19 +63,18 @@
         android:layout_height="match_parent"
         android:layout_below="@+id/toolbar">
 
-        <TextView
-            android:id="@+id/tv_ewoman_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+        <ImageView
+            android:id="@+id/iv_ewoman_main_logo"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
             android:layout_centerHorizontal="true"
-            android:fontFamily="@font/nanummyeongjobold"
             android:text="ewoman"
-            android:textSize="40dp" />
+            android:src="@drawable/ewoman_main_logo" />
 
         <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/tv_ewoman_name"
+            android:layout_below="@id/iv_ewoman_main_logo"
             android:layout_centerHorizontal="true">
 
             <Button
