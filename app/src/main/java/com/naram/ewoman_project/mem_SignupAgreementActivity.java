@@ -126,7 +126,7 @@ public class mem_SignupAgreementActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.toolbar_menu, menu);
+        getMenuInflater().inflate(R.menu.toolbar_bl_menu, menu);
 
         return true;
     }

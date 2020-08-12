@@ -137,7 +137,7 @@ public class mem_SignupFormActivity extends AppCompatActivity {
 
                     Log.d(TAG, "등록 버튼 " + email + " , " + pwd);
                     final ProgressDialog mDialog = new ProgressDialog(mem_SignupFormActivity.this);
-                    mDialog.setMessage("가입중입니다...");
+                    mDialog.setMessage("회원가입 중입니다.");
                     mDialog.show();
 
                     //파이어베이스에 신규계정 등록하기
@@ -165,16 +165,23 @@ public class mem_SignupFormActivity extends AppCompatActivity {
                                 }
 
                                 //해쉬맵 테이블을 파이어베이스 데이터베이스에 저장
-                                HashMap<String, Object> hashMap = new HashMap<>();
+//                                HashMap<String, Object> hashMap = new HashMap<>();
+//
+//                                hashMap.put(uid, new User(uid, email, pnumber, gender, name));
 
-                                hashMap.put(uid, new User(uid, email, pnumber, gender, name));
+                                HashMap<Object, String> hashMap = new HashMap<>();
+                                hashMap.put("email", email);
+                                hashMap.put("uid", uid);
+                                hashMap.put("name", name);
+                                hashMap.put("gender", gender);
+                                hashMap.put("phone", pnumber);
 
                                 FirebaseDatabase database = FirebaseDatabase.getInstance();
                                 DatabaseReference reference = database.getReference("users");
-                                reference.push().updateChildren(hashMap);
+                                reference.child(uid).setValue(hashMap);
 
                                 //가입이 이루어졌을시 가입 화면을 빠져나감.
-                                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                                Intent intent = new Intent(getApplicationContext(), mem_LoginActivity.class);
 
                                 startActivity(intent);
                                 finish();
@@ -233,7 +240,7 @@ public class mem_SignupFormActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.toolbar_menu, menu);
+        getMenuInflater().inflate(R.menu.toolbar_bl_menu, menu);
 
         return true;
     }

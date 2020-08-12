@@ -8,4 +8,13 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <style name="AlertDialogStyle" parent="Theme.AppCompat.Light.Dialog">
+        <item name="colorAccent">@color/colorCocoa</item>
+        <item name="android:textColorPrimary">@color/colorCocoa</item>
+        <item name="android:fontFamily">@font/nanumbarungothic</item>
+        <item name="android:textSize">@dimen/dialog_min_textSize</item>
+        <item name="android:windowMinWidthMajor">@dimen/dialog_min_width_major</item>
+        <item name="android:windowMinWidthMinor">@dimen/dialog_min_width_minor</item>
+    </style>
+
 </resources>
