@@ -15,9 +15,11 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 
+import com.google.firebase.auth.FirebaseAuth;
+
 public class MainActivity extends AppCompatActivity {
 
-    private int LoginCode = 0;
+    private FirebaseAuth firebaseAuth;
 
     private Button btn_to_ecollege;
     private Button btn_to_ourstry;
@@ -41,11 +43,12 @@ public class MainActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayShowCustomEnabled(true); //커스터마이징 하기 위해 필요
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.parseColor("#FFFFFF"))); //툴바 배경색
 
+        firebaseAuth = FirebaseAuth.getInstance();
+
         btn_to_ecollege.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent main_to_ecollege = new Intent(getApplicationContext(), eCollegeActivity.class);
-                main_to_ecollege.putExtra("LoginCode", LoginCode);
 
                 startActivity(main_to_ecollege);
             }
@@ -62,9 +65,9 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        if(LoginCode != 1000) {
+        if(firebaseAuth.getCurrentUser() == null) {
             getMenuInflater().inflate(R.menu.toolbar_bl_menu, menu);
-        } else if(LoginCode == 1000) {
+        } else if(firebaseAuth.getCurrentUser() != null) {
             getMenuInflater().inflate(R.menu.toolbar_al_menu, menu);
         }
 
@@ -86,15 +89,14 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(main_to_signup);
                 return true;
             case R.id.menu_logout :
-                LoginCode = 1001;
+
+                FirebaseAuth.getInstance().signOut();
 
                 final ProgressDialog mDialog = new ProgressDialog(MainActivity.this);
                 mDialog.setMessage("로그아웃 중입니다.");
                 mDialog.show();
 
                 Intent logout_to_main = new Intent(getApplicationContext(), MainActivity.class);
-                logout_to_main.putExtra("name", " ");
-                logout_to_main.putExtra("LoginCode", LoginCode);
                 mDialog.dismiss();
 
                 startActivity(logout_to_main);

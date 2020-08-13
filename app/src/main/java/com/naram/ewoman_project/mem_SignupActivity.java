@@ -6,9 +6,7 @@ import androidx.appcompat.widget.Toolbar;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -16,13 +14,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.auth.api.Auth;
-import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -35,7 +31,6 @@ import com.google.firebase.auth.UserInfo;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
-import java.sql.Connection;
 import java.util.HashMap;
 
 public class mem_SignupActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener {
@@ -47,8 +42,6 @@ public class mem_SignupActivity extends AppCompatActivity implements GoogleApiCl
     private TextView tv_normal_signup;
 
     private static final int RC_SIGN_IN = 9001;
-    private static final String TAG = "Oauth2Google";
-
     public GoogleSignInClient mGoogleSignInClient;
     private GoogleApiClient mGoogleApiClient;
     private FirebaseAuth firebaseAuth;
@@ -181,6 +174,11 @@ public class mem_SignupActivity extends AppCompatActivity implements GoogleApiCl
 
                             mDialog.dismiss();
 
+                            //가입이 이루어졌을시 가입 화면을 빠져나감.
+                            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+
+                            startActivity(intent);
+                            finish();
                             Toast.makeText(getApplicationContext(), "인증 성공", Toast.LENGTH_SHORT).show();
                         }
                     }

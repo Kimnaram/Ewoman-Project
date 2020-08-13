@@ -11,18 +11,19 @@
         android:roundIcon="@mipmap/ic_launcher_ewoman_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".eCollegeActivity"></activity>
-        <activity android:name=".mem_SignupAgreementActivity" />
-        <activity android:name=".mem_SignupFormActivity" />
-        <activity android:name=".mem_SignupActivity" />
-        <activity android:name=".mem_LoginActivity" />
-        <activity android:name=".MainActivity">
+        <activity android:name=".SplashActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".eCollegeActivity" />
+        <activity android:name=".mem_SignupAgreementActivity" />
+        <activity android:name=".mem_SignupFormActivity" />
+        <activity android:name=".mem_SignupActivity" />
+        <activity android:name=".mem_LoginActivity" />
+        <activity android:name=".MainActivity"/>
     </application>
 
 </manifest>

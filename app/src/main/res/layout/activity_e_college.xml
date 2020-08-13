@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".eCollegeActivity">
+    tools:context="com.naram.ewoman_project.eCollegeActivity"
+    tools:showIn="@layout/activity_e_college">
 
     <!--상단 툴바-->
     <androidx.appcompat.widget.Toolbar
@@ -42,12 +43,23 @@
 
         <Spinner
             android:id="@+id/spinner_menu"
-            android:layout_width="200dp"
+            android:layout_width="150dp"
             android:layout_height="wrap_content"
             android:entries="@array/eCollege_menu"
             android:layout_alignParentRight="true"
-            android:layout_marginRight="20dp"
+            android:layout_marginRight="2dp"
+            android:layout_marginBottom="10dp"
             android:spinnerMode="dropdown" />
+        
+        <ListView
+            android:id="@+id/lv_eCollege_product"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/spinner_menu"
+            android:divider="@color/colorCocoa"
+            android:dividerHeight="0.5dp" >
+
+        </ListView>
 
     </RelativeLayout>
 
