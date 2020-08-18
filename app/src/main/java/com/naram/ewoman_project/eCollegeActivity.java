@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -12,31 +13,35 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Spinner;
 
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+
+import java.io.ByteArrayInputStream;
+import java.text.DecimalFormat;
 
 
 public class eCollegeActivity extends AppCompatActivity {
 
-    private Spinner spinner_menu;
+    private Spinner sp_option_sort;
     private ListView lv_eCollege_product;
     private ListViewAdapter adapter;
     private ListProduct P;
 
+    private Drawable[] d_image;
+
     private FirebaseAuth firebaseAuth;
     private FirebaseDatabase firebaseDatabase;
 
-    private String name;
-    private int price;
-    private int wishlist;
+    private static final String TAG = "eCollegeActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,9 +60,22 @@ public class eCollegeActivity extends AppCompatActivity {
 
         listviewSetting();
 
+        lv_eCollege_product.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent intent = new Intent(getApplicationContext(), ProductDetailActivity.class);
+
+                intent.putExtra("pdnumber", Integer.toString(position));
+                intent.putExtra("category", "e-College");
+                intent.putExtra("DBpath", "ecollege");
+
+                startActivity(intent);
+            }
+        });
+
         firebaseAuth = FirebaseAuth.getInstance();
 
-        spinner_menu.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        sp_option_sort.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 if (parent.getItemAtPosition(position).toString().equals("등록순")) {
@@ -76,42 +94,49 @@ public class eCollegeActivity extends AppCompatActivity {
 
     public void InitAllComponent() {
 
-        spinner_menu = findViewById(R.id.spinner_menu);
-        lv_eCollege_product = (ListView) findViewById(R.id.lv_eCollege_product);
+        sp_option_sort = findViewById(R.id.sp_option_sort);
+        lv_eCollege_product = findViewById(R.id.lv_eCollege_product);
 
     }
 
     private void listviewSetting() {
 
         adapter = new ListViewAdapter();
+        d_image = new Drawable[2];
 
         for(int i = 0; i < 2; i++) {
+            final int folder_id = i;
+
+            d_image[i] = downloadInLocal(i);
+
             firebaseDatabase.getInstance().getReference("product/ecollege/" + i).addValueEventListener(new ValueEventListener() {
 
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    Drawable d_image = getResources().getDrawable(R.drawable.ewoman_main_logo);
+                    int d_pdnumber = folder_id;
                     String d_name = " ";
-                    int d_price = 0;
+                    int t_price = 0;
+                    String d_price = " ";
                     int d_wishlist = 0;
                     for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
 
                         if (dataSnapshot.getKey().equals("name")) {
                             d_name = dataSnapshot.getValue().toString();
                         } else if (dataSnapshot.getKey().equals("price")) {
-                            d_price = Integer.parseInt(dataSnapshot.getValue().toString());
+                            t_price = Integer.parseInt(dataSnapshot.getValue().toString());
+                            DecimalFormat format = new DecimalFormat("###,###");
+                            d_price = format.format(t_price);
+
                         } else if (dataSnapshot.getKey().equals("wishlist")) {
                             d_wishlist = Integer.parseInt(dataSnapshot.getValue().toString());
-                        } else {
-                            Log.d("eCollegeActivity", "오류가 발생했습니다.");
                         }
 
-                        Log.d("eCollegeActivity", "Value :" + dataSnapshot.getValue());
+                        Log.d("TAG", "Value :" + dataSnapshot.getValue());
 
                     }
 
-                    P = new ListProduct(d_image, d_name, d_price, d_wishlist);
-                    adapter.addItem(P.getImage(), P.getName(), P.getPrice(), P.getWishlist());
+                    P = new ListProduct(d_pdnumber, d_image[folder_id], d_name, d_price, d_wishlist);
+                    adapter.addItem(P.getPdnumber(), P.getImage(), P.getName(), P.getPrice(), P.getWishlist());
 
                     lv_eCollege_product.setAdapter(adapter);
 
@@ -123,11 +148,32 @@ public class eCollegeActivity extends AppCompatActivity {
                 }
             });
 
-//        System.out.println("name : " + name);
-//        adapter.addItem(name, price, wishlist);
-//
-//        lv_eCollege_product.setAdapter(adapter);
         }
+    }
+
+    private Drawable downloadInLocal(int i) {
+
+        StorageReference storageReference;
+        storageReference = FirebaseStorage.getInstance().getReference("product/ecollege/" + i);
+        StorageReference pathReference = storageReference.child("image.png");
+
+        final int number = i;
+
+        pathReference.getBytes(Long.MAX_VALUE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
+            @Override
+            public void onSuccess(byte[] bytes) {
+
+                ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(bytes);
+                d_image[number] = Drawable.createFromStream(byteArrayInputStream, "Product Image");
+                if(d_image[number] == null) {
+                    d_image[number] = getResources().getDrawable(R.drawable.ewoman_main_logo);
+                }
+
+            }
+        });
+
+        return d_image[i];
+
     }
 
     @Override
@@ -157,6 +203,21 @@ public class eCollegeActivity extends AppCompatActivity {
                 Intent main_to_signup = new Intent(getApplicationContext(), mem_SignupActivity.class);
 
                 startActivity(main_to_signup);
+                return true;
+            case R.id.menu_logout :
+
+                FirebaseAuth.getInstance().signOut();
+
+                final ProgressDialog mDialog = new ProgressDialog(eCollegeActivity.this);
+                mDialog.setMessage("로그아웃 중입니다.");
+                mDialog.show();
+
+                Intent logout_to_main = new Intent(getApplicationContext(), eCollegeActivity.class);
+                mDialog.dismiss();
+
+                startActivity(logout_to_main);
+                return true;
+            case R.id.menu_cart :
                 return true;
         }
         return super.onOptionsItemSelected(item);

@@ -1,0 +1,373 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".OurstoryActivity">
+
+    <!--상단 툴바-->
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:minHeight="?attr/actionBarSize">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="35dp"
+            android:layout_marginTop="15dp"
+            android:layout_marginRight="10dp"
+            android:fontFamily="@font/nanumbarungothic"
+            android:text="OUR STORY"
+            android:textSize="23dp"
+            android:textStyle="bold"></TextView>
+
+    </androidx.appcompat.widget.Toolbar>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/toolbar"
+        android:layout_marginBottom="20dp"
+        android:scrollbarStyle="outsideInset">
+
+        <RelativeLayout
+            android:id="@+id/rl_ourstty_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginRight="10dp">
+
+            <ViewFlipper
+                android:id="@+id/vf_image_slide"
+                android:layout_width="match_parent"
+                android:layout_height="300dp"
+                android:layout_marginBottom="20dp" />
+
+            <ImageView
+                android:id="@+id/iv_main_pic"
+                android:layout_width="400dp"
+                android:layout_height="400dp"
+                android:layout_below="@+id/vf_image_slide"
+                android:layout_centerHorizontal="true"
+                android:layout_marginRight="5dp"
+                android:layout_marginBottom="10dp"
+                android:scaleType="fitCenter"
+                android:src="@drawable/stry_jsg_pic" />
+
+            <TextView
+                android:id="@+id/tv_ourstory"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/iv_main_pic"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="5dp"
+                android:fontFamily="@font/nanumbarungothicbold"
+                android:text="Our Story"
+                android:textSize="25dp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tv_section1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/tv_ourstory"
+                android:fontFamily="@font/nanumbarungothic"
+                android:text="e우먼 커뮤니티는 스스로 빛나는 여성들이 함께하는 공간입니다. 고객이 원하는 것을, 고객과의 소통을 위해 고객과 함께 만들고, 고객이 함께 즐길 수 있는 컨텐츠와 커뮤니티를 제공합니다."
+                android:textSize="17dp" />
+
+            <View
+                android:id="@+id/v_width_divider_line"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_below="@+id/tv_section1"
+                android:layout_marginTop="12dp"
+                android:layout_marginBottom="12dp"
+                android:background="@color/colorLightGray" />
+
+            <TextView
+                android:id="@+id/tv_section2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/v_width_divider_line"
+                android:layout_marginBottom="30dp"
+                android:fontFamily="@font/nanumbarungothic"
+                android:textSize="17dp" />
+
+            <RelativeLayout
+                android:id="@+id/rl_community_container"
+                android:layout_width="wrap_content"
+                android:layout_height="70dp"
+                android:layout_below="@+id/tv_section2"
+                android:layout_marginBottom="20dp">
+
+                <View
+                    android:id="@+id/v_height_divider_line"
+                    android:layout_width="6dp"
+                    android:layout_height="70dp"
+                    android:background="@color/colorLightGray" />
+
+                <LinearLayout
+                    android:id="@+id/ll_community_container"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginBottom="10dp"
+                    android:layout_toRightOf="@+id/v_height_divider_line"
+                    android:layout_centerVertical="true"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/tv_section3"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/nanumbarungothicbold"
+                        android:text="Community(커뮤니티)"
+                        android:textSize="24dp" />
+
+                    <TextView
+                        android:id="@+id/tv_section4"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/nanumbarungothicbold"
+                        android:text="혼자라면 어렵지만 함께라면 가능합니다."
+                        android:textSize="18dp" />
+
+                </LinearLayout>
+
+            </RelativeLayout>
+
+            <TextView
+                android:id="@+id/tv_section5"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/rl_community_container"
+                android:layout_marginBottom="30dp"
+                android:fontFamily="@font/nanumbarungothic"
+                android:textSize="17dp" />
+
+            <RelativeLayout
+                android:id="@+id/rl_conversation_container"
+                android:layout_width="wrap_content"
+                android:layout_height="70dp"
+                android:layout_below="@+id/tv_section5"
+                android:layout_centerVertical="true"
+                android:layout_marginBottom="20dp">
+
+                <View
+                    android:id="@+id/v_height_divider_line2"
+                    android:layout_width="6dp"
+                    android:layout_height="70dp"
+                    android:background="@color/colorLightGray" />
+
+                <LinearLayout
+                    android:id="@+id/ll_conversation_container"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginBottom="10dp"
+                    android:layout_centerVertical="true"
+                    android:layout_toRightOf="@+id/v_height_divider_line2"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/tv_section6"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/nanumbarungothicbold"
+                        android:text="Conversation(소통)"
+                        android:textSize="24dp" />
+
+                    <TextView
+                        android:id="@+id/tv_section7"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/nanumbarungothicbold"
+                        android:text="열린 광장에서 함께 이야기 합니다."
+                        android:textSize="18dp" />
+
+                </LinearLayout>
+
+            </RelativeLayout>
+
+            <TextView
+                android:id="@+id/tv_section8"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/rl_conversation_container"
+                android:layout_marginBottom="30dp"
+                android:fontFamily="@font/nanumbarungothic"
+                android:textSize="17dp" />
+
+            <RelativeLayout
+                android:id="@+id/rl_contents_container"
+                android:layout_width="wrap_content"
+                android:layout_height="70dp"
+                android:layout_below="@+id/tv_section8"
+                android:layout_marginBottom="20dp">
+
+                <View
+                    android:id="@+id/v_height_divider_line3"
+                    android:layout_width="6dp"
+                    android:layout_height="70dp"
+                    android:background="@color/colorLightGray" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginBottom="10dp"
+                    android:layout_toRightOf="@+id/v_height_divider_line3"
+                    android:layout_centerVertical="true"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/tv_section9"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/nanumbarungothicbold"
+                        android:text="Contents(컨텐츠)"
+                        android:textSize="24dp" />
+
+                    <TextView
+                        android:id="@+id/tv_section10"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/nanumbarungothicbold"
+                        android:text="타고난 장점을 재능으로 드러냅니다."
+                        android:textSize="18dp" />
+
+                </LinearLayout>
+
+            </RelativeLayout>
+
+            <TextView
+                android:id="@+id/tv_section11"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/rl_contents_container"
+                android:layout_marginBottom="30dp"
+                android:fontFamily="@font/nanumbarungothic"
+                android:textSize="17dp" />
+
+            <RelativeLayout
+                android:id="@+id/rl_consumer_container"
+                android:layout_width="wrap_content"
+                android:layout_height="70dp"
+                android:layout_below="@+id/tv_section11"
+                android:layout_marginBottom="20dp">
+
+                <View
+                    android:id="@+id/v_height_divider_line4"
+                    android:layout_width="6dp"
+                    android:layout_height="70dp"
+                    android:background="@color/colorLightGray" />
+
+                <LinearLayout
+                    android:id="@+id/ll_consumer_container"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginBottom="10dp"
+                    android:layout_centerVertical="true"
+                    android:layout_toRightOf="@+id/v_height_divider_line4"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/tv_section12"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/nanumbarungothicbold"
+                        android:text="Consumers(고객)"
+                        android:textSize="24dp" />
+
+                    <TextView
+                        android:id="@+id/tv_section13"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/nanumbarungothicbold"
+                        android:text="관리 받는 여성들은 반드시 달라집니다."
+                        android:textSize="18dp" />
+
+                </LinearLayout>
+
+            </RelativeLayout>
+
+            <TextView
+                android:id="@+id/tv_section14"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/rl_consumer_container"
+                android:layout_marginBottom="30dp"
+                android:fontFamily="@font/nanumbarungothic"
+                android:textSize="17dp" />
+
+            <RelativeLayout
+                android:id="@+id/rl_co_creation_container"
+                android:layout_width="wrap_content"
+                android:layout_height="70dp"
+                android:layout_below="@+id/tv_section14"
+                android:layout_marginBottom="20dp">
+
+                <View
+                    android:id="@+id/v_height_divider_line5"
+                    android:layout_width="6dp"
+                    android:layout_height="70dp"
+                    android:background="@color/colorLightGray" />
+
+                <LinearLayout
+                    android:id="@+id/ll_co_creation_container"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginBottom="10dp"
+                    android:layout_toRightOf="@+id/v_height_divider_line5"
+                    android:layout_centerVertical="true"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/tv_section15"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/nanumbarungothicbold"
+                        android:text="Co-Creation(공동 창조)"
+                        android:textSize="24dp" />
+
+                    <TextView
+                        android:id="@+id/tv_section16"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/nanumbarungothicbold"
+                        android:text="모두의 장이 아닌 새로운 시장을 창조합니다."
+                        android:textSize="18dp" />
+
+                </LinearLayout>
+            </RelativeLayout>
+
+            <TextView
+                android:id="@+id/tv_section17"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/rl_co_creation_container"
+                android:layout_marginBottom="30dp"
+                android:fontFamily="@font/nanumbarungothic"
+                android:textSize="17dp" />
+
+            <TextView
+                android:id="@+id/tv_final"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/tv_section17"
+                android:fontFamily="@font/nanumbarungothic"
+                android:paddingBottom="5dp"
+                android:textSize="17dp" />
+
+        </RelativeLayout>
+
+    </ScrollView>
+
+
+</RelativeLayout>

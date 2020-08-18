@@ -4,16 +4,26 @@ import android.graphics.drawable.Drawable;
 
 public class ListProduct {
 
+    private int pdnumber;
     private Drawable image;
     private String name;
-    private int price;
+    private String price;
     private int wishlist;
 
-    public ListProduct(Drawable image, String name, int price, int wishlist) {
+    public ListProduct(int pdnumber, Drawable image, String name, String price, int wishlist) {
+        this.pdnumber = pdnumber;
         this.image = image;
         this.name = name;
         this.price = price;
         this.wishlist = wishlist;
+    }
+
+    public int getPdnumber() {
+        return pdnumber;
+    }
+
+    public void setPdnumber(int pdnumber) {
+        this.pdnumber = pdnumber;
     }
 
     public String getName() {
@@ -24,11 +34,11 @@ public class ListProduct {
         this.name = name;
     }
 
-    public int getPrice() {
+    public String getPrice() {
         return price;
     }
 
-    public void setPrice(int price) {
+    public void setPrice(String price) {
         this.price = price;
     }
 

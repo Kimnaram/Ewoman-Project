@@ -48,7 +48,7 @@
         <TextView
             android:id="@+id/tv_termsofuse_form"
             android:layout_width="match_parent"
-            android:layout_height="150dp"
+            android:layout_height="200dp"
             android:layout_below="@id/cb_termsofuse_form"
             android:layout_alignParentLeft="true"
             android:ems="10"
@@ -56,8 +56,10 @@
             android:scrollbars="vertical"
             android:textColor="@color/colorGray"
             android:fontFamily="@font/nanumbarungothic"
+            android:paddingTop="10dp"
             android:paddingLeft="10dp"
-            android:paddingRight="10dp" />
+            android:paddingRight="10dp"
+            android:layout_marginBottom="20dp"/>
 
         <CheckBox
             android:id="@+id/cb_personalinfo_form"
@@ -73,7 +75,7 @@
         <TextView
             android:id="@+id/tv_personalinfo_form"
             android:layout_width="match_parent"
-            android:layout_height="150dp"
+            android:layout_height="200dp"
             android:layout_below="@id/cb_personalinfo_form"
             android:layout_alignParentLeft="true"
             android:ems="10"
@@ -81,6 +83,7 @@
             android:scrollbars="vertical"
             android:textColor="@color/colorGray"
             android:fontFamily="@font/nanumbarungothic"
+            android:paddingTop="10dp"
             android:paddingLeft="10dp"
             android:paddingRight="10dp" />
 

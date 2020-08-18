@@ -43,12 +43,12 @@ public class ListViewAdapter extends BaseAdapter {
         TextView tv_wishlist = (TextView) convertView.findViewById(R.id.tv_wishlist);
 
         // Data Set(listViewItemList)에서 position에 위치한 데이터 참조 획득
-        ListProduct listViewItem = getItem(position);
+        final ListProduct listViewItem = getItem(position);
 
         // 아이템 내 각 위젯에 데이터 반영
         iv_item_image.setImageDrawable(listViewItem.getImage());
         tv_item_name.setText(listViewItem.getName());
-        tv_item_price.setText(Integer.toString(listViewItem.getPrice()));
+        tv_item_price.setText(listViewItem.getPrice() + "원");
         tv_wishlist.setText(Integer.toString(listViewItem.getWishlist()));
 
         return convertView;
@@ -67,9 +67,10 @@ public class ListViewAdapter extends BaseAdapter {
     }
 
     // 아이템 데이터 추가를 위한 함수. 개발자가 원하는대로 작성 가능.
-    public void addItem(Drawable image, String name, int price, int wishlist) {
-        ListProduct item = new ListProduct(image, name, price, wishlist);
+    public void addItem(int pdnumber, Drawable image, String name, String price, int wishlist) {
+        ListProduct item = new ListProduct(pdnumber, image, name, price, wishlist);
 
+        item.setPdnumber(pdnumber);
         item.setImage(image);
         item.setName(name);
         item.setPrice(price);

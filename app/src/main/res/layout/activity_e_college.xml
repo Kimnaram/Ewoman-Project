@@ -28,11 +28,11 @@
 
     </androidx.appcompat.widget.Toolbar>
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/colorGray"
-        android:layout_below="@+id/toolbar" />
+<!--    <View-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="1dp"-->
+<!--        android:background="@color/colorGray"-->
+<!--        android:layout_below="@+id/toolbar" />-->
 
     <RelativeLayout
         android:id="@+id/rl_college_container"
@@ -42,7 +42,7 @@
         android:layout_below="@+id/toolbar" >
 
         <Spinner
-            android:id="@+id/spinner_menu"
+            android:id="@+id/sp_option_sort"
             android:layout_width="150dp"
             android:layout_height="wrap_content"
             android:entries="@array/eCollege_menu"
@@ -55,7 +55,7 @@
             android:id="@+id/lv_eCollege_product"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_below="@+id/spinner_menu"
+            android:layout_below="@+id/sp_option_sort"
             android:divider="@color/colorCocoa"
             android:dividerHeight="0.5dp" >
 
