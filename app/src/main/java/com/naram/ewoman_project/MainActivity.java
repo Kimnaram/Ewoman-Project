@@ -1,49 +1,170 @@
 package com.naram.ewoman_project;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
+import android.media.Image;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
+import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 public class MainActivity extends AppCompatActivity {
 
+    private final static String TAG = "MainActivity";
+
     private FirebaseAuth firebaseAuth;
+
+    private LinearLayout ll_navi_container;
+    private NavigationView navigationView;
+    private DrawerLayout drawerLayout;
 
     private Button btn_to_ecollege;
     private Button btn_to_ourstry;
+
+    private String username;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-//        Intent intent = getIntent();
-//        if(intent != null) {
-//            String name = intent.getExtras().getString("name");
-//            LoginCode = intent.getExtras().getInt("LoginCode");
-//        }
-
         InitAllComponent();
 
         //상단 툴바 설정
         setSupportActionBar((Toolbar) findViewById(R.id.toolbar));
-        getSupportActionBar().setDisplayShowTitleEnabled(false); //xml에서 titleview 설정
         getSupportActionBar().setDisplayShowCustomEnabled(true); //커스터마이징 하기 위해 필요
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true); //툴바 뒤로가기 생성
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.common_menu); //뒤로가기 버튼 모양 설정
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.parseColor("#FFFFFF"))); //툴바 배경색
 
         firebaseAuth = FirebaseAuth.getInstance();
+
+        LinearLayout ll_navigation_container = (LinearLayout) LayoutInflater.from(this).inflate(R.layout.navigation_item, null);
+        ll_navigation_container.setBackground(getResources().getDrawable(R.color.colorCocoa));
+        ll_navigation_container.setPadding(30, 50, 30, 50);
+        ll_navigation_container.setOrientation(LinearLayout.VERTICAL);
+        ll_navigation_container.setGravity(Gravity.BOTTOM);
+        ll_navigation_container.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.MATCH_PARENT));
+
+        LinearLayout.LayoutParams param = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
+                ViewGroup.LayoutParams.MATCH_PARENT);
+
+        Typeface typeface = Typeface.createFromAsset(getAssets(), "fonts/nanumbarungothicbold.ttf");
+
+        ImageView iv_userpicture = new ImageView(this);
+        iv_userpicture.setImageDrawable(getResources().getDrawable(R.mipmap.ic_launcher_ewoman_round));
+        param.setMargins(20, 20, 20, 20);
+        iv_userpicture.setLayoutParams(param);
+
+        final TextView tv_username = new TextView(this);
+        tv_username.setTextColor(getResources().getColor(R.color.colorWhite));
+        tv_username.setTextSize(17);
+        tv_username.setTypeface(typeface);
+        param.setMargins(20, 40, 20, 20);
+        tv_username.setLayoutParams(param);
+
+        final TextView tv_useremail = new TextView(this);
+        tv_useremail.setTextColor(getResources().getColor(R.color.colorWhite));
+        tv_useremail.setTextSize(14);
+        tv_useremail.setTypeface(typeface);
+        param.setMargins(20, 20, 20, 20);
+        tv_useremail.setLayoutParams(param);
+
+        FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
+        if(firebaseUser != null) {
+            String uid = firebaseUser.getUid();
+            FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+            firebaseDatabase.getReference("users").child(uid).addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    for(DataSnapshot dataSnapshot : snapshot.getChildren())
+                        if(dataSnapshot.getKey().equals("name")) {
+                            username = dataSnapshot.getValue().toString();
+                            tv_username.setText(username);
+                        }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+
+                }
+            });
+
+            tv_useremail.setText(firebaseUser.getEmail());
+
+        } else if(firebaseUser == null) {
+
+            iv_userpicture.setImageDrawable(getResources().getDrawable(R.mipmap.ic_launcher_ewoman_round));
+            tv_username.setText("로그인이 필요합니다.");
+            tv_useremail.setText(" ");
+
+            tv_username.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent navi_to_login = new Intent(getApplicationContext(), mem_LoginActivity.class);
+
+                    startActivity(navi_to_login);
+                }
+            });
+
+        }
+
+        ll_navigation_container.addView(iv_userpicture);
+        ll_navigation_container.addView(tv_username);
+        ll_navigation_container.addView(tv_useremail);
+
+        navigationView.addHeaderView(ll_navigation_container);
+
+        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+                menuItem.setChecked(true);
+                drawerLayout.closeDrawers();
+
+                int id = menuItem.getItemId();
+
+                if(id == R.id.item_our_story) {
+                    Intent main_to_ourstry = new Intent(getApplicationContext(), OurstoryActivity.class);
+
+                    startActivity(main_to_ourstry);
+                } else if (id == R.id.item_e_college) {
+                    Intent main_to_ecollege = new Intent(getApplicationContext(), eCollegeActivity.class);
+
+                    startActivity(main_to_ecollege);
+                }
+
+                return true;
+            }
+        });
 
         btn_to_ecollege.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -67,6 +188,9 @@ public class MainActivity extends AppCompatActivity {
 
     public void InitAllComponent() {
 
+        navigationView = findViewById(R.id.navigationView);
+        drawerLayout = findViewById(R.id.drawerLayout);
+
         btn_to_ecollege = findViewById(R.id.btn_to_ecollege);
         btn_to_ourstry = findViewById(R.id.btn_to_ourstry);
 
@@ -87,6 +211,10 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId())
         {
+            case android.R.id.home : {
+                drawerLayout.openDrawer(GravityCompat.START);
+                return true;
+            }
             case R.id.menu_login :
                 Intent main_to_login = new Intent(getApplicationContext(), mem_LoginActivity.class);
 

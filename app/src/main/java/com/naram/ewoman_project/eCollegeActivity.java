@@ -6,6 +6,8 @@ import androidx.appcompat.widget.Toolbar;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
@@ -27,7 +29,7 @@ import com.google.firebase.storage.StorageReference;
 
 import java.io.ByteArrayInputStream;
 import java.text.DecimalFormat;
-
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class eCollegeActivity extends AppCompatActivity {
 
@@ -36,12 +38,12 @@ public class eCollegeActivity extends AppCompatActivity {
     private ListViewAdapter adapter;
     private ListProduct P;
 
-    private Drawable[] d_image;
-
     private FirebaseAuth firebaseAuth;
     private FirebaseDatabase firebaseDatabase;
 
     private static final String TAG = "eCollegeActivity";
+    private Drawable[] d_image;
+    private Drawable storage_image;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,9 +56,11 @@ public class eCollegeActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayShowCustomEnabled(true); //커스터마이징 하기 위해 필요
         getSupportActionBar().setDisplayHomeAsUpEnabled(true); //툴바 뒤로가기 생성
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.common_backspace); //뒤로가기 버튼 모양 설정
-//        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.GRAY)); //툴바 배경색
+        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.parseColor("#FFFFFF"))); //툴바 배경색
 
         InitAllComponent();
+
+//        int childCount = listviewCount();
 
         listviewSetting();
 
@@ -89,7 +93,6 @@ public class eCollegeActivity extends AppCompatActivity {
             }
         });
 
-
     }
 
     public void InitAllComponent() {
@@ -99,21 +102,61 @@ public class eCollegeActivity extends AppCompatActivity {
 
     }
 
+//    private int listviewCount() {
+//
+//        final AtomicInteger count = new AtomicInteger();
+//        firebaseDatabase.getInstance().getReference("product/ecollege").addChildEventListener(new ChildEventListener() {
+//            @Override
+//            public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+//                childCount = count.incrementAndGet();
+//                System.out.println("childCount : " + childCount);
+//            }
+//
+//            @Override
+//            public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+//
+//            }
+//
+//            @Override
+//            public void onChildRemoved(@NonNull DataSnapshot snapshot) {
+//
+//            }
+//
+//            @Override
+//            public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+//
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError error) {
+//
+//            }
+//
+//        });
+//
+//        return childCount;
+//
+//    }
+
     private void listviewSetting() {
+//
+//        System.out.println("childCount Value: " + childCount);
 
         adapter = new ListViewAdapter();
         d_image = new Drawable[2];
 
         for(int i = 0; i < 2; i++) {
-            final int folder_id = i;
-
-            d_image[i] = downloadInLocal(i);
+            final int d_pdnumber = i;
+            if(i == 0) {
+                d_image[i] = getResources().getDrawable(R.drawable.prd_front_look_theraphy);
+            } else if(i == 1) {
+                d_image[i] = getResources().getDrawable(R.drawable.prd_book_theraphy);
+            }
 
             firebaseDatabase.getInstance().getReference("product/ecollege/" + i).addValueEventListener(new ValueEventListener() {
 
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    int d_pdnumber = folder_id;
                     String d_name = " ";
                     int t_price = 0;
                     String d_price = " ";
@@ -131,15 +174,14 @@ public class eCollegeActivity extends AppCompatActivity {
                             d_wishlist = Integer.parseInt(dataSnapshot.getValue().toString());
                         }
 
-                        Log.d("TAG", "Value :" + dataSnapshot.getValue());
 
                     }
 
-                    P = new ListProduct(d_pdnumber, d_image[folder_id], d_name, d_price, d_wishlist);
+//                    Drawable d_image = downloadInLocal(product_no);
+
+                    P = new ListProduct(d_pdnumber, d_image[d_pdnumber], d_name, d_price, d_wishlist);
                     adapter.addItem(P.getPdnumber(), P.getImage(), P.getName(), P.getPrice(), P.getWishlist());
-
                     lv_eCollege_product.setAdapter(adapter);
-
                 }
 
                 @Override
@@ -149,32 +191,36 @@ public class eCollegeActivity extends AppCompatActivity {
             });
 
         }
-    }
 
-    private Drawable downloadInLocal(int i) {
-
-        StorageReference storageReference;
-        storageReference = FirebaseStorage.getInstance().getReference("product/ecollege/" + i);
-        StorageReference pathReference = storageReference.child("image.png");
-
-        final int number = i;
-
-        pathReference.getBytes(Long.MAX_VALUE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
-            @Override
-            public void onSuccess(byte[] bytes) {
-
-                ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(bytes);
-                d_image[number] = Drawable.createFromStream(byteArrayInputStream, "Product Image");
-                if(d_image[number] == null) {
-                    d_image[number] = getResources().getDrawable(R.drawable.ewoman_main_logo);
-                }
-
-            }
-        });
-
-        return d_image[i];
 
     }
+
+//    private Drawable downloadInLocal(int i) {
+//
+//        StorageReference storageReference;
+//        storageReference = FirebaseStorage.getInstance().getReference("product/ecollege/" + i);
+//        StorageReference pathReference = storageReference.child("image.png");
+//
+//        final int number = i;
+//
+//        long MAX_IMAGE_SIZE = 1024 * 1024;
+//
+//        pathReference.getBytes(MAX_IMAGE_SIZE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
+//            @Override
+//            public void onSuccess(byte[] bytes) {
+//
+//                ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(bytes);
+//                storage_image = Drawable.createFromStream(byteArrayInputStream, "Product Image");
+//                if(storage_image == null) {
+//                    storage_image = getResources().getDrawable(R.drawable.ewoman_main_logo);
+//                }
+//
+//            }
+//        });
+//
+//        return storage_image;
+//
+//    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
