@@ -6,6 +6,8 @@ import androidx.appcompat.widget.Toolbar;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
@@ -16,9 +18,12 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
+import android.widget.ToggleButton;
 
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -49,10 +54,12 @@ public class ProductDetailActivity extends AppCompatActivity {
     private TextView tv_item_detail;
     private TextView tv_item_origin_is;
     private TextView tv_item_delivery_is;
-    private TextView tv_wishlist_list;
     private TextView tv_option_1;
     private TextView tv_option_2;
     private TextView tv_option_3;
+    private TextView tv_buy_try;
+    private TextView tv_cart_try;
+    private ToggleButton tb_wishlist_try;
     private Spinner sp_option_1;
     private Spinner sp_option_2;
     private Spinner sp_option_3;
@@ -84,7 +91,7 @@ public class ProductDetailActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayShowCustomEnabled(true); //커스터마이징 하기 위해 필요
         getSupportActionBar().setDisplayHomeAsUpEnabled(true); //툴바 뒤로가기 생성
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.common_backspace); //뒤로가기 버튼 모양 설정
-//        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.GRAY)); //툴바 배경색
+        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.parseColor("#FFFFFF"))); //툴바 배경색
 
         firebaseAuth = FirebaseAuth.getInstance();
 
@@ -96,6 +103,12 @@ public class ProductDetailActivity extends AppCompatActivity {
             category = intent.getStringExtra("category");
             path = intent.getStringExtra("DBpath");
 
+            if(category.equals("e-College")) {
+                tv_buy_try.setText("예약하기");
+            } else {
+                tv_buy_try.setText("구매하기");
+            }
+
             tv_category_name.setText(category);
             tv_category_name.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -103,6 +116,12 @@ public class ProductDetailActivity extends AppCompatActivity {
                     if (category.equals("e-College")) {
                         Intent intent = new Intent(getApplicationContext(), eCollegeActivity.class);
 
+                        finish();
+                        startActivity(intent);
+                    } else if(category.equals("e-Product")) {
+                        Intent intent = new Intent(getApplicationContext(), eProductActivity.class);
+
+                        finish();
                         startActivity(intent);
                     }
                 }
@@ -113,6 +132,7 @@ public class ProductDetailActivity extends AppCompatActivity {
                 public void onClick(View v) {
                     Intent intent = new Intent(getApplicationContext(), MainActivity.class);
 
+                    finish();
                     startActivity(intent);
                 }
             });
@@ -150,8 +170,19 @@ public class ProductDetailActivity extends AppCompatActivity {
                                         if (dataSnapshot.getKey().equals("title")) {
                                             tv_option_1.setText(dataSnapshot.getValue().toString() + "   *");
                                         } else {
-                                            d_option1_list.add(dataSnapshot.getValue().toString());
-                                            Log.d(TAG, "Option Value : " + dataSnapshot.getValue().toString());
+                                            boolean sameflag = false;
+                                            String d_option_list_thing = dataSnapshot.getValue().toString();
+                                            for(int i = 0; i < d_option1_list.size(); i++) {
+                                                String samethingchk = d_option1_list.get(i);
+                                                if(samethingchk.equals(d_option_list_thing)) {
+                                                    sameflag = true;
+                                                    break;
+                                                }
+                                            }
+                                            if(sameflag == false) {
+                                                d_option1_list.add(dataSnapshot.getValue().toString());
+                                            }
+                                            sp_option_1.setVisibility(View.VISIBLE);
                                         }
                                     }
 
@@ -176,8 +207,19 @@ public class ProductDetailActivity extends AppCompatActivity {
                                             tv_option_2.setText(dataSnapshot.getValue().toString() + "   *");
                                             tv_option_2.setVisibility(View.VISIBLE);
                                         } else {
-                                            d_option2_list.add(dataSnapshot.getValue().toString());
-                                            Log.d(TAG, "Option Value : " + dataSnapshot.getValue().toString());
+                                            boolean sameflag = false;
+                                            String d_option_list_thing = dataSnapshot.getValue().toString();
+                                            for(int i = 0; i < d_option2_list.size(); i++) {
+                                                String samethingchk = d_option2_list.get(i);
+                                                if(samethingchk.equals(d_option_list_thing)) {
+                                                    sameflag = true;
+                                                    break;
+                                                }
+                                            }
+                                            if(sameflag == false) {
+                                                d_option2_list.add(dataSnapshot.getValue().toString());
+                                            }
+                                            sp_option_2.setVisibility(View.VISIBLE);
                                         }
                                     }
 
@@ -186,7 +228,6 @@ public class ProductDetailActivity extends AppCompatActivity {
 
                                     adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                                     sp_option_2.setAdapter(adapter);
-                                    sp_option_2.setVisibility(View.VISIBLE);
                                 }
 
                                 @Override
@@ -202,8 +243,19 @@ public class ProductDetailActivity extends AppCompatActivity {
                                             tv_option_3.setText(dataSnapshot.getValue().toString() + "   *");
                                             tv_option_3.setVisibility(View.VISIBLE);
                                         } else {
-                                            d_option3_list.add(dataSnapshot.getValue().toString());
-                                            Log.d(TAG, "Option Value : " + dataSnapshot.getValue().toString());
+                                            boolean sameflag = false;
+                                            String d_option_list_thing = dataSnapshot.getValue().toString();
+                                            for(int i = 0; i < d_option3_list.size(); i++) {
+                                                String samethingchk = d_option3_list.get(i);
+                                                if(samethingchk.equals(d_option_list_thing)) {
+                                                    sameflag = true;
+                                                    break;
+                                                }
+                                            }
+                                            if(sameflag == false) {
+                                                d_option3_list.add(dataSnapshot.getValue().toString());
+                                            }
+                                            sp_option_3.setVisibility(View.VISIBLE);
                                         }
                                     }
 
@@ -212,7 +264,6 @@ public class ProductDetailActivity extends AppCompatActivity {
 
                                     adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                                     sp_option_3.setAdapter(adapter);
-                                    sp_option_3.setVisibility(View.VISIBLE);
                                 }
 
                                 @Override
@@ -233,7 +284,9 @@ public class ProductDetailActivity extends AppCompatActivity {
                     tv_item_detail.setText(d_detail);
                     tv_item_origin_is.setText(d_origin);
                     tv_item_delivery_is.setText(d_delivery);
-                    tv_wishlist_list.setText(d_wishlist);
+                    tb_wishlist_try.setTextOff(d_wishlist);
+                    tb_wishlist_try.setText(d_wishlist);
+                    tb_wishlist_try.setTextOn(d_wishlist);
 
                 }
 
@@ -243,6 +296,7 @@ public class ProductDetailActivity extends AppCompatActivity {
                 }
             });
 
+
         }
 
     }
@@ -250,19 +304,26 @@ public class ProductDetailActivity extends AppCompatActivity {
     public void initAllComponent() {
 
         tv_toolbar_title = findViewById(R.id.tv_toolbar_title);
+
         tv_category_home = findViewById(R.id.tv_category_home);
         tv_category_name = findViewById(R.id.tv_category_name);
         tv_category_pd = findViewById(R.id.tv_category_pd);
+
         iv_item_image = findViewById(R.id.iv_item_image);
         tv_item_name = findViewById(R.id.tv_item_name);
         tv_item_price = findViewById(R.id.tv_item_price);
         tv_item_detail = findViewById(R.id.tv_item_detail);
         tv_item_origin_is = findViewById(R.id.tv_item_origin_is);
         tv_item_delivery_is = findViewById(R.id.tv_item_delivery_is);
-        tv_wishlist_list = findViewById(R.id.tv_wishlist_try);
+
         tv_option_1 = findViewById(R.id.tv_option_1);
         tv_option_2 = findViewById(R.id.tv_option_2);
         tv_option_3 = findViewById(R.id.tv_option_3);
+
+        tv_buy_try = findViewById(R.id.tv_buy_try);
+        tv_cart_try = findViewById(R.id.tv_cart_try);
+        tb_wishlist_try = findViewById(R.id.tb_wishlist_try);
+
         sp_option_1 = findViewById(R.id.sp_option_1);
         sp_option_2 = findViewById(R.id.sp_option_2);
         sp_option_3 = findViewById(R.id.sp_option_3);
@@ -274,7 +335,7 @@ public class ProductDetailActivity extends AppCompatActivity {
         Drawable image;
 
         StorageReference storageReference;
-        storageReference = FirebaseStorage.getInstance().getReference("product/ecollege/" + i);
+        storageReference = FirebaseStorage.getInstance().getReference("product/" + path + "/" + i);
         StorageReference pathReference = storageReference.child("image.png");
 
         pathReference.getBytes(Long.MAX_VALUE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
@@ -290,6 +351,42 @@ public class ProductDetailActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    public void onToggleClicked(View v) {
+        boolean tb_on = ((ToggleButton) v).isChecked();
+        int wishlist = Integer.parseInt(tb_wishlist_try.getTextOff().toString());
+        // 상품의 wishlist가 현재 몇 개인지를 받아와서 저장
+
+        FirebaseAuth mAuth = FirebaseAuth.getInstance();
+        FirebaseUser mUser = mAuth.getCurrentUser();
+
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference reference = database.getReference("product/" + path + "/" + pdnumber);
+
+        if(mUser == null) {
+
+            Toast.makeText(getApplicationContext(), "로그인이 필요한 기능입니다.", Toast.LENGTH_SHORT).show();
+
+        } else {
+            if (tb_on) { // 버튼이 눌렸다면
+
+                wishlist += 1; // wishlist에 1을 더하고
+
+                reference.child("wishlist").setValue(wishlist);
+
+                tb_wishlist_try.setTextOn(Integer.toString(wishlist));
+
+            } else {
+
+                wishlist -= 1;
+
+                reference.child("wishlist").setValue(wishlist);
+
+                tb_wishlist_try.setTextOn(Integer.toString(wishlist));
+
+            }
+        }
     }
 
     @Override
@@ -313,11 +410,13 @@ public class ProductDetailActivity extends AppCompatActivity {
             case R.id.menu_login:
                 Intent main_to_login = new Intent(getApplicationContext(), mem_LoginActivity.class);
 
+                finish();
                 startActivity(main_to_login);
                 return true;
             case R.id.menu_signup:
                 Intent main_to_signup = new Intent(getApplicationContext(), mem_SignupActivity.class);
 
+                finish();
                 startActivity(main_to_signup);
                 return true;
             case R.id.menu_logout:
@@ -334,6 +433,7 @@ public class ProductDetailActivity extends AppCompatActivity {
                 logout_to_product.putExtra("DBpath", path);
                 mDialog.dismiss();
 
+                finish();
                 startActivity(logout_to_product);
                 return true;
             case R.id.menu_cart:

@@ -273,7 +273,6 @@
                     android:gravity="center"
                     android:background="@drawable/btn_style_border_line"
                     android:fontFamily="@font/nanumbarungothic"
-                    android:text="구매하기"
                     android:textColor="@color/colorWhite"
                     android:backgroundTint="@color/colorCocoa"
                     android:textSize="18dp" />
@@ -291,17 +290,17 @@
                     android:textColor="@color/colorGray"
                     android:textSize="18dp" />
 
-                <TextView
-                    android:id="@+id/tv_wishlist_try"
+                <ToggleButton
+                    android:id="@+id/tb_wishlist_try"
                     android:layout_width="110dp"
                     android:layout_height="47.5dp"
                     android:layout_toRightOf="@+id/tv_cart_try"
                     android:background="@drawable/btn_style_border_line"
                     android:fontFamily="@font/nanumbarungothic"
-                    android:text="0"
                     android:paddingLeft="30dp"
                     android:paddingRight="30dp"
                     android:gravity="center"
+                    android:onClick="onToggleClicked"
                     android:drawableLeft="@drawable/prd_wishlist_ico"
                     android:textColor="@color/colorGray"
                     android:textSize="18dp" />

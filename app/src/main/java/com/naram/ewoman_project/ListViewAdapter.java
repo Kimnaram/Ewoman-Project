@@ -1,4 +1,5 @@
 package com.naram.ewoman_project;
+
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
@@ -15,7 +16,9 @@ public class ListViewAdapter extends BaseAdapter {
     private ArrayList<ListProduct> listViewItemList = new ArrayList<ListProduct>() ;
 
     // ListViewAdapter의 생성자
+
     public ListViewAdapter() {
+
     }
 
     // Adapter에 사용되는 데이터의 개수를 리턴. : 필수 구현
@@ -67,16 +70,18 @@ public class ListViewAdapter extends BaseAdapter {
     }
 
     // 아이템 데이터 추가를 위한 함수. 개발자가 원하는대로 작성 가능.
-    public void addItem(int pdnumber, Drawable image, String name, String price, int wishlist) {
-        ListProduct item = new ListProduct(pdnumber, image, name, price, wishlist);
+    public void addItem(ListProduct listProduct) {
 
-        item.setPdnumber(pdnumber);
-        item.setImage(image);
-        item.setName(name);
-        item.setPrice(price);
-        item.setWishlist(wishlist);
+        listViewItemList.add(listProduct);
 
-        listViewItemList.add(item);
     }
+
+    public void updateItemList(ListProduct listProduct) {
+
+        listViewItemList.add(listProduct);
+        notifyDataSetChanged();
+
+    }
+
 }
 

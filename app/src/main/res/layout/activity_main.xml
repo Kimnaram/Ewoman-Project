@@ -25,13 +25,6 @@
                 android:layout_alignParentTop="true"
                 android:minHeight="?attr/actionBarSize">
 
-<!--                <ImageView-->
-<!--                    android:layout_width="30dp"-->
-<!--                    android:layout_height="30dp"-->
-<!--                    android:layout_marginRight="20dp"-->
-<!--                    android:background="@null"-->
-<!--                    android:src="@drawable/common_menu" />-->
-
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -69,7 +62,8 @@
                         android:layout_width="120dp"
                         android:layout_height="60dp"
                         android:layout_margin="20dp"
-                        android:background="@color/colorWhite"
+                        android:fontFamily="@font/nanumbarungothicbold"
+                        android:background="@drawable/btn_style_border_line"
                         android:text="College"
                         android:textSize="15dp" />
 
@@ -79,7 +73,8 @@
                         android:layout_height="60dp"
                         android:layout_margin="20dp"
                         android:layout_toRightOf="@+id/btn_to_ecollege"
-                        android:background="@color/colorWhite"
+                        android:fontFamily="@font/nanumbarungothicbold"
+                        android:background="@drawable/btn_style_border_line"
                         android:text="Our Story"
                         android:textSize="15dp" />
 
@@ -96,7 +91,8 @@
             android:layout_gravity="start"
             android:fitsSystemWindows="true"
             app:headerLayout="@layout/navigation_item"
-            app:menu="@menu/navigation_menu" />
+            app:menu="@menu/navigation_menu"
+            app:itemTextAppearance="@style/NavigationViewStyle" />
 
     </androidx.drawerlayout.widget.DrawerLayout>
 

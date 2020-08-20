@@ -10,14 +10,16 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.ListAdapter;
 import android.widget.ListView;
-import android.widget.Spinner;
 
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -34,23 +36,28 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class eCollegeActivity extends AppCompatActivity {
+public class eProductActivity extends AppCompatActivity {
 
-    private ListView lv_eCollege_product;
+    private ListView lv_eProduct_product;
     private ListViewAdapter adapter;
     private ListProduct listProduct;
+
+    private List<ListProduct> list;
+    private ArrayList<ListProduct> searchList;
 
     private FirebaseAuth firebaseAuth;
     private FirebaseDatabase firebaseDatabase;
 
-    private static final String TAG = "eCollegeActivity";
+    private static final String TAG = "eProductActivity";
+
     private Drawable[] d_image;
     private Drawable storage_image;
+    private EditText et_search_text;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_e_college);
+        setContentView(R.layout.activity_e_product);
 
         //상단 툴바 설정
         setSupportActionBar((Toolbar) findViewById(R.id.toolbar));
@@ -62,43 +69,79 @@ public class eCollegeActivity extends AppCompatActivity {
 
         InitAllComponent();
 
-        lv_eCollege_product.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        listviewSetting();
+
+        lv_eProduct_product.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent intent = new Intent(getApplicationContext(), ProductDetailActivity.class);
 
                 intent.putExtra("pdnumber", Integer.toString(position));
-                intent.putExtra("category", "e-College");
-                intent.putExtra("DBpath", "ecollege");
+                intent.putExtra("category", "e-Product");
+                intent.putExtra("DBpath", "eproduct");
 
                 startActivity(intent);
             }
         });
 
-        firebaseAuth = FirebaseAuth.getInstance();
+        et_search_text.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                if(keyCode == event.KEYCODE_ENTER) {
+                    return true;
+                }
+                return false;
+            }
+        });
+
+        et_search_text.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                String search = et_search_text.getText().toString();
+                searchInList(search);
+            }
+        });
 
     }
 
     public void InitAllComponent() {
 
-        lv_eCollege_product = findViewById(R.id.lv_eCollege_product);
+        lv_eProduct_product = findViewById(R.id.lv_eProduct_product);
+        et_search_text = findViewById(R.id.et_search_text);
+
+        firebaseAuth = FirebaseAuth.getInstance();
+
+        list = new ArrayList<ListProduct>();
+        searchList = new ArrayList<ListProduct>();
 
     }
 
-    @Override
-    public void onStart() {
-        super.onStart();
-
-        listviewSetting();
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-
-        // 리스트뷰 DataSet 갱신
-
-    }
+//    @Override
+//    public void onStart() {
+//        super.onStart();
+//
+//        listviewSetting();
+//    }
+//
+//    @Override
+//    public void onRestart() {
+//        super.onRestart();
+//
+//        // 리스트뷰 DataSet 갱신
+//
+//        listviewSetting();
+//
+//    }
 
 //    private int listviewCount() {
 //
@@ -141,15 +184,15 @@ public class eCollegeActivity extends AppCompatActivity {
         adapter = new ListViewAdapter();
         d_image = new Drawable[2];
 
-        for(int i = 0; i < 2; i++) {
+        for (int i = 0; i < 2; i++) {
             final int d_pdnumber = i;
-            if(i == 0) {
-                d_image[i] = getResources().getDrawable(R.drawable.prd_front_look_theraphy);
-            } else if(i == 1) {
-                d_image[i] = getResources().getDrawable(R.drawable.prd_book_theraphy);
+            if (i == 0) {
+                d_image[i] = getResources().getDrawable(R.drawable.prd_suntteut);
+            } else if (i == 1) {
+                d_image[i] = getResources().getDrawable(R.drawable.prd_explore);
             }
 
-            firebaseDatabase.getInstance().getReference("product/ecollege/" + i).addValueEventListener(new ValueEventListener() {
+            firebaseDatabase.getInstance().getReference("product/eproduct/" + i).addValueEventListener(new ValueEventListener() {
 
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -170,13 +213,14 @@ public class eCollegeActivity extends AppCompatActivity {
                             d_wishlist = Integer.parseInt(dataSnapshot.getValue().toString());
                         }
 
-
                     }
 
 //                    Drawable d_image = downloadInLocal(product_no);
 
                     listProduct = new ListProduct(d_pdnumber, d_image[d_pdnumber], d_name, d_price, d_wishlist);
-                    adapter.addItem(listProduct);
+
+                    list.add(listProduct);
+
                 }
 
                 @Override
@@ -187,7 +231,9 @@ public class eCollegeActivity extends AppCompatActivity {
 
         }
 
-        lv_eCollege_product.setAdapter(adapter);
+        lv_eProduct_product.setAdapter(adapter);
+
+        searchList.addAll(list);
 
     }
 
@@ -218,11 +264,29 @@ public class eCollegeActivity extends AppCompatActivity {
 //
 //    }
 
+    public void searchInList(String search) {
+
+        list.clear();
+
+        if(search.length() == 0) {
+            list.addAll(searchList);
+        } else {
+            for(int i = 0; i < searchList.size(); i++) {
+                if(searchList.get(i).getName().contains(search)) {
+                    list.add(searchList.get(i));
+                }
+            }
+        }
+
+        adapter.notifyDataSetChanged();
+
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        if(firebaseAuth.getCurrentUser() == null) {
+        if (firebaseAuth.getCurrentUser() == null) {
             getMenuInflater().inflate(R.menu.toolbar_bl_menu, menu);
-        } else if(firebaseAuth.getCurrentUser() != null) {
+        } else if (firebaseAuth.getCurrentUser() != null) {
             getMenuInflater().inflate(R.menu.toolbar_al_menu, menu);
         }
 
@@ -231,35 +295,35 @@ public class eCollegeActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()){
-            case android.R.id.home:{ //툴바 뒤로가기 동작
+        switch (item.getItemId()) {
+            case android.R.id.home: { //툴바 뒤로가기 동작
                 finish();
                 return true;
             }
-            case R.id.menu_login :
+            case R.id.menu_login:
                 Intent main_to_login = new Intent(getApplicationContext(), mem_LoginActivity.class);
 
                 startActivity(main_to_login);
                 return true;
-            case R.id.menu_signup :
+            case R.id.menu_signup:
                 Intent main_to_signup = new Intent(getApplicationContext(), mem_SignupActivity.class);
 
                 startActivity(main_to_signup);
                 return true;
-            case R.id.menu_logout :
+            case R.id.menu_logout:
 
                 FirebaseAuth.getInstance().signOut();
 
-                final ProgressDialog mDialog = new ProgressDialog(eCollegeActivity.this);
+                final ProgressDialog mDialog = new ProgressDialog(eProductActivity.this);
                 mDialog.setMessage("로그아웃 중입니다.");
                 mDialog.show();
 
-                Intent logout_to_main = new Intent(getApplicationContext(), eCollegeActivity.class);
+                Intent logout_to_main = new Intent(getApplicationContext(), eProductActivity.class);
                 mDialog.dismiss();
 
                 startActivity(logout_to_main);
                 return true;
-            case R.id.menu_cart :
+            case R.id.menu_cart:
                 return true;
         }
         return super.onOptionsItemSelected(item);

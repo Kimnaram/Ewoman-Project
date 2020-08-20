@@ -5,8 +5,8 @@
             <stroke
                 android:width="0.4dp"
                 android:color="@color/colorGray" />
-            <solid
-                android:color="@color/colorWhite" />
+<!--            <solid-->
+<!--                android:color="@color/colorWhite" />-->
         </shape>
     </item>
 </selector>

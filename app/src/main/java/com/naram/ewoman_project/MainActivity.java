@@ -8,15 +8,12 @@ import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
-import android.media.Image;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -42,7 +39,6 @@ public class MainActivity extends AppCompatActivity {
 
     private FirebaseAuth firebaseAuth;
 
-    private LinearLayout ll_navi_container;
     private NavigationView navigationView;
     private DrawerLayout drawerLayout;
 
@@ -61,42 +57,43 @@ public class MainActivity extends AppCompatActivity {
         //상단 툴바 설정
         setSupportActionBar((Toolbar) findViewById(R.id.toolbar));
         getSupportActionBar().setDisplayShowCustomEnabled(true); //커스터마이징 하기 위해 필요
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true); //툴바 뒤로가기 생성
-        getSupportActionBar().setHomeAsUpIndicator(R.drawable.common_menu); //뒤로가기 버튼 모양 설정
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true); //툴바 메뉴버튼 생성
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.common_menu); // 메뉴 버튼 모양 설정
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.parseColor("#FFFFFF"))); //툴바 배경색
 
         firebaseAuth = FirebaseAuth.getInstance();
 
         LinearLayout ll_navigation_container = (LinearLayout) LayoutInflater.from(this).inflate(R.layout.navigation_item, null);
         ll_navigation_container.setBackground(getResources().getDrawable(R.color.colorCocoa));
-        ll_navigation_container.setPadding(30, 50, 30, 50);
+        ll_navigation_container.setPadding(30, 70, 30, 50);
         ll_navigation_container.setOrientation(LinearLayout.VERTICAL);
         ll_navigation_container.setGravity(Gravity.BOTTOM);
         ll_navigation_container.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.MATCH_PARENT));
 
         LinearLayout.LayoutParams param = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
-                ViewGroup.LayoutParams.MATCH_PARENT);
+                ViewGroup.LayoutParams.WRAP_CONTENT);
 
         Typeface typeface = Typeface.createFromAsset(getAssets(), "fonts/nanumbarungothicbold.ttf");
 
         ImageView iv_userpicture = new ImageView(this);
         iv_userpicture.setImageDrawable(getResources().getDrawable(R.mipmap.ic_launcher_ewoman_round));
-        param.setMargins(20, 20, 20, 20);
+        param.setMargins(20, 30, 20, 0);
         iv_userpicture.setLayoutParams(param);
 
         final TextView tv_username = new TextView(this);
         tv_username.setTextColor(getResources().getColor(R.color.colorWhite));
         tv_username.setTextSize(17);
         tv_username.setTypeface(typeface);
-        param.setMargins(20, 40, 20, 20);
+        tv_username.setPadding(0, 50, 0, 0);
+        param.setMargins(20, 60, 20, 10);
         tv_username.setLayoutParams(param);
 
         final TextView tv_useremail = new TextView(this);
         tv_useremail.setTextColor(getResources().getColor(R.color.colorWhite));
         tv_useremail.setTextSize(14);
         tv_useremail.setTypeface(typeface);
-        param.setMargins(20, 20, 20, 20);
+        param.setMargins(20, 0, 20, 20);
         tv_useremail.setLayoutParams(param);
 
         FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
@@ -109,7 +106,7 @@ public class MainActivity extends AppCompatActivity {
                     for(DataSnapshot dataSnapshot : snapshot.getChildren())
                         if(dataSnapshot.getKey().equals("name")) {
                             username = dataSnapshot.getValue().toString();
-                            tv_username.setText(username);
+                            tv_username.setText(username + " 님");
                         }
                 }
 
@@ -160,6 +157,10 @@ public class MainActivity extends AppCompatActivity {
                     Intent main_to_ecollege = new Intent(getApplicationContext(), eCollegeActivity.class);
 
                     startActivity(main_to_ecollege);
+                } else if (id == R.id.item_e_product) {
+                    Intent main_to_eproduct = new Intent(getApplicationContext(), eProductActivity.class);
+
+                    startActivity(main_to_eproduct);
                 }
 
                 return true;

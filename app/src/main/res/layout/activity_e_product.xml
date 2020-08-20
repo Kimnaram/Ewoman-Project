@@ -4,8 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.naram.ewoman_project.eCollegeActivity"
-    tools:showIn="@layout/activity_e_college">
+    tools:context="com.naram.ewoman_project.eProductActivity"
+    tools:showIn="@layout/activity_e_product">
 
     <!--상단 툴바-->
     <androidx.appcompat.widget.Toolbar
@@ -20,55 +20,54 @@
             android:layout_height="35dp"
             android:layout_marginTop="15dp"
             android:layout_marginRight="10dp"
-            android:text="e College"
             android:fontFamily="@font/nanumbarungothic"
-            android:textStyle="bold"
-            android:textSize="23dp">
-        </TextView>
+            android:text="e Product"
+            android:textSize="23dp"
+            android:textStyle="bold"></TextView>
 
     </androidx.appcompat.widget.Toolbar>
 
     <RelativeLayout
-        android:id="@+id/rl_college_container"
+        android:id="@+id/rl_product_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="10dp"
-        android:layout_below="@+id/toolbar" >
+        android:layout_below="@+id/toolbar"
+        android:layout_marginTop="10dp">
 
         <EditText
             android:id="@+id/et_search_text"
             android:layout_width="280dp"
             android:layout_height="40dp"
-            android:paddingLeft="5dp"
+            android:layout_margin="10dp"
+            android:background="@drawable/btn_style_border_line"
+            android:fontFamily="@font/nanumbarungothic"
             android:gravity="center_vertical"
             android:hint="검색어를 입력하세요."
-            android:layout_margin="10dp"
-            android:fontFamily="@font/nanumbarungothic"
-            android:textSize="18dp"
-            android:background="@drawable/btn_style_border_line" />
+            android:paddingLeft="5dp"
+            android:textSize="18dp" />
 
         <TextView
             android:layout_width="120dp"
             android:layout_height="40dp"
-            android:gravity="center"
-            android:layout_toRightOf="@+id/et_search_text"
-            android:layout_marginRight="10dp"
             android:layout_marginTop="10dp"
+            android:layout_marginRight="10dp"
             android:layout_marginBottom="10dp"
-            android:text="검색"
-            android:textSize="18dp"
-            android:fontFamily="@font/nanumbarungothic"
-            android:textColor="@color/colorWhite"
+            android:layout_toRightOf="@+id/et_search_text"
             android:background="@drawable/btn_style_border_line"
-            android:backgroundTint="@color/colorCocoa" />
-        
+            android:backgroundTint="@color/colorCocoa"
+            android:fontFamily="@font/nanumbarungothic"
+            android:gravity="center"
+            android:text="검색"
+            android:textColor="@color/colorWhite"
+            android:textSize="18dp" />
+
         <ListView
-            android:id="@+id/lv_eCollege_product"
+            android:id="@+id/lv_eProduct_product"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_below="@+id/et_search_text"
             android:divider="@color/colorCocoa"
-            android:dividerHeight="0.5dp" >
+            android:dividerHeight="0.5dp">
 
         </ListView>
 

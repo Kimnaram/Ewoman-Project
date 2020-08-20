@@ -11,7 +11,8 @@
         android:roundIcon="@mipmap/ic_launcher_ewoman_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".ProductDetailActivity"></activity>
+        <activity android:name=".eProductActivity"></activity>
+        <activity android:name=".ProductDetailActivity" />
         <activity android:name=".OurstoryActivity" />
         <activity android:name=".SplashActivity">
             <intent-filter>
