@@ -161,6 +161,10 @@ public class MainActivity extends AppCompatActivity {
                     Intent main_to_eproduct = new Intent(getApplicationContext(), eProductActivity.class);
 
                     startActivity(main_to_eproduct);
+                } else if (id == R.id.item_contact) {
+                    Intent main_to_contact = new Intent(getApplicationContext(), ContactActivity.class);
+
+                    startActivity(main_to_contact);
                 }
 
                 return true;

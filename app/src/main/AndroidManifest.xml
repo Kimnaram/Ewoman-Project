@@ -11,7 +11,8 @@
         android:roundIcon="@mipmap/ic_launcher_ewoman_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".eProductActivity"></activity>
+        <activity android:name=".ContactActivity"></activity>
+        <activity android:name=".eProductActivity" />
         <activity android:name=".ProductDetailActivity" />
         <activity android:name=".OurstoryActivity" />
         <activity android:name=".SplashActivity">
@@ -27,6 +28,11 @@
         <activity android:name=".mem_SignupActivity" />
         <activity android:name=".mem_LoginActivity" />
         <activity android:name=".MainActivity" />
+
+        <meta-data
+            android:name="com.naver.maps.map.CLIENT_ID"
+            android:value="uwat0wl12g" />
+
     </application>
 
 </manifest>

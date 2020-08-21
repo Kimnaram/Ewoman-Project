@@ -12,6 +12,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -70,13 +71,77 @@ public class eCollegeActivity extends AppCompatActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent intent = new Intent(getApplicationContext(), ProductDetailActivity.class);
 
-                intent.putExtra("pdnumber", Integer.toString(position));
+                int number = adapter.getItem(position).getPdnumber();
+
+                intent.putExtra("pdnumber", Integer.toString(number));
                 intent.putExtra("category", "e-College");
                 intent.putExtra("DBpath", "ecollege");
+
+                adapter.notifyDataSetChanged();
 
                 startActivity(intent);
             }
         });
+
+
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        adapter.clearAllItems();
+        listviewSetting();
+
+        et_search_text.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                if(keyCode == event.KEYCODE_ENTER) {
+                    return true;
+                }
+                return false;
+            }
+        });
+
+        et_search_text.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                String search = et_search_text.getText().toString();
+                adapter.fillter(search);
+            }
+        });
+
+        tv_search_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                adapter.fillter(et_search_text.getText().toString());
+            }
+        });
+
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+
+        adapter.clearAllItems();
+
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        adapter.clearAllItems();
 
         et_search_text.setOnKeyListener(new View.OnKeyListener() {
             @Override
@@ -120,22 +185,9 @@ public class eCollegeActivity extends AppCompatActivity {
         et_search_text = findViewById(R.id.et_search_text);
         tv_search_btn = findViewById(R.id.tv_search_btn);
 
+        adapter = new ListViewAdapter();
+
         firebaseAuth = FirebaseAuth.getInstance();
-
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-
-        listviewSetting();
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-
-        // 리스트뷰 DataSet 갱신
 
     }
 
@@ -177,7 +229,6 @@ public class eCollegeActivity extends AppCompatActivity {
 
     private void listviewSetting() {
 
-        adapter = new ListViewAdapter();
         d_image = new Drawable[2];
 
         for(int i = 0; i < 2; i++) {
@@ -216,6 +267,7 @@ public class eCollegeActivity extends AppCompatActivity {
 
                     listProduct = new ListProduct(d_pdnumber, d_image[d_pdnumber], d_name, d_price, d_wishlist);
                     adapter.addItem(listProduct);
+
                 }
 
                 @Override

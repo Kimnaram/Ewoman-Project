@@ -59,7 +59,7 @@ public class ProductDetailActivity extends AppCompatActivity {
     private TextView tv_option_3;
     private TextView tv_buy_try;
     private TextView tv_cart_try;
-    private ToggleButton tb_wishlist_try;
+    private TextView tv_wishlist_try;
     private Spinner sp_option_1;
     private Spinner sp_option_2;
     private Spinner sp_option_3;
@@ -77,8 +77,11 @@ public class ProductDetailActivity extends AppCompatActivity {
     private List<String> d_option3_list = new ArrayList<String>();
 
     private int pdnumber = 0;
+    private int pdwishlist = 0;
     private String category = " ";
     private String path = " ";
+
+    private boolean state = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -284,9 +287,7 @@ public class ProductDetailActivity extends AppCompatActivity {
                     tv_item_detail.setText(d_detail);
                     tv_item_origin_is.setText(d_origin);
                     tv_item_delivery_is.setText(d_delivery);
-                    tb_wishlist_try.setTextOff(d_wishlist);
-                    tb_wishlist_try.setText(d_wishlist);
-                    tb_wishlist_try.setTextOn(d_wishlist);
+                    tv_wishlist_try.setText(d_wishlist);
 
                 }
 
@@ -296,6 +297,22 @@ public class ProductDetailActivity extends AppCompatActivity {
                 }
             });
 
+            tv_wishlist_try.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if(state == false) {
+                        state = true;
+                        int wishlist = Integer.parseInt(tv_wishlist_try.getText().toString());
+                        wishlist += 1;
+                        tv_wishlist_try.setText(Integer.toString(wishlist));
+                    } else {
+                        state = false;
+                        int wishlist = Integer.parseInt(tv_wishlist_try.getText().toString());
+                        wishlist -= 1;
+                        tv_wishlist_try.setText(Integer.toString(wishlist));
+                    }
+                }
+            });
 
         }
 
@@ -322,7 +339,7 @@ public class ProductDetailActivity extends AppCompatActivity {
 
         tv_buy_try = findViewById(R.id.tv_buy_try);
         tv_cart_try = findViewById(R.id.tv_cart_try);
-        tb_wishlist_try = findViewById(R.id.tb_wishlist_try);
+        tv_wishlist_try = findViewById(R.id.tv_wishlist_try);
 
         sp_option_1 = findViewById(R.id.sp_option_1);
         sp_option_2 = findViewById(R.id.sp_option_2);
@@ -330,7 +347,7 @@ public class ProductDetailActivity extends AppCompatActivity {
 
     }
 
-    private void downloadInLocal(int i) {
+    public void downloadInLocal(int i) {
 
         Drawable image;
 
@@ -353,40 +370,36 @@ public class ProductDetailActivity extends AppCompatActivity {
 
     }
 
-    public void onToggleClicked(View v) {
-        boolean tb_on = ((ToggleButton) v).isChecked();
-        int wishlist = Integer.parseInt(tb_wishlist_try.getTextOff().toString());
-        // 상품의 wishlist가 현재 몇 개인지를 받아와서 저장
+    @Override
+    public void onBackPressed() {
 
         FirebaseAuth mAuth = FirebaseAuth.getInstance();
-        FirebaseUser mUser = mAuth.getCurrentUser();
 
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference reference = database.getReference("product/" + path + "/" + pdnumber);
+        reference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for(DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                    if(dataSnapshot.getKey().equals("wishlist")) {
+                        pdwishlist = Integer.parseInt(dataSnapshot.getValue().toString());
+                    }
+                }
+            }
 
-        if(mUser == null) {
-
-            Toast.makeText(getApplicationContext(), "로그인이 필요한 기능입니다.", Toast.LENGTH_SHORT).show();
-
-        } else {
-            if (tb_on) { // 버튼이 눌렸다면
-
-                wishlist += 1; // wishlist에 1을 더하고
-
-                reference.child("wishlist").setValue(wishlist);
-
-                tb_wishlist_try.setTextOn(Integer.toString(wishlist));
-
-            } else {
-
-                wishlist -= 1;
-
-                reference.child("wishlist").setValue(wishlist);
-
-                tb_wishlist_try.setTextOn(Integer.toString(wishlist));
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
 
             }
+        });
+
+        int final_wishlist = Integer.parseInt(tv_wishlist_try.getText().toString());
+        if(pdnumber != final_wishlist) {
+            reference.child("wishlist").setValue(final_wishlist);
         }
+
+        finish();
+
     }
 
     @Override
@@ -408,16 +421,16 @@ public class ProductDetailActivity extends AppCompatActivity {
                 return true;
             }
             case R.id.menu_login:
-                Intent main_to_login = new Intent(getApplicationContext(), mem_LoginActivity.class);
+                Intent product_to_login = new Intent(getApplicationContext(), mem_LoginActivity.class);
 
                 finish();
-                startActivity(main_to_login);
+                startActivity(product_to_login);
                 return true;
             case R.id.menu_signup:
-                Intent main_to_signup = new Intent(getApplicationContext(), mem_SignupActivity.class);
+                Intent product_to_signup = new Intent(getApplicationContext(), mem_SignupActivity.class);
 
                 finish();
-                startActivity(main_to_signup);
+                startActivity(product_to_signup);
                 return true;
             case R.id.menu_logout:
 

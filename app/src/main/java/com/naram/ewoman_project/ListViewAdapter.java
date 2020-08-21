@@ -82,14 +82,18 @@ public class ListViewAdapter extends BaseAdapter {
         listViewItemList.add(listProduct);
         displayItemList.add(listProduct);
 
-    }
-
-    public void updateItemList(ListProduct listProduct) {
-
-        listViewItemList.add(listProduct);
         notifyDataSetChanged();
 
-    } // 리스트뷰가 갱신되었을 때를 위한 함수
+    }
+
+    public void clearAllItems() {
+
+        listViewItemList.clear();
+        displayItemList.clear();
+
+        notifyDataSetChanged();
+
+    }
 
     public void fillter(String search) {
         Log.d(TAG, "filltering");

@@ -66,20 +66,43 @@ public class eProductActivity extends AppCompatActivity {
 
         InitAllComponent();
 
-        listviewSetting();
-
         lv_eProduct_product.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent intent = new Intent(getApplicationContext(), ProductDetailActivity.class);
 
-                intent.putExtra("pdnumber", Integer.toString(position));
+                int number = adapter.getItem(position).getPdnumber();
+
+                intent.putExtra("pdnumber", Integer.toString(number));
                 intent.putExtra("category", "e-Product");
                 intent.putExtra("DBpath", "eproduct");
+
+                adapter.notifyDataSetChanged();
 
                 startActivity(intent);
             }
         });
+
+    }
+
+    public void InitAllComponent() {
+
+        lv_eProduct_product = findViewById(R.id.lv_eProduct_product);
+        et_search_text = findViewById(R.id.et_search_text);
+        tv_search_btn = findViewById(R.id.tv_search_btn);
+
+        adapter = new ListViewAdapter();
+
+        firebaseAuth = FirebaseAuth.getInstance();
+
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        adapter.clearAllItems();
+        listviewSetting();
 
         et_search_text.setOnKeyListener(new View.OnKeyListener() {
             @Override
@@ -99,7 +122,6 @@ public class eProductActivity extends AppCompatActivity {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-
             }
 
             @Override
@@ -118,32 +140,55 @@ public class eProductActivity extends AppCompatActivity {
 
     }
 
-    public void InitAllComponent() {
+    @Override
+    public void onPause() {
+        super.onPause();
 
-        lv_eProduct_product = findViewById(R.id.lv_eProduct_product);
-        et_search_text = findViewById(R.id.et_search_text);
-        tv_search_btn = findViewById(R.id.tv_search_btn);
-
-        firebaseAuth = FirebaseAuth.getInstance();
+        adapter.clearAllItems();
 
     }
 
-//    @Override
-//    public void onStart() {
-//        super.onStart();
-//
-//        listviewSetting();
-//    }
-//
-//    @Override
-//    public void onRestart() {
-//        super.onRestart();
-//
-//        // 리스트뷰 DataSet 갱신
-//
-//        listviewSetting();
-//
-//    }
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        adapter.clearAllItems();
+
+        et_search_text.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                if(keyCode == event.KEYCODE_ENTER) {
+                    return true;
+                }
+                return false;
+            }
+        });
+
+        et_search_text.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                String search = et_search_text.getText().toString();
+                adapter.fillter(search);
+            }
+        });
+
+        tv_search_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                adapter.fillter(et_search_text.getText().toString());
+            }
+        });
+
+    }
 
 //    private int listviewCount() {
 //
@@ -183,7 +228,6 @@ public class eProductActivity extends AppCompatActivity {
 
     private void listviewSetting() {
 
-        adapter = new ListViewAdapter();
         d_image = new Drawable[2];
 
         for (int i = 0; i < 2; i++) {
