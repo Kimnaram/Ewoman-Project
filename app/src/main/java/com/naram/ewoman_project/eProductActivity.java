@@ -18,8 +18,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.EditText;
-import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -32,8 +32,6 @@ import com.google.firebase.storage.StorageReference;
 
 import java.io.ByteArrayInputStream;
 import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class eProductActivity extends AppCompatActivity {
@@ -42,17 +40,16 @@ public class eProductActivity extends AppCompatActivity {
     private ListViewAdapter adapter;
     private ListProduct listProduct;
 
-    private List<ListProduct> list;
-    private ArrayList<ListProduct> searchList;
-
     private FirebaseAuth firebaseAuth;
     private FirebaseDatabase firebaseDatabase;
 
     private static final String TAG = "eProductActivity";
 
     private Drawable[] d_image;
-    private Drawable storage_image;
+//    private Drawable storage_image;
+
     private EditText et_search_text;
+    private TextView tv_search_btn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -108,7 +105,14 @@ public class eProductActivity extends AppCompatActivity {
             @Override
             public void afterTextChanged(Editable s) {
                 String search = et_search_text.getText().toString();
-                searchInList(search);
+                adapter.fillter(search);
+            }
+        });
+
+        tv_search_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                adapter.fillter(et_search_text.getText().toString());
             }
         });
 
@@ -118,11 +122,9 @@ public class eProductActivity extends AppCompatActivity {
 
         lv_eProduct_product = findViewById(R.id.lv_eProduct_product);
         et_search_text = findViewById(R.id.et_search_text);
+        tv_search_btn = findViewById(R.id.tv_search_btn);
 
         firebaseAuth = FirebaseAuth.getInstance();
-
-        list = new ArrayList<ListProduct>();
-        searchList = new ArrayList<ListProduct>();
 
     }
 
@@ -218,8 +220,7 @@ public class eProductActivity extends AppCompatActivity {
 //                    Drawable d_image = downloadInLocal(product_no);
 
                     listProduct = new ListProduct(d_pdnumber, d_image[d_pdnumber], d_name, d_price, d_wishlist);
-
-                    list.add(listProduct);
+                    adapter.addItem(listProduct);
 
                 }
 
@@ -232,8 +233,6 @@ public class eProductActivity extends AppCompatActivity {
         }
 
         lv_eProduct_product.setAdapter(adapter);
-
-        searchList.addAll(list);
 
     }
 
@@ -263,24 +262,6 @@ public class eProductActivity extends AppCompatActivity {
 //        return storage_image;
 //
 //    }
-
-    public void searchInList(String search) {
-
-        list.clear();
-
-        if(search.length() == 0) {
-            list.addAll(searchList);
-        } else {
-            for(int i = 0; i < searchList.size(); i++) {
-                if(searchList.get(i).getName().contains(search)) {
-                    list.add(searchList.get(i));
-                }
-            }
-        }
-
-        adapter.notifyDataSetChanged();
-
-    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

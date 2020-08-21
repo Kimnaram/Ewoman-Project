@@ -10,14 +10,16 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.ListAdapter;
 import android.widget.ListView;
-import android.widget.Spinner;
+import android.widget.EditText;
+import android.widget.TextView;
 
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -30,8 +32,6 @@ import com.google.firebase.storage.StorageReference;
 
 import java.io.ByteArrayInputStream;
 import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class eCollegeActivity extends AppCompatActivity {
@@ -45,7 +45,10 @@ public class eCollegeActivity extends AppCompatActivity {
 
     private static final String TAG = "eCollegeActivity";
     private Drawable[] d_image;
-    private Drawable storage_image;
+//    private Drawable storage_image;
+
+    private EditText et_search_text;
+    private TextView tv_search_btn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,13 +78,49 @@ public class eCollegeActivity extends AppCompatActivity {
             }
         });
 
-        firebaseAuth = FirebaseAuth.getInstance();
+        et_search_text.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                if(keyCode == event.KEYCODE_ENTER) {
+                    return true;
+                }
+                return false;
+            }
+        });
+
+        et_search_text.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                String search = et_search_text.getText().toString();
+                adapter.fillter(search);
+            }
+        });
+
+        tv_search_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                adapter.fillter(et_search_text.getText().toString());
+            }
+        });
 
     }
 
     public void InitAllComponent() {
 
         lv_eCollege_product = findViewById(R.id.lv_eCollege_product);
+        et_search_text = findViewById(R.id.et_search_text);
+        tv_search_btn = findViewById(R.id.tv_search_btn);
+
+        firebaseAuth = FirebaseAuth.getInstance();
 
     }
 

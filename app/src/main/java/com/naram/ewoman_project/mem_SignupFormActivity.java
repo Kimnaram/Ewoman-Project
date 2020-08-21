@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -86,6 +87,16 @@ public class mem_SignupFormActivity extends AppCompatActivity {
         // user = firebaseAuth.getCurrentUser();
         firebaseAuth = FirebaseAuth.getInstance();
         //firebaseDatabase = FirebaseDatabase.getInstance().getReference();
+
+        et_user_name.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                if(keyCode == event.KEYCODE_ENTER) {
+                    return true;
+                }
+                return false;
+            }
+        });
 
         et_user_passwd.addTextChangedListener(new TextWatcher() {
             @Override
