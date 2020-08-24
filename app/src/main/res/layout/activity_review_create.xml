@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ReviewCreateActivity">
+
+    <!--상단 툴바-->
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:minHeight="?attr/actionBarSize">
+
+        <TextView
+            android:id="@+id/tv_toolbar_title"
+            android:layout_width="wrap_content"
+            android:layout_height="35dp"
+            android:layout_marginTop="15dp"
+            android:layout_marginRight="10dp"
+            android:text="e Review"
+            android:fontFamily="@font/nanumbarungothic"
+            android:textSize="23dp"
+            android:textStyle="bold"></TextView>
+
+    </androidx.appcompat.widget.Toolbar>
+
+    <RelativeLayout
+        android:id="@+id/rl_review_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="5dp"
+        android:layout_below="@+id/toolbar">
+
+        <EditText
+            android:id="@+id/et_review_title"
+            android:layout_width="300dp"
+            android:layout_height="40dp"
+            android:hint="제목"
+            android:fontFamily="@font/nanumbarungothicbold"
+            android:textColor="@color/colorGray"
+            android:textSize="18sp"
+            android:gravity="center_vertical"
+            android:background="@drawable/btn_style_border_line_white_background"
+            android:paddingLeft="7dp"/>
+
+        <Button
+            android:id="@+id/btn_review_upload"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:text="저장"
+            android:textSize="18sp"
+            android:fontFamily="@font/nanumbarungothic"
+            android:textColor="@color/colorWhite"
+            android:background="@color/colorCocoa"
+            android:layout_toRightOf="@+id/et_review_title"
+            android:layout_marginRight="10dp"
+            android:layout_marginLeft="10dp" />
+
+        <Button
+            android:id="@+id/btn_image_upload"
+            android:layout_width="300dp"
+            android:layout_height="40dp"
+            android:text="사진 올리기"
+            android:fontFamily="@font/nanumbarungothicbold"
+            android:textColor="@color/colorWhite"
+            android:background="@color/colorCocoa"
+            android:layout_marginTop="5dp"
+            android:layout_below="@+id/et_review_title" />
+
+        <EditText
+            android:id="@+id/et_review_content"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="내용"
+            android:fontFamily="@font/nanumbarungothic"
+            android:textSize="16sp"
+            android:textColor="@color/colorGray"
+            android:layout_below="@+id/btn_image_upload"
+            android:lines="20"
+            android:gravity="top|left"
+            android:inputType="textMultiLine"
+            android:scrollHorizontally="false"
+            android:background="@drawable/btn_style_border_line_white_background"
+            android:layout_marginTop="10dp"
+            android:padding="7dp"/>
+
+    </RelativeLayout>
+
+</RelativeLayout>

@@ -48,7 +48,7 @@
         <TextView
             android:id="@+id/tv_termsofuse_form"
             android:layout_width="match_parent"
-            android:layout_height="200dp"
+            android:layout_height="250dp"
             android:layout_below="@id/cb_termsofuse_form"
             android:layout_alignParentLeft="true"
             android:ems="10"
@@ -68,6 +68,7 @@
             android:layout_below="@+id/tv_termsofuse_form"
             android:fontFamily="@font/nanumbarungothic"
             android:paddingLeft="10dp"
+            android:layout_marginTop="10dp"
             android:text="개인정보 수집 및 이용 (필수)"
             android:textColor="@color/colorGray"
             android:textSize="18dp" />
@@ -75,7 +76,7 @@
         <TextView
             android:id="@+id/tv_personalinfo_form"
             android:layout_width="match_parent"
-            android:layout_height="200dp"
+            android:layout_height="250dp"
             android:layout_below="@id/cb_personalinfo_form"
             android:layout_alignParentLeft="true"
             android:ems="10"

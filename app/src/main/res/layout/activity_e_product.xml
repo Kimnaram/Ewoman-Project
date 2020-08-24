@@ -50,6 +50,7 @@
             android:layout_width="110dp"
             android:layout_height="40dp"
             android:text="검색"
+            android:fontFamily="@font/nanumbarungothic"
             android:textColor="@color/colorWhite"
             android:textSize="18dp"
             android:layout_marginRight="10dp"

@@ -18,6 +18,10 @@
             android:title="e Today" />
 
         <item
+            android:id="@+id/item_e_review"
+            android:title="e Review" />
+
+        <item
             android:id="@+id/item_contact"
             android:title="Contact" />
     </group>

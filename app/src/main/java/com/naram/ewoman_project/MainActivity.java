@@ -96,7 +96,7 @@ public class MainActivity extends AppCompatActivity {
         param.setMargins(20, 0, 20, 20);
         tv_useremail.setLayoutParams(param);
 
-        FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
+        final FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
         if(firebaseUser != null) {
             String uid = firebaseUser.getUid();
             FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
@@ -161,6 +161,11 @@ public class MainActivity extends AppCompatActivity {
                     Intent main_to_eproduct = new Intent(getApplicationContext(), eProductActivity.class);
 
                     startActivity(main_to_eproduct);
+                } else if (id == R.id.item_e_review) {
+                    Intent main_to_review = new Intent(getApplicationContext(), ReviewListActivity.class);
+                    main_to_review.putExtra("username", username);
+
+                    startActivity(main_to_review);
                 } else if (id == R.id.item_contact) {
                     Intent main_to_contact = new Intent(getApplicationContext(), ContactActivity.class);
 
