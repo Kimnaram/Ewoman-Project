@@ -8,6 +8,8 @@ import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
@@ -59,17 +61,21 @@ public class ReviewDetailActivity extends AppCompatActivity {
         initAllComponent();
 
         Intent intent = getIntent();
-        if(intent != null) {
+        if (intent != null) {
             String TempID = intent.getStringExtra("_id");
             index = Long.parseLong(TempID);
             selectColumn(index);
         }
 
+
         btn_review_update.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 // 수정 화면으로 이동
+                Intent detail_to_update = new Intent(getApplicationContext(), ReviewUpdateActivity.class);
+                detail_to_update.putExtra("_id", Long.toString(index));
 
+                startActivity(detail_to_update);
             }
         });
 
@@ -107,6 +113,28 @@ public class ReviewDetailActivity extends AppCompatActivity {
 
     }
 
+//    @Override
+//    protected void onStart() {
+//
+//        Intent intent = getIntent();
+//        if(intent != null) {
+//            String TempID = intent.getStringExtra("_id");
+//            index = Long.parseLong(TempID);
+//            selectColumn(index);
+//        }
+//
+//        super.onStart();
+//    }
+//
+//    @Override
+//    protected void onResume() {
+//
+//        selectColumn(index);
+//
+//        super.onResume();
+//
+//    }
+
     public void initAllComponent() {
 
         iv_review_image = findViewById(R.id.iv_review_image);
@@ -127,7 +155,7 @@ public class ReviewDetailActivity extends AppCompatActivity {
 
     public void selectColumn(long _id) {
         Cursor iCursor = mDBOpenHelper.selectColumn(_id);
-        Log.d(TAG, "DB Size: " + iCursor.getCount());
+        Bitmap bitmap = mDBOpenHelper.selectColumn_Image(_id);
 
         while(iCursor.moveToNext()) {
             String tempTitle = iCursor.getString(iCursor.getColumnIndex("title"));
@@ -139,12 +167,19 @@ public class ReviewDetailActivity extends AppCompatActivity {
             String tempContent = iCursor.getString(iCursor.getColumnIndex("content"));
 //            tempContent = setTextLength(tempContent,50);
             String tempLike = iCursor.getString(iCursor.getColumnIndex("like"));
-            Drawable tempImage = getResources().getDrawable(R.mipmap.ic_launcher);
+//            byte[] tempImage = iCursor.getBlob(iCursor.getColumnIndex("image"));
+//            if(tempImage != null) {
+//                Bitmap bitmap = BitmapFactory.decodeByteArray(tempImage, 0, tempImage.length);
+//
+//                iv_review_image.setVisibility(View.VISIBLE);
+//                iv_review_image.setImageBitmap(bitmap);
+//            } else {
+//                iv_review_image.setVisibility(View.GONE);
+//            }
 
             tv_review_title.setText(tempTitle);
             tv_review_user.setText(tempName);
             tv_review_content.setText(tempContent);
-            iv_review_image.setImageDrawable(tempImage);
 
             if(firebaseAuth.getCurrentUser() != null) {
                 if (firebaseAuth.getCurrentUser().getUid().equals(tempUID)) {
@@ -160,6 +195,13 @@ public class ReviewDetailActivity extends AppCompatActivity {
                 btn_review_update.setVisibility(View.GONE);
                 btn_review_delete.setVisibility(View.GONE);
             }
+        }
+
+        if(bitmap != null) {
+            iv_review_image.setVisibility(View.VISIBLE);
+            iv_review_image.setImageBitmap(bitmap);
+        } else {
+            iv_review_image.setVisibility(View.GONE);
         }
 
     }

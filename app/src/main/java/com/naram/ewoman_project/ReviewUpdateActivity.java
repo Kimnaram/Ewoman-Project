@@ -5,12 +5,15 @@ import androidx.appcompat.widget.Toolbar;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -25,9 +28,11 @@ import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 
+import java.io.File;
 import java.io.InputStream;
+import java.sql.Blob;
 
-public class ReviewCreateActivity extends AppCompatActivity {
+public class ReviewUpdateActivity extends AppCompatActivity {
 
     private static final String TAG = "ReviewCreateActivity";
 
@@ -40,18 +45,18 @@ public class ReviewCreateActivity extends AppCompatActivity {
     private ImageView iv_review_image;
     private ImageButton ib_image_remove;
     private Button btn_image_upload;
-    private Button btn_review_upload;
+    private Button btn_review_update;
 
     private FirebaseAuth firebaseAuth;
 
     private DBOpenHelper dbOpenHelper;
 
-    private String username = "";
+    private long index;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_review_create);
+        setContentView(R.layout.activity_review_update);
 
         //상단 툴바 설정
         setSupportActionBar((Toolbar) findViewById(R.id.toolbar));
@@ -64,14 +69,16 @@ public class ReviewCreateActivity extends AppCompatActivity {
         initAllComponent();
 
         Intent intent = getIntent();
-        if(intent != null) {
-            username = intent.getStringExtra("username");
+        if (intent != null) {
+            String _id = intent.getStringExtra("_id");
+            index = Long.parseLong(_id);
+            selectColumn(index);
         }
 
         et_review_title.setOnKeyListener(new View.OnKeyListener() {
             @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
-                if(keyCode == event.KEYCODE_ENTER) {
+                if (keyCode == event.KEYCODE_ENTER) {
                     return true;
                 }
                 return false;
@@ -88,10 +95,10 @@ public class ReviewCreateActivity extends AppCompatActivity {
             }
         });
 
-        btn_review_upload.setOnClickListener(new View.OnClickListener() {
+        btn_review_update.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                InsertDatabase();
+                UpdateDatabase();
             }
         });
 
@@ -102,7 +109,6 @@ public class ReviewCreateActivity extends AppCompatActivity {
                 rl_image_container.setVisibility(View.GONE);
             }
         });
-
 
     }
 
@@ -120,22 +126,45 @@ public class ReviewCreateActivity extends AppCompatActivity {
         iv_review_image = findViewById(R.id.iv_review_image);
         ib_image_remove = findViewById(R.id.ib_image_remove);
         btn_image_upload = findViewById(R.id.btn_image_upload);
-        btn_review_upload = findViewById(R.id.btn_review_upload);
+        btn_review_update = findViewById(R.id.btn_review_update);
 
     }
 
-    public void InsertDatabase() {
+    public void selectColumn(long _id) {
+        Cursor iCursor = dbOpenHelper.selectColumn(_id);
+        Log.d(TAG, "DB Size: " + iCursor.getCount());
+        Bitmap bitmap = dbOpenHelper.selectColumn_Image(_id);
+
+        while (iCursor.moveToNext()) {
+            String tempTitle = iCursor.getString(iCursor.getColumnIndex("title"));
+            String tempUID = iCursor.getString(iCursor.getColumnIndex("userid"));
+            String tempContent = iCursor.getString(iCursor.getColumnIndex("content"));
+//            byte[] tempImage = iCursor.getBlob(iCursor.getColumnIndex("image"));
+//            if(tempImage != null) {
+//                Bitmap bitmap = BitmapFactory.decodeByteArray(tempImage, 0, tempImage.length);
+//
+//                rl_image_container.setVisibility(View.VISIBLE);
+//                iv_review_image.setImageBitmap(bitmap);
+//            }
+            et_review_title.setText(tempTitle);
+            et_review_content.setText(tempContent);
+
+        }
+
+        if (bitmap != null) {
+            rl_image_container.setVisibility(View.VISIBLE);
+            iv_review_image.setImageBitmap(bitmap);
+        }
+
+    }
+
+    public void UpdateDatabase() {
 
         String title = et_review_title.getText().toString().trim();
         String content = et_review_content.getText().toString().trim();
-        String userid = firebaseAuth.getCurrentUser().getUid();
-        if(iv_review_image.getDrawable() != null) {
-            Drawable image = iv_review_image.getDrawable();
+        Drawable image = iv_review_image.getDrawable();
 
-            dbOpenHelper.insertColumn_withImage(title, userid, username, content, image);
-        } else {
-            dbOpenHelper.insertColumn(title, userid, username, content);
-        }
+        dbOpenHelper.updateColumn_withImage(index, title, content, image);
         dbOpenHelper.close();
 
         Log.d(TAG, "title : " + title + ", content : " + content);
@@ -167,12 +196,11 @@ public class ReviewCreateActivity extends AppCompatActivity {
         }
     }
 
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        if(firebaseAuth.getCurrentUser() == null) {
+        if (firebaseAuth.getCurrentUser() == null) {
             getMenuInflater().inflate(R.menu.toolbar_bl_menu, menu);
-        } else if(firebaseAuth.getCurrentUser() != null) {
+        } else if (firebaseAuth.getCurrentUser() != null) {
             getMenuInflater().inflate(R.menu.toolbar_al_menu, menu);
         }
 
@@ -181,35 +209,35 @@ public class ReviewCreateActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()){
-            case android.R.id.home:{ //툴바 뒤로가기 동작
+        switch (item.getItemId()) {
+            case android.R.id.home: { //툴바 뒤로가기 동작
                 finish();
                 return true;
             }
-            case R.id.menu_login :
-                Intent revcreate_to_login = new Intent(getApplicationContext(), mem_LoginActivity.class);
+            case R.id.menu_login:
+                Intent revupdate_to_login = new Intent(getApplicationContext(), mem_LoginActivity.class);
 
-                startActivity(revcreate_to_login);
+                startActivity(revupdate_to_login);
                 return true;
-            case R.id.menu_signup :
-                Intent revcreate_to_signup = new Intent(getApplicationContext(), mem_SignupActivity.class);
+            case R.id.menu_signup:
+                Intent revupdate_to_signup = new Intent(getApplicationContext(), mem_SignupActivity.class);
 
-                startActivity(revcreate_to_signup);
+                startActivity(revupdate_to_signup);
                 return true;
-            case R.id.menu_logout :
+            case R.id.menu_logout:
 
                 FirebaseAuth.getInstance().signOut();
 
-                final ProgressDialog mDialog = new ProgressDialog(ReviewCreateActivity.this);
+                final ProgressDialog mDialog = new ProgressDialog(ReviewUpdateActivity.this);
                 mDialog.setMessage("로그아웃 중입니다.");
                 mDialog.show();
 
-                Intent logout_to_revcreate = new Intent(getApplicationContext(), ReviewCreateActivity.class);
+                Intent logout_to_revupdate = new Intent(getApplicationContext(), ReviewUpdateActivity.class);
                 mDialog.dismiss();
 
-                startActivity(logout_to_revcreate);
+                startActivity(logout_to_revupdate);
                 return true;
-            case R.id.menu_cart :
+            case R.id.menu_cart:
                 return true;
         }
         return super.onOptionsItemSelected(item);
