@@ -5,6 +5,7 @@ import android.media.Image;
 
 public class ListReview {
 
+    private int _id;
     private String title;
     private String userid;
     private String name;
@@ -13,6 +14,7 @@ public class ListReview {
     private Drawable image;
 
     public ListReview() {
+        _id = 0;
         title = "";
         userid = "";
         name = "";
@@ -21,7 +23,8 @@ public class ListReview {
         image = null;
     }
 
-    public ListReview(String title, String userid, String name, int like, String content) {
+    public ListReview(int _id, String title, String userid, String name, int like, String content) {
+        this._id = _id;
         this.title = title;
         this.userid = userid;
         this.name = name;
@@ -29,7 +32,8 @@ public class ListReview {
         this.content = content;
     }
 
-    public ListReview(String title, String userid, String name, int like, String content, Drawable image) {
+    public ListReview(int _id, String title, String userid, String name, int like, String content, Drawable image) {
+        this._id = _id;
         this.title = title;
         this.userid = userid;
         this.name = name;
@@ -84,6 +88,10 @@ public class ListReview {
 
     public void setImage(Drawable image) {
         this.image = image;
+    }
+
+    public int get_id() {
+        return _id;
     }
 
 }

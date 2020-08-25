@@ -78,8 +78,6 @@ public class mem_LoginActivity extends AppCompatActivity implements GoogleApiCli
 
         InitAllComponent();
 
-        firebaseAuth = FirebaseAuth.getInstance();
-
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.default_web_client_id))
                 .requestEmail()
@@ -88,8 +86,6 @@ public class mem_LoginActivity extends AppCompatActivity implements GoogleApiCli
                 .enableAutoManage(this, this)
                 .addApi(Auth.GOOGLE_SIGN_IN_API,gso)
                 .build();
-
-        firebaseAuth = FirebaseAuth.getInstance();
 
         tv_google_login.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -117,26 +113,7 @@ public class mem_LoginActivity extends AppCompatActivity implements GoogleApiCli
                                     if (task.isSuccessful()) {
                                         mDialog.dismiss();
 
-                                        FirebaseUser user = firebaseAuth.getCurrentUser();
-                                        String uid = user.getUid();
-                                        firebaseDatabase.getInstance().getReference("users/" + uid).addValueEventListener(new ValueEventListener() {
-                                            @Override
-                                            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                                for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
-                                                    if (dataSnapshot.getKey().equals("name"))
-                                                        uname = dataSnapshot.getValue().toString();
-                                                    Log.d("mem_LoginActivity", "Value :" + dataSnapshot.getValue());
-                                                }
-                                            }
-
-                                            @Override
-                                            public void onCancelled(@NonNull DatabaseError error) {
-
-                                            }
-                                        });
-
                                         Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                                        intent.putExtra("name", uname);
 
                                         startActivity(intent);
 
@@ -202,6 +179,9 @@ public class mem_LoginActivity extends AppCompatActivity implements GoogleApiCli
         tv_to_signup = findViewById(R.id.tv_to_signup);
         tv_find_account = findViewById(R.id.tv_find_account);
 
+        firebaseAuth = FirebaseAuth.getInstance();
+        firebaseDatabase = FirebaseDatabase.getInstance();
+
     }
 
     @Override
@@ -235,13 +215,46 @@ public class mem_LoginActivity extends AppCompatActivity implements GoogleApiCli
                             Toast.makeText(getApplicationContext(), "로그인 실패", Toast.LENGTH_SHORT).show();
 
                         } else {
-                            mDialog.dismiss();
 
+                            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                            if (user != null) {
+                                for (UserInfo profile : user.getProviderData()) {
+                                    if(profile.getUid() == user.getUid()) {
+                                        // Id of the provider (ex: google.com)
+                                        String providerId = profile.getProviderId();
+
+                                        // UID specific to the provider
+                                        String uid = profile.getUid();
+
+                                        // Name, email address, and profile photo Url
+                                        String name = profile.getDisplayName();
+                                        String email = profile.getEmail();
+                                        String pnumber = profile.getPhoneNumber();
+
+                                        if(pnumber == null) {
+                                            pnumber = "입력 필요";
+                                        }
+
+                                        HashMap<Object, String> hashMap = new HashMap<>();
+                                        hashMap.put("email", email);
+                                        hashMap.put("uid", uid);
+                                        hashMap.put("name", name);
+                                        hashMap.put("gender", "입력 필요");
+                                        hashMap.put("phone", pnumber);
+
+                                        FirebaseDatabase database = FirebaseDatabase.getInstance();
+                                        DatabaseReference reference = database.getReference("users");
+                                        reference.child(uid).setValue(hashMap);
+                                    }
+                                }
+                            }
+
+                            mDialog.dismiss();
                             // 로그인 성공 시 가입 화면을 빠져나감.
                             Intent intent = new Intent(getApplicationContext(), MainActivity.class);
 
                             startActivity(intent);
-                            finish();
+
                             Toast.makeText(getApplicationContext(), "로그인 성공", Toast.LENGTH_SHORT).show();
                         }
                     }

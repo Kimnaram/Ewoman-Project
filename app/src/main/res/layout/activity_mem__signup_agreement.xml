@@ -100,10 +100,10 @@
 
         <Button
             android:id="@+id/btn_signup_cancel"
-            android:layout_width="120dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginRight="10dp"
-            android:background="@drawable/btn_style_border_line"
+            android:background="@drawable/btn_style_border_line_white_background"
             android:fontFamily="@font/nanumbarungothic"
             android:text="취소"
             android:textColor="@color/colorGray"
@@ -111,10 +111,10 @@
 
         <Button
             android:id="@+id/btn_signup_try"
-            android:layout_width="120dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_toRightOf="@+id/btn_signup_cancel"
-            android:background="@drawable/btn_style_border_line"
+            android:background="@drawable/btn_style_common"
             android:fontFamily="@font/nanumbarungothic"
             android:text="가입하기"
             android:textColor="@color/colorWhite"

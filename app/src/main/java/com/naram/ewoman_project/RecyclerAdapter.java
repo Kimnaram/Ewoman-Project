@@ -15,7 +15,11 @@ import java.util.ArrayList;
 public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ItemViewHolder> {
 
     // adapter에 들어갈 list 입니다.
-    private ArrayList<ListReview> listReviewArrayList = new ArrayList<>();
+    private ArrayList<ListReview> listReviewArrayList = new ArrayList<>(); // 커스텀 리스너 인터페이스
+
+    // 리스너 객체 참조를 저장하는 변수
+    private OnItemClickListener mListener = null;
+    private OnItemLongClickListener mLongListener = null;
 
     @NonNull
     @Override
@@ -45,6 +49,10 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ItemVi
         notifyDataSetChanged();
     }
 
+    public ListReview getItem(int position) {
+        return listReviewArrayList.get(position) ;
+    }
+
     void clearAllItem() {
 
         listReviewArrayList.clear();
@@ -67,6 +75,21 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ItemVi
             tv_item_userid = itemView.findViewById(R.id.tv_item_userid);
             iv_item_image = itemView.findViewById(R.id.iv_item_image);
 
+            itemView.setOnClickListener(new View.OnClickListener()
+            {
+                @Override
+                public void onClick(View v)
+                {
+
+                    int pos = getAdapterPosition();
+                    if (pos != RecyclerView.NO_POSITION)
+                    {
+                        mListener.onItemClick(v, pos);
+                    }
+
+                }
+            });
+
         }
 
         void onBind(ListReview listReview) {
@@ -74,5 +97,33 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ItemVi
             tv_item_userid.setText(listReview.getName());
             iv_item_image.setImageDrawable(listReview.getImage());
         }
+
     }
+
+    public interface OnItemClickListener
+    {
+        void onItemClick(View v, int pos);
+    }
+
+    public interface OnItemLongClickListener
+    {
+        void onItemLongClick(View v, int pos);
+    }
+
+    public void setOnItemClickListener(OnItemClickListener listener)
+    {
+        this.mListener = listener;
+    }
+
+    public void setOnItemLongClickListener(OnItemLongClickListener listener)
+    {
+        this.mLongListener = listener;
+    }
+
+    //
+    public void TextAdapter(ArrayList<ListReview> list)
+    {
+        listReviewArrayList = list;
+    }
+
 }

@@ -68,6 +68,7 @@
             android:textColor="@color/colorWhite"
             android:background="@color/colorCocoa"
             android:layout_marginTop="5dp"
+            android:layout_centerHorizontal="true"
             android:layout_below="@+id/et_review_title" />
 
         <EditText

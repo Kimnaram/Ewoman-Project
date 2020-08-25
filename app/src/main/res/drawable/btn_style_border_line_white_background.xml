@@ -7,6 +7,9 @@
                 android:color="@color/colorGray" />
             <solid
                 android:color="@color/colorWhite" />
+            <size
+                android:width="120dp"
+                android:height="40dp" />
         </shape>
     </item>
 </selector>

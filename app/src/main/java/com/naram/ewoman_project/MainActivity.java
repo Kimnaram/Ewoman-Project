@@ -196,6 +196,11 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+    }
+
     public void InitAllComponent() {
 
         navigationView = findViewById(R.id.navigationView);

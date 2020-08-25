@@ -67,6 +67,19 @@ public class ReviewListActivity extends AppCompatActivity {
 
         recyclerviewSetting();
 
+        adapter.setOnItemClickListener(new RecyclerAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(View v, int pos) {
+                int _id = adapter.getItem(pos).get_id();
+
+                Intent intent = new Intent(getApplicationContext(), ReviewDetailActivity.class);
+                intent.putExtra("_id", Integer.toString(_id));
+                Log.d(TAG, "_id : " + _id);
+
+                startActivity(intent);
+            }
+        });
+
         ib_write_review.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -84,30 +97,31 @@ public class ReviewListActivity extends AppCompatActivity {
             }
         });
 
-        btn_delete_review.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mDBOpenHelper.deleteAllColumns();
-                adapter.notifyDataSetChanged();
-                Toast.makeText(getApplicationContext(), "DB 삭제 완료", Toast.LENGTH_SHORT).show();
-                onResume();
-            }
-        });
-
     }
 
     @Override
     protected void onPause() {
+
         super.onPause();
 
     }
 
     @Override
     protected void onResume() {
-        super.onResume();
 
         adapter.notifyDataSetChanged();
         recyclerviewSetting();
+
+        super.onResume();
+
+    }
+
+    @Override
+    protected void onDestroy() {
+
+        mDBOpenHelper.close();
+        super.onDestroy();
+
     }
 
     public void initAllComponent() {
@@ -119,7 +133,6 @@ public class ReviewListActivity extends AppCompatActivity {
         adapter = new RecyclerAdapter();
 
         ib_write_review = findViewById(R.id.ib_write_review);
-        btn_delete_review = findViewById(R.id.btn_delete_review);
 
         firebaseAuth = FirebaseAuth.getInstance();
 
@@ -145,7 +158,7 @@ public class ReviewListActivity extends AppCompatActivity {
             String tempIndex = iCursor.getString(iCursor.getColumnIndex("_id"));
             String tempTitle = iCursor.getString(iCursor.getColumnIndex("title"));
 //            tempTitle = setTextLength(tempTitle, 10);
-            String tempID = iCursor.getString(iCursor.getColumnIndex("userid"));
+            String tempUID = iCursor.getString(iCursor.getColumnIndex("userid"));
 //            tempID = setTextLength(tempID,10);
             String tempName = iCursor.getString(iCursor.getColumnIndex("name"));
 //            tempName = setTextLength(tempName,10);
@@ -154,7 +167,9 @@ public class ReviewListActivity extends AppCompatActivity {
             String tempLike = iCursor.getString(iCursor.getColumnIndex("like"));
             Drawable tempImage = getResources().getDrawable(R.mipmap.ic_launcher);
 
-            listReview = new ListReview(tempTitle, tempID, tempName, Integer.parseInt(tempLike), tempContent, tempImage);
+            int tempID = Integer.parseInt(tempIndex);
+
+            listReview = new ListReview(tempID, tempTitle, tempUID, tempName, Integer.parseInt(tempLike), tempContent, tempImage);
             adapter.addItem(listReview);
         }
         adapter.notifyDataSetChanged();

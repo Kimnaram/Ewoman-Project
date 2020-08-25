@@ -11,12 +11,15 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.provider.ContactsContract;
+import android.util.Log;
 
 import androidx.core.view.ViewPropertyAnimatorListener;
 
 import java.io.ByteArrayOutputStream;
 
 public class DBOpenHelper {
+
+    private static final String TAG = "DBOpenHelper";
 
     private static final String DATABASE_NAME = "ReviewBoard.db";
     private static final int DATABASE_VERSION = 1;
@@ -101,13 +104,18 @@ public class DBOpenHelper {
     }
 
     // Delete Column
-    public boolean deleteColumn(long id){
+    public boolean deleteColumn(long id) {
         return mDB.delete(Databases.ReviewDB.TABLE_NAME, "_id="+id, null) > 0;
     }
 
     // sort by column
     public Cursor sortColumn(String sort){
         Cursor c = mDB.rawQuery( "SELECT * FROM " + Databases.ReviewDB.TABLE_NAME + " ORDER BY " + sort + ";", null);
+        return c;
+    }
+
+    public Cursor selectColumn(long id) {
+        Cursor c = mDB.rawQuery("SELECT * FROM " + Databases.ReviewDB.TABLE_NAME + " WHERE _id=" + id + ";", null);
         return c;
     }
 
