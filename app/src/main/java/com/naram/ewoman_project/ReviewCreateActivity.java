@@ -111,7 +111,6 @@ public class ReviewCreateActivity extends AppCompatActivity {
         firebaseAuth = FirebaseAuth.getInstance();
 
         dbOpenHelper = new DBOpenHelper(this);
-        dbOpenHelper.open();
 
         rl_image_container = findViewById(R.id.rl_image_container);
 
@@ -126,16 +125,14 @@ public class ReviewCreateActivity extends AppCompatActivity {
 
     public void InsertDatabase() {
 
+        dbOpenHelper.open();
+
         String title = et_review_title.getText().toString().trim();
         String content = et_review_content.getText().toString().trim();
         String userid = firebaseAuth.getCurrentUser().getUid();
-        if(iv_review_image.getDrawable() != null) {
-            Drawable image = iv_review_image.getDrawable();
+        Drawable image = iv_review_image.getDrawable();
+        dbOpenHelper.insertColumn(title, userid, username, content, image);
 
-            dbOpenHelper.insertColumn_withImage(title, userid, username, content, image);
-        } else {
-            dbOpenHelper.insertColumn(title, userid, username, content);
-        }
         dbOpenHelper.close();
 
         Log.d(TAG, "title : " + title + ", content : " + content);

@@ -1,5 +1,6 @@
 package com.naram.ewoman_project;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -21,6 +22,11 @@ import android.widget.ImageButton;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
 
 import java.util.ArrayList;
 
@@ -35,13 +41,13 @@ public class ReviewListActivity extends AppCompatActivity {
 
     // Other component
     private ImageButton ib_write_review;
-    private Button btn_delete_review;
 
     // Database
     private DBOpenHelper mDBOpenHelper;
 
     private String sort = "_id";
     private String username = "";
+    private int reviewlist = 0;
 
     private FirebaseAuth firebaseAuth;
 
@@ -119,12 +125,14 @@ public class ReviewListActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
 
-        mDBOpenHelper.close();
         super.onDestroy();
 
     }
 
     public void initAllComponent() {
+
+        mDBOpenHelper = new DBOpenHelper(this);
+
         rv_review_container = findViewById(R.id.rv_review_container);
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
@@ -140,50 +148,83 @@ public class ReviewListActivity extends AppCompatActivity {
 
     public void recyclerviewSetting() {
 
-        mDBOpenHelper = new DBOpenHelper(this);
-        mDBOpenHelper.open();
-//        mDBOpenHelper.create();
-
         adapter.clearAllItem();
-        showDatabase(sort);
+
+        FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+        firebaseDatabase.getReference("board").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                reviewlist = Integer.parseInt(Long.toString(snapshot.getChildrenCount()));
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+        for(int i = 0; i < reviewlist; i++) {
+            firebaseDatabase.getReference("board/" + i).addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+
+                    int id = 0;
+                    String title = "";
+                    String name = "";
+                    int like = 0;
+
+                    for(DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                        if(dataSnapshot.getKey().equals("id")) {
+                            id = Integer.parseInt(dataSnapshot.getValue().toString());
+                        } else if(dataSnapshot.getKey().equals("title")) {
+                            title = dataSnapshot.getValue().toString();
+                        } else if(dataSnapshot.getKey().equals("name")) {
+                            name = dataSnapshot.getValue().toString();
+                        } else if(dataSnapshot.getKey().equals("like")) {
+                            like = Integer.parseInt(dataSnapshot.getValue().toString());
+                        }
+
+                        listReview = new ListReview(id, title, name, like);
+                        adapter.addItem(listReview);
+
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+
+                }
+            });
+        }
 
         rv_review_container.setAdapter(adapter);
+
     }
 
-    public void showDatabase(String sort){
-        Cursor iCursor = mDBOpenHelper.sortColumn(sort);
-        Log.d("showDatabase", "DB Size: " + iCursor.getCount());
-        adapter.clearAllItem();
-        while(iCursor.moveToNext()){
-            String tempIndex = iCursor.getString(iCursor.getColumnIndex("_id"));
-            String tempTitle = iCursor.getString(iCursor.getColumnIndex("title"));
-//            tempTitle = setTextLength(tempTitle, 10);
-            String tempUID = iCursor.getString(iCursor.getColumnIndex("userid"));
-//            tempID = setTextLength(tempID,10);
-            String tempName = iCursor.getString(iCursor.getColumnIndex("name"));
-//            tempName = setTextLength(tempName,10);
-            String tempContent = iCursor.getString(iCursor.getColumnIndex("content"));
-//            tempContent = setTextLength(tempContent,50);
-            String tempLike = iCursor.getString(iCursor.getColumnIndex("like"));
-            Drawable tempImage = getResources().getDrawable(R.mipmap.ic_launcher);
-
-            int tempID = Integer.parseInt(tempIndex);
-
-            listReview = new ListReview(tempID, tempTitle, tempUID, tempName, Integer.parseInt(tempLike), tempContent, tempImage);
-            adapter.addItem(listReview);
-        }
-        adapter.notifyDataSetChanged();
-    }
-
-    public String setTextLength(String text, int length){
-        if(text.length()<length){
-            int gap = length - text.length();
-            for (int i=0; i<gap; i++){
-                text = text + " ";
-            }
-        }
-        return text;
-    }
+//    public void showDatabase(String sort){
+//        Cursor iCursor = mDBOpenHelper.sortColumn(sort);
+//        Log.d("showDatabase", "DB Size: " + iCursor.getCount());
+//        adapter.clearAllItem();
+//        while(iCursor.moveToNext()){
+//            String tempIndex = iCursor.getString(iCursor.getColumnIndex("_id"));
+//            String tempTitle = iCursor.getString(iCursor.getColumnIndex("title"));
+////            tempTitle = setTextLength(tempTitle, 10);
+//            String tempUID = iCursor.getString(iCursor.getColumnIndex("userid"));
+////            tempID = setTextLength(tempID,10);
+//            String tempName = iCursor.getString(iCursor.getColumnIndex("name"));
+////            tempName = setTextLength(tempName,10);
+//            String tempContent = iCursor.getString(iCursor.getColumnIndex("content"));
+////            tempContent = setTextLength(tempContent,50);
+//            String tempLike = iCursor.getString(iCursor.getColumnIndex("like"));
+//            Drawable tempImage = getResources().getDrawable(R.mipmap.ic_launcher);
+//
+//            int tempID = Integer.parseInt(tempIndex);
+//
+//            listReview = new ListReview(tempID, tempTitle, tempUID, tempName, Integer.parseInt(tempLike), tempContent, tempImage);
+//            adapter.addItem(listReview);
+//        }
+//        adapter.notifyDataSetChanged();
+//    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

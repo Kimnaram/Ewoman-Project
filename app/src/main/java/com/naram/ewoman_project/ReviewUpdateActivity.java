@@ -133,27 +133,24 @@ public class ReviewUpdateActivity extends AppCompatActivity {
     public void selectColumn(long _id) {
         Cursor iCursor = dbOpenHelper.selectColumn(_id);
         Log.d(TAG, "DB Size: " + iCursor.getCount());
-        Bitmap bitmap = dbOpenHelper.selectColumn_Image(_id);
 
         while (iCursor.moveToNext()) {
             String tempTitle = iCursor.getString(iCursor.getColumnIndex("title"));
             String tempUID = iCursor.getString(iCursor.getColumnIndex("userid"));
             String tempContent = iCursor.getString(iCursor.getColumnIndex("content"));
-//            byte[] tempImage = iCursor.getBlob(iCursor.getColumnIndex("image"));
-//            if(tempImage != null) {
-//                Bitmap bitmap = BitmapFactory.decodeByteArray(tempImage, 0, tempImage.length);
-//
-//                rl_image_container.setVisibility(View.VISIBLE);
-//                iv_review_image.setImageBitmap(bitmap);
-//            }
+            String tempImage = iCursor.getString(iCursor.getColumnIndex("image"));
+
+            if(tempImage.equals("Y")) {
+                Drawable image = dbOpenHelper.selectImageColumns(_id);
+
+                rl_image_container.setVisibility(View.VISIBLE);
+                iv_review_image.setImageDrawable(image);
+            } else {
+                rl_image_container.setVisibility(View.GONE);
+            }
             et_review_title.setText(tempTitle);
             et_review_content.setText(tempContent);
 
-        }
-
-        if (bitmap != null) {
-            rl_image_container.setVisibility(View.VISIBLE);
-            iv_review_image.setImageBitmap(bitmap);
         }
 
     }
@@ -164,7 +161,7 @@ public class ReviewUpdateActivity extends AppCompatActivity {
         String content = et_review_content.getText().toString().trim();
         Drawable image = iv_review_image.getDrawable();
 
-        dbOpenHelper.updateColumn_withImage(index, title, content, image);
+        dbOpenHelper.updateColumn(index, title, content, image);
         dbOpenHelper.close();
 
         Log.d(TAG, "title : " + title + ", content : " + content);

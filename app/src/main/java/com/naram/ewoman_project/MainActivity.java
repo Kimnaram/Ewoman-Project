@@ -8,6 +8,8 @@ import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
 import android.app.ProgressDialog;
+import android.app.SearchManager;
+import android.content.ActivityNotFoundException;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
@@ -21,9 +23,11 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
@@ -32,6 +36,8 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+
+import java.io.File;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -44,6 +50,11 @@ public class MainActivity extends AppCompatActivity {
 
     private Button btn_to_ecollege;
     private Button btn_to_ourstry;
+    private Button btn_to_lookth;
+    private Button btn_to_bookth;
+
+    private ImageButton ib_instagram;
+    private ImageButton ib_facebook;
 
     private String username;
 
@@ -194,6 +205,64 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        btn_to_lookth.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), ProductDetailActivity.class);
+
+                intent.putExtra("pdnumber", "0");
+                intent.putExtra("category", "e-College");
+                intent.putExtra("DBpath", "ecollege");
+
+                startActivity(intent);
+            }
+        });
+
+        btn_to_bookth.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), ProductDetailActivity.class);
+
+                intent.putExtra("pdnumber", "1");
+                intent.putExtra("category", "e-College");
+                intent.putExtra("DBpath", "ecollege");
+
+                startActivity(intent);
+            }
+        });
+
+        ib_instagram.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(Intent.ACTION_WEB_SEARCH);
+                intent.putExtra(SearchManager.QUERY, "https://www.instagram.com/ewoman.kr/");
+                // 구글로 검색
+
+                if (intent.resolveActivity(getPackageManager()) != null) {
+                    startActivity(intent);
+                } else {
+                    String msg = "웹페이지로 이동할 수 없습니다.";
+                    Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+        ib_facebook.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(Intent.ACTION_WEB_SEARCH);
+                intent.putExtra(SearchManager.QUERY, "https://www.facebook.com/suntteut.sunny");
+                // 구글로 검색
+
+                if (intent.resolveActivity(getPackageManager()) != null) {
+                    startActivity(intent);
+                } else {
+                    String msg = "웹페이지로 이동할 수 없습니다.";
+                    Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
     }
 
     @Override
@@ -208,6 +277,11 @@ public class MainActivity extends AppCompatActivity {
 
         btn_to_ecollege = findViewById(R.id.btn_to_ecollege);
         btn_to_ourstry = findViewById(R.id.btn_to_ourstry);
+        btn_to_lookth = findViewById(R.id.btn_to_lookth);
+        btn_to_bookth = findViewById(R.id.btn_to_bookth);
+
+        ib_instagram = findViewById(R.id.ib_instagram);
+        ib_facebook = findViewById(R.id.ib_facebook);
 
     }
 

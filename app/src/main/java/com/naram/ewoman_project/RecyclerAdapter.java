@@ -3,7 +3,6 @@ package com.naram.ewoman_project;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -95,7 +94,6 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ItemVi
         void onBind(ListReview listReview) {
             tv_item_title.setText(listReview.getTitle());
             tv_item_userid.setText(listReview.getName());
-            iv_item_image.setImageDrawable(listReview.getImage());
         }
 
     }

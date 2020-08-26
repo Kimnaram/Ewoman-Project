@@ -23,10 +23,10 @@ public final class Databases {
                         ReviewDB.NAME + " TEXT NOT NULL, " +
                         ReviewDB.CONTENT + " TEXT NOT NULL, " +
                         ReviewDB.LIKE + " INTEGER DEFAULT 0, " +
-                        ReviewDB.IMAGE + " BLOB)";
+                        ReviewDB.IMAGE + " TEXT DEFAULT 'N')";
 
         public static final String SQL_DROP_TABLE =
-                "DROP TABLE IF EXISTS " + ReviewDB.TABLE_NAME;
+                "DROP TABLE " + ReviewDB.TABLE_NAME + ";";
     }
 
 }

@@ -109,9 +109,11 @@
                 android:fontFamily="@font/nanumbarungothic"
                 android:text="CONTENT"
                 android:textColor="@color/colorGray"
+                android:background="@drawable/btn_style_border_line_white_background"
                 android:gravity="left|start"
                 android:padding="5dp"
                 android:textSize="17dp"
+                android:layout_marginBottom="10dp"
                 android:layout_below="@+id/iv_review_image"/>
 
             <Button

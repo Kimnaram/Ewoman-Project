@@ -149,33 +149,32 @@ public class ReviewDetailActivity extends AppCompatActivity {
         firebaseAuth = FirebaseAuth.getInstance();
 
         mDBOpenHelper = new DBOpenHelper(this);
-        mDBOpenHelper.open();
 
     }
 
     public void selectColumn(long _id) {
+
+        mDBOpenHelper.open();
+
         Cursor iCursor = mDBOpenHelper.selectColumn(_id);
-        Bitmap bitmap = mDBOpenHelper.selectColumn_Image(_id);
 
         while(iCursor.moveToNext()) {
             String tempTitle = iCursor.getString(iCursor.getColumnIndex("title"));
-//            tempTitle = setTextLength(tempTitle, 10);
             String tempUID = iCursor.getString(iCursor.getColumnIndex("userid"));
-//            tempID = setTextLength(tempID,10);
             String tempName = iCursor.getString(iCursor.getColumnIndex("name"));
-//            tempName = setTextLength(tempName,10);
             String tempContent = iCursor.getString(iCursor.getColumnIndex("content"));
-//            tempContent = setTextLength(tempContent,50);
             String tempLike = iCursor.getString(iCursor.getColumnIndex("like"));
-//            byte[] tempImage = iCursor.getBlob(iCursor.getColumnIndex("image"));
-//            if(tempImage != null) {
-//                Bitmap bitmap = BitmapFactory.decodeByteArray(tempImage, 0, tempImage.length);
-//
-//                iv_review_image.setVisibility(View.VISIBLE);
-//                iv_review_image.setImageBitmap(bitmap);
-//            } else {
-//                iv_review_image.setVisibility(View.GONE);
-//            }
+            String tempImage = iCursor.getString(iCursor.getColumnIndex("image"));
+
+            Log.d(TAG, tempImage);
+
+            if(tempImage.equals("Y")) {
+                Drawable image = mDBOpenHelper.selectImageColumns(_id);
+                iv_review_image.setVisibility(View.VISIBLE);
+                iv_review_image.setImageDrawable(image);
+            } else {
+                iv_review_image.setVisibility(View.GONE);
+            }
 
             tv_review_title.setText(tempTitle);
             tv_review_user.setText(tempName);
@@ -183,11 +182,9 @@ public class ReviewDetailActivity extends AppCompatActivity {
 
             if(firebaseAuth.getCurrentUser() != null) {
                 if (firebaseAuth.getCurrentUser().getUid().equals(tempUID)) {
-                    Log.d(TAG, "f_uid : " + firebaseAuth.getCurrentUser().getUid() + ", s_uid : " + tempUID);
                     btn_review_update.setVisibility(View.VISIBLE);
                     btn_review_delete.setVisibility(View.VISIBLE);
                 } else {
-                    Log.d(TAG, "f_uid : " + firebaseAuth.getCurrentUser().getUid() + ", s_uid : " + tempUID);
                     btn_review_update.setVisibility(View.GONE);
                     btn_review_delete.setVisibility(View.GONE);
                 }
@@ -195,13 +192,6 @@ public class ReviewDetailActivity extends AppCompatActivity {
                 btn_review_update.setVisibility(View.GONE);
                 btn_review_delete.setVisibility(View.GONE);
             }
-        }
-
-        if(bitmap != null) {
-            iv_review_image.setVisibility(View.VISIBLE);
-            iv_review_image.setImageBitmap(bitmap);
-        } else {
-            iv_review_image.setVisibility(View.GONE);
         }
 
     }

@@ -34,6 +34,13 @@
         android:layout_below="@+id/toolbar"
         android:padding="10dp" />
 
+    <Button
+        android:id="@+id/btn_drop_table"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Drop Table"
+        android:layout_below="@id/rv_review_container" />
+
     <ImageButton
         android:id="@+id/ib_write_review"
         android:layout_width="60dp"

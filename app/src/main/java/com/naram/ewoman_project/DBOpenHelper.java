@@ -17,10 +17,20 @@ import android.graphics.drawable.Drawable;
 import android.provider.ContactsContract;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.core.view.ViewPropertyAnimatorListener;
 
+import com.google.android.gms.auth.api.signin.internal.Storage;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
+
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.sql.Blob;
 
 public class DBOpenHelper {
 
@@ -31,6 +41,8 @@ public class DBOpenHelper {
     public static SQLiteDatabase mDB;
     private DatabaseHelper mDBHelper;
     private Context mCtx;
+
+    private Drawable image;
 
     private class DatabaseHelper extends SQLiteOpenHelper {
 
@@ -73,11 +85,21 @@ public class DBOpenHelper {
         mDBHelper.onCreate(mDB);
     }
 
+    public void drop() {
+        mDB.execSQL("DROP TABLE IF EXISTS " + Databases.ReviewDB.TABLE_NAME + ";");
+    }
+
+
     public void close() {
         mDB.close();
     }
 
-    public long insertColumn(String title, String userid, String name, String content) {
+    public Cursor selectIDColumn() {
+        Cursor c = mDB.rawQuery("SELECT max(_id) AS postid FROM " + Databases.ReviewDB.TABLE_NAME + ";",null);
+        return c;
+    }
+
+    public long insertColumn(String title, String userid, String name, String content, @Nullable Drawable image) {
         SQLiteDatabase db = mDBHelper.getReadableDatabase();
 
         ContentValues values = new ContentValues();
@@ -86,46 +108,92 @@ public class DBOpenHelper {
         values.put(Databases.ReviewDB.NAME, name);
         values.put(Databases.ReviewDB.CONTENT, content);
         // SQLite 이미지 저장 코드 추가 필요
+
+        if(image != null) {
+            values.put(Databases.ReviewDB.IMAGE, "Y");
+            insertImageColumns(image);
+        }
+
         return mDB.insert(Databases.ReviewDB.TABLE_NAME, null, values);
     }
 
-    public long insertColumn_withImage(String title, String userid, String name, String content, Drawable image) {
+    public void insertImageColumns(Drawable image) {
 
+        // firebase storage에 이미지를 저장하는 코드
         byte[] byteimage = getByteArrayFromDrawable(image);
+        int _id = 0;
 
-        SQLiteDatabase db = mDBHelper.getReadableDatabase();
+        Cursor c = selectIDColumn();
+        while(c.moveToNext()) {
+            _id = c.getInt(c.getColumnIndex("postid"));
+        }
 
-        ContentValues values = new ContentValues();
-        values.put(Databases.ReviewDB.TITLE, title);
-        values.put(Databases.ReviewDB.USERID, userid);
-        values.put(Databases.ReviewDB.NAME, name);
-        values.put(Databases.ReviewDB.CONTENT, content);
-        values.put(Databases.ReviewDB.IMAGE, byteimage);
-        // SQLite 이미지 저장 코드 추가 필요
-        return mDB.insert(Databases.ReviewDB.TABLE_NAME, null, values);
+        _id += 1;
+
+        FirebaseStorage storage = FirebaseStorage.getInstance();
+        StorageReference storageRef = storage.getReference("board");
+        StorageReference boardRef = storageRef.child(_id + ".png");
+
+        UploadTask uploadTask = boardRef.putBytes(byteimage);
+        uploadTask.addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception exception) {
+                // Handle unsuccessful uploads
+            }
+        }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                // taskSnapshot.getMetadata() contains file metadata such as size, content-type, etc.
+                // ...
+                Log.d(TAG, "저장 완료");
+            }
+        });
+
     }
-
 
     public Cursor selectColumns() {
         return mDB.query(Databases.ReviewDB.TABLE_NAME, null, null, null, null, null, null);
     }
 
-    public boolean updateColumn(long id, String title, String content) {
+    public boolean updateColumn(long id, String title, String content, @Nullable Drawable image) {
         ContentValues values = new ContentValues();
         values.put(Databases.ReviewDB.TITLE, title);
         values.put(Databases.ReviewDB.CONTENT, content);
+
+        if(image != null) {
+            values.put(Databases.ReviewDB.IMAGE, "Y");
+            updateImageColumns(id, image);
+        }
+
         return mDB.update(Databases.ReviewDB.TABLE_NAME, values, "_id=" + id, null) > 0;
     }
 
-    public boolean updateColumn_withImage(long id, String title, String content, Drawable image) {
+    public void updateImageColumns(long _id, Drawable image) {
 
+        // firebase storage에 이미지를 저장하는 코드
         byte[] byteimage = getByteArrayFromDrawable(image);
 
-        ContentValues values = new ContentValues();
-        values.put(Databases.ReviewDB.TITLE, title);
-        values.put(Databases.ReviewDB.CONTENT, content);
-        values.put(Databases.ReviewDB.IMAGE, byteimage);
-        return mDB.update(Databases.ReviewDB.TABLE_NAME, values, "_id=" + id, null) > 0;
+        FirebaseStorage storage = FirebaseStorage.getInstance();
+        StorageReference storageRef = storage.getReference("board");
+        if (storageRef.child("" + _id).getDownloadUrl() != null) {
+            storageRef.child("" + _id).delete();
+        }
+        StorageReference boardRef = storageRef.child(_id + ".png");
+
+        UploadTask uploadTask = boardRef.putBytes(byteimage);
+        uploadTask.addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception exception) {
+                // Handle unsuccessful uploads
+            }
+        }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                // taskSnapshot.getMetadata() contains file metadata such as size, content-type, etc.
+                // ...
+                Log.d(TAG, "저장 완료");
+            }
+        });
     }
 
     public void deleteAllColumns() {
@@ -144,25 +212,31 @@ public class DBOpenHelper {
     }
 
     public Cursor selectColumn(long id) {
-        Cursor c = mDB.rawQuery("SELECT title, name, userid, like, content  FROM " + Databases.ReviewDB.TABLE_NAME + " WHERE _id=" + id + ";", null);
+        Cursor c = mDB.rawQuery("SELECT * FROM " + Databases.ReviewDB.TABLE_NAME + " WHERE _id=" + id + ";", null);
         return c;
     }
 
-    public Bitmap selectColumn_Image(long id) {
-        Cursor c = mDB.rawQuery("SELECT image FROM " + Databases.ReviewDB.TABLE_NAME + " WHERE _id=" + id + ";", null);
-        Bitmap bitmap = null;
+    public Drawable selectImageColumns(long id) {
 
-        while (c.moveToNext()) {
-            byte[] b_image = c.getBlob(c.getColumnIndex("image"));
+        StorageReference storageReference;
+        storageReference = FirebaseStorage.getInstance().getReference("board");
+        StorageReference imagePath = storageReference.child(id + ".png");
 
-            bitmap = getBitmapFromByteArray(b_image);
-        }
+        imagePath.getBytes(Long.MAX_VALUE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
+            @Override
+            public void onSuccess(byte[] bytes) {
 
-        return bitmap;
+                ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(bytes);
+                image = Drawable.createFromStream(byteArrayInputStream, "Review Image");
+
+            }
+        });
+
+        return image;
     }
 
     public byte[] getByteArrayFromDrawable(Drawable d) {
-        Bitmap bitmap = ((BitmapDrawable)d).getBitmap();
+        Bitmap bitmap = ((BitmapDrawable) d).getBitmap();
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
         byte[] data = stream.toByteArray();
