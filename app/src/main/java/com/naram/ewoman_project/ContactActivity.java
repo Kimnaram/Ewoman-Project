@@ -134,6 +134,9 @@ public class ContactActivity extends AppCompatActivity implements OnMapReadyCall
                 startActivity(logout_to_contact);
                 return true;
             case R.id.menu_cart:
+                startActivity(new Intent(getApplicationContext(), CartActivity.class));
+                finish();
+
                 return true;
         }
         return super.onOptionsItemSelected(item);

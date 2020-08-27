@@ -349,6 +349,9 @@ public class eProductActivity extends AppCompatActivity {
                 startActivity(logout_to_main);
                 return true;
             case R.id.menu_cart:
+                startActivity(new Intent(getApplicationContext(), CartActivity.class));
+                finish();
+
                 return true;
         }
         return super.onOptionsItemSelected(item);

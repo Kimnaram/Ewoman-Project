@@ -96,8 +96,6 @@ public class ProductDetailActivity extends AppCompatActivity {
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.common_backspace); //뒤로가기 버튼 모양 설정
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.parseColor("#FFFFFF"))); //툴바 배경색
 
-        firebaseAuth = FirebaseAuth.getInstance();
-
         initAllComponent();
 
         Intent intent = getIntent();
@@ -140,7 +138,7 @@ public class ProductDetailActivity extends AppCompatActivity {
                 }
             });
 
-            firebaseDatabase.getInstance().getReference("product/" + path + "/" + pdnumber).addValueEventListener(new ValueEventListener() {
+            firebaseDatabase.getReference("product/" + path + "/" + pdnumber).addValueEventListener(new ValueEventListener() {
 
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -165,25 +163,43 @@ public class ProductDetailActivity extends AppCompatActivity {
                         } else if (dataSnapshot.getKey().equals("delivery")) {
                             d_delivery = dataSnapshot.getValue().toString();
                         } else if (dataSnapshot.getKey().equals("option")) {
-                            DatabaseReference optionRef = dataSnapshot.getRef();
-                            optionRef.child("0").addValueEventListener(new ValueEventListener() {
+                            firebaseDatabase.getReference("product/" + path + "/" + pdnumber + "/option/0").addValueEventListener(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                    int count = Integer.parseInt(Long.toString(snapshot.getChildrenCount()));
+                                    Log.d(TAG, "count : " + count);
                                     for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
                                         if (dataSnapshot.getKey().equals("title")) {
                                             tv_option_1.setText(dataSnapshot.getValue().toString() + "   *");
                                         } else {
-                                            boolean sameflag = false;
-                                            String d_option_list_thing = dataSnapshot.getValue().toString();
-                                            for(int i = 0; i < d_option1_list.size(); i++) {
-                                                String samethingchk = d_option1_list.get(i);
-                                                if(samethingchk.equals(d_option_list_thing)) {
-                                                    sameflag = true;
-                                                    break;
-                                                }
-                                            }
-                                            if(sameflag == false) {
-                                                d_option1_list.add(dataSnapshot.getValue().toString());
+                                            for(int i = 0; i < count - 1; i++) {
+                                                firebaseDatabase.getReference("product/" + path + "/" + pdnumber + "/option/0").child("i").addValueEventListener(new ValueEventListener() {
+                                                    @Override
+                                                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                                        if(snapshot.getKey().equals("option")) {
+                                                            boolean sameflag = false;
+                                                            String d_option_list_thing = snapshot.getValue().toString();
+                                                            for (int j = 0; j < d_option1_list.size(); j++) {
+                                                                String samethingchk = d_option1_list.get(j);
+                                                                if (samethingchk.equals(d_option_list_thing)) {
+                                                                    sameflag = true;
+                                                                    break;
+                                                                }
+                                                            }
+                                                            if (sameflag == false) {
+                                                                d_option1_list.add(snapshot.getValue().toString());
+                                                            }
+                                                        } else {
+                                                            // price 일 때
+                                                        }
+                                                    }
+
+                                                    @Override
+                                                    public void onCancelled(@NonNull DatabaseError error) {
+
+                                                    }
+                                                });
+
                                             }
                                             sp_option_1.setVisibility(View.VISIBLE);
                                         }
@@ -202,25 +218,41 @@ public class ProductDetailActivity extends AppCompatActivity {
 
                                 }
                             });
-                            optionRef.child("1").addValueEventListener(new ValueEventListener() {
+                            firebaseDatabase.getReference("product/" + path + "/" + pdnumber + "/option/1").addValueEventListener(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                    int count = Integer.parseInt(Long.toString(snapshot.getChildrenCount()));
                                     for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
                                         if (dataSnapshot.getKey().equals("title")) {
-                                            tv_option_2.setText(dataSnapshot.getValue().toString() + "   *");
+                                            tv_option_2.setText(dataSnapshot.getValue().toString());
                                             tv_option_2.setVisibility(View.VISIBLE);
                                         } else {
-                                            boolean sameflag = false;
-                                            String d_option_list_thing = dataSnapshot.getValue().toString();
-                                            for(int i = 0; i < d_option2_list.size(); i++) {
-                                                String samethingchk = d_option2_list.get(i);
-                                                if(samethingchk.equals(d_option_list_thing)) {
-                                                    sameflag = true;
-                                                    break;
-                                                }
-                                            }
-                                            if(sameflag == false) {
-                                                d_option2_list.add(dataSnapshot.getValue().toString());
+                                            for(int i = 0; i < count; i++) {
+                                                firebaseDatabase.getReference("product/" + path + "/" + pdnumber + "/option/1").child("i").addValueEventListener(new ValueEventListener() {
+                                                    @Override
+                                                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                                        if(snapshot.getKey().equals("option")) {
+                                                            boolean sameflag = false;
+                                                            String d_option_list_thing = snapshot.getValue().toString();
+                                                            for (int j = 0; j < d_option2_list.size(); j++) {
+                                                                String samethingchk = d_option2_list.get(j);
+                                                                if (samethingchk.equals(d_option_list_thing)) {
+                                                                    sameflag = true;
+                                                                    break;
+                                                                }
+                                                            }
+                                                            if (sameflag == false) {
+                                                                d_option2_list.add(snapshot.getValue().toString());
+                                                            }
+                                                        }
+                                                    }
+
+                                                    @Override
+                                                    public void onCancelled(@NonNull DatabaseError error) {
+
+                                                    }
+                                                });
+
                                             }
                                             sp_option_2.setVisibility(View.VISIBLE);
                                         }
@@ -238,7 +270,7 @@ public class ProductDetailActivity extends AppCompatActivity {
 
                                 }
                             });
-                            optionRef.child("2").addValueEventListener(new ValueEventListener() {
+                            firebaseDatabase.getReference("product/" + path + "/" + pdnumber + "/option/2").addValueEventListener(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                                     for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
@@ -320,6 +352,9 @@ public class ProductDetailActivity extends AppCompatActivity {
 
     public void initAllComponent() {
 
+        firebaseAuth = FirebaseAuth.getInstance();
+        firebaseDatabase = FirebaseDatabase.getInstance();
+
         tv_toolbar_title = findViewById(R.id.tv_toolbar_title);
 
         tv_category_home = findViewById(R.id.tv_category_home);
@@ -348,8 +383,6 @@ public class ProductDetailActivity extends AppCompatActivity {
     }
 
     public void downloadInLocal(int i) {
-
-        Drawable image;
 
         StorageReference storageReference;
         storageReference = FirebaseStorage.getInstance().getReference("product/" + path + "/" + i);
@@ -450,6 +483,8 @@ public class ProductDetailActivity extends AppCompatActivity {
                 startActivity(logout_to_product);
                 return true;
             case R.id.menu_cart:
+                startActivity(new Intent(getApplicationContext(), CartActivity.class));
+
                 return true;
         }
         return super.onOptionsItemSelected(item);

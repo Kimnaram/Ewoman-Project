@@ -41,7 +41,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ItemVi
         return listReviewArrayList.size();
     }
 
-    void addItem(ListReview listReview) {
+    public void addItem(ListReview listReview) {
         // 외부에서 item을 추가시킬 함수입니다.
         listReviewArrayList.add(listReview);
 
@@ -52,9 +52,10 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ItemVi
         return listReviewArrayList.get(position) ;
     }
 
-    void clearAllItem() {
+    public void clearAllItem() {
 
-        listReviewArrayList.clear();
+        for(int i = 0; i < listReviewArrayList.size(); i++)
+            listReviewArrayList.remove(i);
 
         notifyDataSetChanged();
     }

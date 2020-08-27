@@ -1,5 +1,6 @@
 package com.naram.ewoman_project;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
@@ -24,10 +25,33 @@ import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.io.InputStream;
+import java.util.HashMap;
 
 public class ReviewCreateActivity extends AppCompatActivity {
+
+    private class Review {
+        private String title;
+        private String content;
+        private String uid;
+        private int reviewid;
+        private String image;
+
+
+        public Review(String title, String content, String uid, int reviewid, String image) {
+            this.title = title;
+            this.content = content;
+            this.uid = uid;
+            this.reviewid = reviewid;
+            this.image = image;
+        }
+    }
 
     private static final String TAG = "ReviewCreateActivity";
 
@@ -47,6 +71,7 @@ public class ReviewCreateActivity extends AppCompatActivity {
     private DBOpenHelper dbOpenHelper;
 
     private String username = "";
+    private int count = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -91,7 +116,8 @@ public class ReviewCreateActivity extends AppCompatActivity {
         btn_review_upload.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                InsertDatabase();
+                // InsertDatabase();
+                InsertFirebase();
             }
         });
 
@@ -123,19 +149,72 @@ public class ReviewCreateActivity extends AppCompatActivity {
 
     }
 
-    public void InsertDatabase() {
+//    public void InsertDatabase() {
+//
+//        dbOpenHelper.open();
+//
+//        String title = et_review_title.getText().toString().trim();
+//        String content = et_review_content.getText().toString().trim();
+//        String userid = firebaseAuth.getCurrentUser().getUid();
+//        Drawable image = iv_review_image.getDrawable();
+//        dbOpenHelper.insertColumn(title, userid, username, content, image);
+//
+//        dbOpenHelper.close();
+//
+//        Log.d(TAG, "title : " + title + ", content : " + content);
+//
+//        finish();
+//
+//    }
 
-        dbOpenHelper.open();
+    public void InsertFirebase() {
 
+        FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+        DatabaseReference boardRef = firebaseDatabase.getReference("board");
+
+        boardRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for(DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                    count = Integer.parseInt(dataSnapshot.getKey());
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+        int reviewid = count + 1;
         String title = et_review_title.getText().toString().trim();
         String content = et_review_content.getText().toString().trim();
         String userid = firebaseAuth.getCurrentUser().getUid();
         Drawable image = iv_review_image.getDrawable();
-        dbOpenHelper.insertColumn(title, userid, username, content, image);
 
-        dbOpenHelper.close();
+        HashMap<Object, String> hashMap = new HashMap<>();
 
-        Log.d(TAG, "title : " + title + ", content : " + content);
+        if(image != null) {
+            hashMap.put("uid", userid);
+            hashMap.put("name", username);
+            hashMap.put("title", title);
+            hashMap.put("content", content);
+            hashMap.put("like", "0");
+            hashMap.put("image", "Y");
+            hashMap.put("category", "Review");
+        } else {
+            hashMap.put("uid", userid);
+            hashMap.put("name", username);
+            hashMap.put("title", title);
+            hashMap.put("content", content);
+            hashMap.put("like", "0");
+            hashMap.put("image", "N");
+            hashMap.put("category", "Review");
+        }
+
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference reference = database.getReference("board");
+        reference.child(reviewid + "").setValue(hashMap);
 
         finish();
 
@@ -207,6 +286,9 @@ public class ReviewCreateActivity extends AppCompatActivity {
                 startActivity(logout_to_revcreate);
                 return true;
             case R.id.menu_cart :
+                startActivity(new Intent(getApplicationContext(), CartActivity.class));
+                finish();
+
                 return true;
         }
         return super.onOptionsItemSelected(item);

@@ -328,6 +328,8 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(logout_to_main);
                 return true;
             case R.id.menu_cart :
+                startActivity(new Intent(getApplicationContext(), CartActivity.class));
+
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

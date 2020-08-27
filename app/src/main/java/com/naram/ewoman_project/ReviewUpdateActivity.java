@@ -1,5 +1,6 @@
 package com.naram.ewoman_project;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
@@ -27,10 +28,15 @@ import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.io.File;
 import java.io.InputStream;
 import java.sql.Blob;
+import java.util.HashMap;
 
 public class ReviewUpdateActivity extends AppCompatActivity {
 
@@ -51,7 +57,7 @@ public class ReviewUpdateActivity extends AppCompatActivity {
 
     private DBOpenHelper dbOpenHelper;
 
-    private long index;
+    private int index;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,8 +77,8 @@ public class ReviewUpdateActivity extends AppCompatActivity {
         Intent intent = getIntent();
         if (intent != null) {
             String _id = intent.getStringExtra("_id");
-            index = Long.parseLong(_id);
-            selectColumn(index);
+            index = Integer.parseInt(_id);
+            updateFirebase(index);
         }
 
         et_review_title.setOnKeyListener(new View.OnKeyListener() {
@@ -98,7 +104,9 @@ public class ReviewUpdateActivity extends AppCompatActivity {
         btn_review_update.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                UpdateDatabase();
+                selectFirebase(index);
+
+                finish();
             }
         });
 
@@ -130,43 +138,101 @@ public class ReviewUpdateActivity extends AppCompatActivity {
 
     }
 
-    public void selectColumn(long _id) {
-        Cursor iCursor = dbOpenHelper.selectColumn(_id);
-        Log.d(TAG, "DB Size: " + iCursor.getCount());
+//    public void selectColumn(long _id) {
+//        Cursor iCursor = dbOpenHelper.selectColumn(_id);
+//        Log.d(TAG, "DB Size: " + iCursor.getCount());
+//
+//        while (iCursor.moveToNext()) {
+//            String tempTitle = iCursor.getString(iCursor.getColumnIndex("title"));
+//            String tempUID = iCursor.getString(iCursor.getColumnIndex("userid"));
+//            String tempContent = iCursor.getString(iCursor.getColumnIndex("content"));
+//            String tempImage = iCursor.getString(iCursor.getColumnIndex("image"));
+//
+//            if(tempImage.equals("Y")) {
+//                Drawable image = dbOpenHelper.selectImageColumns(_id);
+//
+//                rl_image_container.setVisibility(View.VISIBLE);
+//                iv_review_image.setImageDrawable(image);
+//            } else {
+//                rl_image_container.setVisibility(View.GONE);
+//            }
+//            et_review_title.setText(tempTitle);
+//            et_review_content.setText(tempContent);
+//
+//        }
+//
+//    }
 
-        while (iCursor.moveToNext()) {
-            String tempTitle = iCursor.getString(iCursor.getColumnIndex("title"));
-            String tempUID = iCursor.getString(iCursor.getColumnIndex("userid"));
-            String tempContent = iCursor.getString(iCursor.getColumnIndex("content"));
-            String tempImage = iCursor.getString(iCursor.getColumnIndex("image"));
+//    public void UpdateDatabase() {
+//
+//        String title = et_review_title.getText().toString().trim();
+//        String content = et_review_content.getText().toString().trim();
+//        Drawable image = iv_review_image.getDrawable();
+//
+//        dbOpenHelper.updateColumn(index, title, content, image);
+//        dbOpenHelper.close();
+//
+//        Log.d(TAG, "title : " + title + ", content : " + content);
+//
+//        finish();
+//
+//    }
 
-            if(tempImage.equals("Y")) {
-                Drawable image = dbOpenHelper.selectImageColumns(_id);
+    public void selectFirebase(int index) {
 
-                rl_image_container.setVisibility(View.VISIBLE);
-                iv_review_image.setImageDrawable(image);
-            } else {
-                rl_image_container.setVisibility(View.GONE);
+        FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+        firebaseDatabase.getReference("board/" + index).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                String title = "";
+                String content = "";
+                String image = "";
+                int like = 0;
+
+                for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                    if (dataSnapshot.getKey().equals("title")) {
+                        title = dataSnapshot.getValue().toString();
+                    } else if (dataSnapshot.getKey().equals("like")) {
+                        like = Integer.parseInt(dataSnapshot.getValue().toString());
+                    } else if (dataSnapshot.getKey().equals("content")) {
+                        content = dataSnapshot.getValue().toString();
+                    } else if (dataSnapshot.getKey().equals("image")) {
+                        image = dataSnapshot.getValue().toString();
+                    }
+                }
+
+                et_review_title.setText(title);
+                et_review_content.setText(content);
+                if(image.equals("Y")) {
+                    iv_review_image.setVisibility(View.VISIBLE);
+                } else {
+                    iv_review_image.setVisibility(View.GONE);
+                }
+
             }
-            et_review_title.setText(tempTitle);
-            et_review_content.setText(tempContent);
 
-        }
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+
+        });
+
+        updateFirebase(index);
 
     }
 
-    public void UpdateDatabase() {
-
-        String title = et_review_title.getText().toString().trim();
-        String content = et_review_content.getText().toString().trim();
+    public void updateFirebase(int index) {
+        String title = et_review_title.getText().toString();
+        String content = et_review_content.getText().toString();
         Drawable image = iv_review_image.getDrawable();
 
-        dbOpenHelper.updateColumn(index, title, content, image);
-        dbOpenHelper.close();
-
-        Log.d(TAG, "title : " + title + ", content : " + content);
-
-        finish();
+        FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+        firebaseDatabase.getReference("board/" + index).child("title").setValue(title);
+        firebaseDatabase.getReference("board/" + index).child("content").setValue(content);
+        if(image != null)
+            firebaseDatabase.getReference("board/" + index).child("image").setValue("Y");
+        else firebaseDatabase.getReference("board/" + index).child("image").setValue("N");
 
     }
 
@@ -235,6 +301,9 @@ public class ReviewUpdateActivity extends AppCompatActivity {
                 startActivity(logout_to_revupdate);
                 return true;
             case R.id.menu_cart:
+                startActivity(new Intent(getApplicationContext(), CartActivity.class));
+                finish();
+
                 return true;
         }
         return super.onOptionsItemSelected(item);

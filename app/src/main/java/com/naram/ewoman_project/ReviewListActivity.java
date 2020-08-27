@@ -24,6 +24,7 @@ import android.widget.Toast;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
@@ -50,6 +51,7 @@ public class ReviewListActivity extends AppCompatActivity {
     private int reviewlist = 0;
 
     private FirebaseAuth firebaseAuth;
+    private FirebaseDatabase firebaseDatabase;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,11 +69,9 @@ public class ReviewListActivity extends AppCompatActivity {
         initAllComponent();
 
         Intent intent = getIntent();
-        if(intent != null) {
+        if (intent != null) {
             username = intent.getStringExtra("username");
         }
-
-        recyclerviewSetting();
 
         adapter.setOnItemClickListener(new RecyclerAdapter.OnItemClickListener() {
             @Override
@@ -89,7 +89,7 @@ public class ReviewListActivity extends AppCompatActivity {
         ib_write_review.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(firebaseAuth.getCurrentUser() != null) {
+                if (firebaseAuth.getCurrentUser() != null) {
                     Intent list_to_create = new Intent(getApplicationContext(), ReviewCreateActivity.class);
                     list_to_create.putExtra("username", username);
 
@@ -106,7 +106,19 @@ public class ReviewListActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onStart() {
+
+        recyclerviewSetting();
+
+        super.onStart();
+
+    }
+
+    @Override
     protected void onPause() {
+
+        adapter.clearAllItem();
+        adapter.notifyDataSetChanged();
 
         super.onPause();
 
@@ -114,9 +126,6 @@ public class ReviewListActivity extends AppCompatActivity {
 
     @Override
     protected void onResume() {
-
-        adapter.notifyDataSetChanged();
-        recyclerviewSetting();
 
         super.onResume();
 
@@ -132,6 +141,7 @@ public class ReviewListActivity extends AppCompatActivity {
     public void initAllComponent() {
 
         mDBOpenHelper = new DBOpenHelper(this);
+        firebaseDatabase = FirebaseDatabase.getInstance();
 
         rv_review_container = findViewById(R.id.rv_review_container);
 
@@ -150,11 +160,45 @@ public class ReviewListActivity extends AppCompatActivity {
 
         adapter.clearAllItem();
 
-        FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
         firebaseDatabase.getReference("board").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 reviewlist = Integer.parseInt(Long.toString(snapshot.getChildrenCount()));
+                for (final DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                    firebaseDatabase.getReference("board/" + dataSnapshot.getKey()).addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            int id = Integer.parseInt(dataSnapshot.getKey());
+                            String title = "";
+                            String name = "";
+                            int like = 0;
+
+                            for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                                if (dataSnapshot.getKey().equals("title")) {
+                                    title = dataSnapshot.getValue().toString();
+                                } else if (dataSnapshot.getKey().equals("name")) {
+                                    name = dataSnapshot.getValue().toString();
+                                } else if (dataSnapshot.getKey().equals("like")) {
+                                    like = Integer.parseInt(dataSnapshot.getValue().toString());
+                                }
+
+                            }
+
+                            Log.d(TAG, "id : " + id + "title : " + title);
+                            listReview = new ListReview(id, title, name, like);
+                            adapter.addItem(listReview);
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
+
+                        }
+
+                    });
+
+                    adapter.notifyDataSetChanged();
+
+                }
             }
 
             @Override
@@ -163,39 +207,7 @@ public class ReviewListActivity extends AppCompatActivity {
             }
         });
 
-        for(int i = 0; i < reviewlist; i++) {
-            firebaseDatabase.getReference("board/" + i).addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot snapshot) {
-
-                    int id = 0;
-                    String title = "";
-                    String name = "";
-                    int like = 0;
-
-                    for(DataSnapshot dataSnapshot : snapshot.getChildren()) {
-                        if(dataSnapshot.getKey().equals("id")) {
-                            id = Integer.parseInt(dataSnapshot.getValue().toString());
-                        } else if(dataSnapshot.getKey().equals("title")) {
-                            title = dataSnapshot.getValue().toString();
-                        } else if(dataSnapshot.getKey().equals("name")) {
-                            name = dataSnapshot.getValue().toString();
-                        } else if(dataSnapshot.getKey().equals("like")) {
-                            like = Integer.parseInt(dataSnapshot.getValue().toString());
-                        }
-
-                        listReview = new ListReview(id, title, name, like);
-                        adapter.addItem(listReview);
-
-                    }
-                }
-
-                @Override
-                public void onCancelled(@NonNull DatabaseError error) {
-
-                }
-            });
-        }
+        Log.d(TAG, "review list : " + reviewlist);
 
         rv_review_container.setAdapter(adapter);
 
@@ -226,11 +238,54 @@ public class ReviewListActivity extends AppCompatActivity {
 //        adapter.notifyDataSetChanged();
 //    }
 
+//    public void showFirebase() {
+//
+//        Log.d(TAG, "showFirebase Start");
+//
+//        for (int i = 0; i < reviewlist; i++) {
+//            final int reviewid = i;
+//
+//            firebaseDatabase.getReference("board/" + i).addValueEventListener(new ValueEventListener() {
+//                @Override
+//                public void onDataChange(@NonNull DataSnapshot snapshot) {
+//
+//                    Log.d(TAG, "리뷰 보이긴 하니?");
+//
+//                    int id = reviewid;
+//                    String title = "";
+//                    String name = "";
+//                    int like = 0;
+//
+//                    for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+//                        if (dataSnapshot.getKey().equals("title")) {
+//                            title = dataSnapshot.getValue().toString();
+//                        } else if (dataSnapshot.getKey().equals("name")) {
+//                            name = dataSnapshot.getValue().toString();
+//                        } else if (dataSnapshot.getKey().equals("like")) {
+//                            like = Integer.parseInt(dataSnapshot.getValue().toString());
+//                        }
+//
+//                        Log.d(TAG, "id : " + id + "title : " + title);
+//                        listReview = new ListReview(id, title, name, like);
+//                        adapter.addItem(listReview);
+//
+//                    }
+//                }
+//
+//                @Override
+//                public void onCancelled(@NonNull DatabaseError error) {
+//
+//                }
+//            });
+//        }
+//
+//    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        if(firebaseAuth.getCurrentUser() == null) {
+        if (firebaseAuth.getCurrentUser() == null) {
             getMenuInflater().inflate(R.menu.toolbar_bl_menu, menu);
-        } else if(firebaseAuth.getCurrentUser() != null) {
+        } else if (firebaseAuth.getCurrentUser() != null) {
             getMenuInflater().inflate(R.menu.toolbar_al_menu, menu);
         }
 
@@ -239,22 +294,22 @@ public class ReviewListActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()){
-            case android.R.id.home:{ //툴바 뒤로가기 동작
+        switch (item.getItemId()) {
+            case android.R.id.home: { //툴바 뒤로가기 동작
                 finish();
                 return true;
             }
-            case R.id.menu_login :
+            case R.id.menu_login:
                 Intent revlist_to_login = new Intent(getApplicationContext(), mem_LoginActivity.class);
 
                 startActivity(revlist_to_login);
                 return true;
-            case R.id.menu_signup :
+            case R.id.menu_signup:
                 Intent revlist_to_signup = new Intent(getApplicationContext(), mem_SignupActivity.class);
 
                 startActivity(revlist_to_signup);
                 return true;
-            case R.id.menu_logout :
+            case R.id.menu_logout:
 
                 FirebaseAuth.getInstance().signOut();
 
@@ -267,7 +322,10 @@ public class ReviewListActivity extends AppCompatActivity {
 
                 startActivity(logout_to_revlist);
                 return true;
-            case R.id.menu_cart :
+            case R.id.menu_cart:
+                startActivity(new Intent(getApplicationContext(), CartActivity.class));
+                finish();
+
                 return true;
         }
         return super.onOptionsItemSelected(item);

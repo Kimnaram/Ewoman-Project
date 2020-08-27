@@ -6,40 +6,40 @@
     android:layout_height="match_parent"
     tools:context=".ProductDetailActivity">
 
+    <!--상단 툴바-->
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:minHeight="?attr/actionBarSize">
+
+        <TextView
+            android:id="@+id/tv_toolbar_title"
+            android:layout_width="wrap_content"
+            android:layout_height="35dp"
+            android:layout_marginTop="15dp"
+            android:layout_marginRight="10dp"
+            android:fontFamily="@font/nanumbarungothic"
+            android:textSize="23dp"
+            android:textStyle="bold"></TextView>
+
+    </androidx.appcompat.widget.Toolbar>
+
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_below="@+id/toolbar">
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginBottom="20dp" >
 
-            <!--상단 툴바-->
-            <androidx.appcompat.widget.Toolbar
-                android:id="@+id/toolbar"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_alignParentTop="true"
-                android:minHeight="?attr/actionBarSize">
-
-                <TextView
-                    android:id="@+id/tv_toolbar_title"
-                    android:layout_width="wrap_content"
-                    android:layout_height="35dp"
-                    android:layout_marginTop="15dp"
-                    android:layout_marginRight="10dp"
-                    android:fontFamily="@font/nanumbarungothic"
-                    android:textSize="23dp"
-                    android:textStyle="bold"></TextView>
-
-            </androidx.appcompat.widget.Toolbar>
-
             <RelativeLayout
                 android:id="@+id/rl_category_container"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/toolbar" >
+                android:layout_height="wrap_content" >
 
                 <TextView
                     android:id="@+id/tv_category_home"
@@ -295,7 +295,7 @@
                     android:layout_width="110dp"
                     android:layout_height="47.5dp"
                     android:layout_toRightOf="@+id/tv_cart_try"
-                    android:background="@drawable/btn_style_border_line"
+                    android:background="@drawable/btn_style_border_line_white_background"
                     android:fontFamily="@font/nanumbarungothic"
                     android:paddingLeft="30dp"
                     android:paddingRight="30dp"

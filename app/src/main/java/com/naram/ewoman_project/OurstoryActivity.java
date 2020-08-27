@@ -165,6 +165,9 @@ public class OurstoryActivity extends AppCompatActivity {
                 startActivity(logout_to_stry);
                 return true;
             case R.id.menu_cart:
+                startActivity(new Intent(getApplicationContext(), CartActivity.class));
+                finish();
+
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
