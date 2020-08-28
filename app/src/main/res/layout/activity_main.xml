@@ -60,38 +60,57 @@
                             android:src="@drawable/ewoman_main_banner"
                             android:text="ewoman" />
 
-                        <RelativeLayout
-                            android:id="@+id/rl_ewoman_main_btn_container"
-                            android:layout_width="wrap_content"
+                        <LinearLayout
+                            android:layout_width="match_parent"
                             android:layout_height="300dp"
-                            android:layout_centerHorizontal="true">
+                            android:orientation="vertical"
+                            android:gravity="center">
 
-                            <Button
-                                android:id="@+id/btn_to_ecollege"
-                                android:layout_width="120dp"
-                                android:layout_height="60dp"
-                                android:layout_centerVertical="true"
-                                android:layout_margin="20dp"
-                                android:background="@drawable/btn_style_border_line"
+                            <TextView
+                                android:id="@+id/tv_main_title"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
                                 android:fontFamily="@font/nanumbarungothicbold"
-                                android:text="College"
+                                android:text="e - flagship store project"
                                 android:textColor="@color/colorWhite"
-                                android:textSize="17dp" />
+                                android:textStyle="bold"
+                                android:textSize="26dp" />
 
-                            <Button
-                                android:id="@+id/btn_to_ourstry"
-                                android:layout_width="120dp"
-                                android:layout_height="60dp"
-                                android:layout_centerVertical="true"
-                                android:layout_margin="20dp"
-                                android:layout_toRightOf="@+id/btn_to_ecollege"
-                                android:background="@drawable/btn_style_border_line"
-                                android:fontFamily="@font/nanumbarungothicbold"
-                                android:text="Our Story"
-                                android:textColor="@color/colorWhite"
-                                android:textSize="17dp" />
+                            <RelativeLayout
+                                android:id="@+id/rl_ewoman_main_btn_container"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_below="@+id/tv_main_title"
+                                android:layout_centerHorizontal="true">
 
-                        </RelativeLayout>
+                                <Button
+                                    android:id="@+id/btn_to_ecollege"
+                                    android:layout_width="120dp"
+                                    android:layout_height="60dp"
+                                    android:layout_centerVertical="true"
+                                    android:layout_margin="20dp"
+                                    android:background="@drawable/btn_style_border_line"
+                                    android:fontFamily="@font/nanumbarungothicbold"
+                                    android:text="College"
+                                    android:textColor="@color/colorWhite"
+                                    android:textSize="17dp" />
+
+                                <Button
+                                    android:id="@+id/btn_to_ourstry"
+                                    android:layout_width="120dp"
+                                    android:layout_height="60dp"
+                                    android:layout_centerVertical="true"
+                                    android:layout_margin="20dp"
+                                    android:layout_toRightOf="@+id/btn_to_ecollege"
+                                    android:background="@drawable/btn_style_border_line"
+                                    android:fontFamily="@font/nanumbarungothicbold"
+                                    android:text="Our Story"
+                                    android:textColor="@color/colorWhite"
+                                    android:textSize="17dp" />
+
+                            </RelativeLayout>
+
+                        </LinearLayout>
 
                     </RelativeLayout>
 
@@ -207,8 +226,8 @@
                         android:id="@+id/ll_footer_container"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical"
                         android:background="@color/colorCocoa"
+                        android:orientation="vertical"
                         android:paddingLeft="5dp"
                         android:paddingTop="20dp"
                         android:paddingRight="5dp"
@@ -217,18 +236,18 @@
                         <LinearLayout
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:orientation="horizontal"
                             android:layout_gravity="center"
-                            android:layout_marginBottom="10dp">
+                            android:layout_marginBottom="10dp"
+                            android:orientation="horizontal">
 
                             <ImageButton
                                 android:id="@+id/ib_instagram"
                                 android:layout_width="25dp"
                                 android:layout_height="25dp"
+                                android:layout_marginRight="5dp"
                                 android:background="@null"
                                 android:padding="2dp"
-                                android:src="@drawable/main_instagram"
-                                android:layout_marginRight="5dp"/>
+                                android:src="@drawable/main_instagram" />
 
                             <ImageButton
                                 android:id="@+id/ib_facebook"
