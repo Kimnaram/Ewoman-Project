@@ -1,11 +1,11 @@
 package com.naram.ewoman_project;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -20,36 +20,20 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 
-import java.util.HashMap;
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 
-public class mem_SignupFormActivity extends AppCompatActivity {
+public class SignupFormActivity extends AppCompatActivity {
 
-    private static final String TAG = "mem_SignupFormActivity";
+    private static final String TAG = "SignupFormActivity";
 
-    public static class User {
-        public String uid;
-        public String email;
-        public String phone;
-        public String gender;
-        public String name;
-
-        public User(String uid, String email, String phone, String gender, String name) {
-            this.uid = uid;
-            this.email = email;
-            this.phone = phone;
-            this.gender = gender;
-            this.name = name;
-        }
-
-    }
+    private static String IP_ADDRESS = "IP ADDRESS";
 
     private EditText et_user_email;
     private EditText et_user_passwd;
@@ -71,7 +55,7 @@ public class mem_SignupFormActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_mem__signup_form);
+        setContentView(R.layout.activity_signup_form);
 
         //상단 툴바 설정
         setSupportActionBar((Toolbar) findViewById(R.id.toolbar));
@@ -91,7 +75,7 @@ public class mem_SignupFormActivity extends AppCompatActivity {
         et_user_name.setOnKeyListener(new View.OnKeyListener() {
             @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
-                if(keyCode == event.KEYCODE_ENTER) {
+                if (keyCode == event.KEYCODE_ENTER) {
                     return true;
                 }
                 return false;
@@ -138,74 +122,34 @@ public class mem_SignupFormActivity extends AppCompatActivity {
             public void onClick(View v) {
                 if (!et_user_email.getText().toString().isEmpty() && !et_user_passwd.getText().toString().isEmpty()
                         && !et_user_passwd_check.getText().toString().isEmpty() && !et_user_name.getText().toString().isEmpty()
-                        && !et_user_pnumber.getText().toString().isEmpty() && (rb_user_female.isChecked() || rb_user_male.isChecked())
+                        && !et_user_pnumber.getText().toString().isEmpty()
                         && et_user_passwd.getText().toString().equals(et_user_passwd_check.getText().toString())) {
 
                     String email = et_user_email.getText().toString();
                     String pwd = et_user_passwd.getText().toString();
+                    String name = et_user_name.getText().toString().trim();
+                    String phone = et_user_pnumber.getText().toString().trim();
+                    phone = phone.split("-")[0] + phone.split("-")[1] + phone.split("-")[2];
+                    boolean gender_f = rb_user_female.isChecked();
+                    boolean gender_m = rb_user_male.isChecked();
+                    String gender = null;
 
-                    System.out.println(email + "\n" + pwd);
+                    if (gender_f == true) {
+                        gender = "female";
+                    } else if (gender_m == true) {
+                        gender = "male";
+                    }
 
-                    Log.d(TAG, "등록 버튼 " + email + " , " + pwd);
-                    final ProgressDialog mDialog = new ProgressDialog(mem_SignupFormActivity.this);
-                    mDialog.setMessage("회원가입 중입니다.");
-                    mDialog.show();
+                    InsertData Itask = new InsertData();
+                    Itask.execute("http://" + IP_ADDRESS + "/ewoman-php/insertUser.php", email, name, pwd, gender, phone);
 
-                    //파이어베이스에 신규계정 등록하기
-                    firebaseAuth.createUserWithEmailAndPassword(email, pwd).addOnCompleteListener(mem_SignupFormActivity.this, new OnCompleteListener<AuthResult>() {
-                        @Override
-                        public void onComplete(@NonNull Task<AuthResult> task) {
+                    //가입이 이루어졌을시 가입 화면을 빠져나감.
+                    Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
 
-                            //가입 성공시
-                            if (task.isSuccessful()) {
-                                mDialog.dismiss();
+                    startActivity(intent);
+                    finish();
+                    Toast.makeText(SignupFormActivity.this, "회원가입에 성공하셨습니다.", Toast.LENGTH_SHORT).show();
 
-                                FirebaseUser user = firebaseAuth.getCurrentUser();
-                                String email = user.getEmail();
-                                String uid = user.getUid();
-                                String name = et_user_name.getText().toString().trim();
-                                String pnumber = et_user_pnumber.getText().toString();
-                                boolean gender_f = rb_user_female.isChecked();
-                                boolean gender_m = rb_user_male.isChecked();
-                                String gender = null;
-
-                                if (gender_f == true) {
-                                    gender = "female";
-                                } else if (gender_m == true) {
-                                    gender = "male";
-                                }
-
-                                //해쉬맵 테이블을 파이어베이스 데이터베이스에 저장
-//                                HashMap<String, Object> hashMap = new HashMap<>();
-//
-//                                hashMap.put(uid, new User(uid, email, pnumber, gender, name));
-
-                                HashMap<Object, String> hashMap = new HashMap<>();
-                                hashMap.put("email", email);
-                                hashMap.put("uid", uid);
-                                hashMap.put("name", name);
-                                hashMap.put("gender", gender);
-                                hashMap.put("phone", pnumber);
-
-                                FirebaseDatabase database = FirebaseDatabase.getInstance();
-                                DatabaseReference reference = database.getReference("users");
-                                reference.child(uid).setValue(hashMap);
-
-                                //가입이 이루어졌을시 가입 화면을 빠져나감.
-                                Intent intent = new Intent(getApplicationContext(), mem_LoginActivity.class);
-
-                                startActivity(intent);
-                                finish();
-                                Toast.makeText(mem_SignupFormActivity.this, "회원가입에 성공하셨습니다.", Toast.LENGTH_SHORT).show();
-
-                            } else {
-                                mDialog.dismiss();
-                                Toast.makeText(mem_SignupFormActivity.this, "이미 존재하는 아이디 입니다.", Toast.LENGTH_SHORT).show();
-                                return;  //해당 메소드 진행을 멈추고 빠져나감.
-
-                            }
-                        }
-                    });
                 } else {
                     if (et_user_email.getText().toString().isEmpty()) {
                         Toast.makeText(getApplicationContext(), "이메일을 작성해야 합니다.", Toast.LENGTH_SHORT).show();
@@ -264,16 +208,112 @@ public class mem_SignupFormActivity extends AppCompatActivity {
                 return true;
             }
             case R.id.menu_login:
-                Intent main_to_login = new Intent(getApplicationContext(), mem_LoginActivity.class);
+                Intent main_to_login = new Intent(getApplicationContext(), LoginActivity.class);
 
                 startActivity(main_to_login);
                 return true;
             case R.id.menu_signup:
-                Intent main_to_signup = new Intent(getApplicationContext(), mem_SignupActivity.class);
+                Intent main_to_signup = new Intent(getApplicationContext(), SignupActivity.class);
 
                 startActivity(main_to_signup);
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    class InsertData extends AsyncTask<String, Void, String> {
+        ProgressDialog progressDialog;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+
+            progressDialog = ProgressDialog.show(SignupFormActivity.this,
+                    "회원가입 중입니다.", null, true, true);
+
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+
+            progressDialog.dismiss();
+
+            //가입이 이루어졌을시 가입 화면을 빠져나감.
+            Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+
+            startActivity(intent);
+            finish();
+
+            Toast.makeText(SignupFormActivity.this, "회원가입에 성공하셨습니다.", Toast.LENGTH_SHORT).show();
+
+            Log.d(TAG, "POST response  - " + result);
+        }
+
+
+        @Override
+        protected String doInBackground(String... params) {
+
+            String email = (String) params[1];
+            String name = (String) params[2];
+            String password = (String) params[3];
+            String gender = (String) params[4];
+            String phone = (String) params[5];
+
+            String serverURL = (String) params[0];
+            String postParameters = "email=" + email +  "&name=" + name + "&password=" + password + "&gender=" + gender + "&phone=" + phone;
+
+            try {
+
+                URL url = new URL(serverURL);
+                HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
+
+                httpURLConnection.setReadTimeout(5000);
+                httpURLConnection.setConnectTimeout(5000);
+                httpURLConnection.setRequestMethod("POST");
+                httpURLConnection.connect();
+
+
+                OutputStream outputStream = httpURLConnection.getOutputStream();
+                outputStream.write(postParameters.getBytes("UTF-8"));
+                outputStream.flush();
+                outputStream.close();
+
+
+                int responseStatusCode = httpURLConnection.getResponseCode();
+                Log.d(TAG, "POST response code - " + responseStatusCode);
+
+                InputStream inputStream;
+                if (responseStatusCode == HttpURLConnection.HTTP_OK) {
+                    inputStream = httpURLConnection.getInputStream();
+                } else {
+                    inputStream = httpURLConnection.getErrorStream();
+                }
+
+                InputStreamReader inputStreamReader = new InputStreamReader(inputStream, "UTF-8");
+                BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+
+                StringBuilder sb = new StringBuilder();
+                String line = null;
+
+                while ((line = bufferedReader.readLine()) != null) {
+                    sb.append(line);
+                }
+
+
+                bufferedReader.close();
+
+
+                return sb.toString();
+
+
+            } catch (Exception e) {
+
+                Log.d(TAG, "InsertData: Error ", e);
+
+                return new String("Error: " + e.getMessage());
+            }
+
+        }
     }
 }

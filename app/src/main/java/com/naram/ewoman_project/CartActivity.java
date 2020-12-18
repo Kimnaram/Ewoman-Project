@@ -10,28 +10,18 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
-
-import java.io.ByteArrayInputStream;
-import java.text.DecimalFormat;
 
 public class CartActivity extends AppCompatActivity {
 
@@ -140,7 +130,7 @@ public class CartActivity extends AppCompatActivity {
 
         final String uid = firebaseAuth.getCurrentUser().getUid();
 
-        firebaseDatabase.getReference("cart/" + uid).addValueEventListener(new ValueEventListener() {
+                firebaseDatabase.getReference("cart/" + uid).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 int i = 0;
@@ -245,12 +235,12 @@ public class CartActivity extends AppCompatActivity {
                 return true;
             }
             case R.id.menu_login:
-                Intent cart_to_login = new Intent(getApplicationContext(), mem_LoginActivity.class);
+                Intent cart_to_login = new Intent(getApplicationContext(), LoginActivity.class);
 
                 startActivity(cart_to_login);
                 return true;
             case R.id.menu_signup:
-                Intent cart_to_signup = new Intent(getApplicationContext(), mem_SignupActivity.class);
+                Intent cart_to_signup = new Intent(getApplicationContext(), SignupActivity.class);
 
                 startActivity(cart_to_signup);
                 return true;

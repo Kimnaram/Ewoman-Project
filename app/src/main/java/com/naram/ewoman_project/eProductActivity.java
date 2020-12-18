@@ -21,18 +21,13 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
 
-import java.io.ByteArrayInputStream;
 import java.text.DecimalFormat;
-import java.util.concurrent.atomic.AtomicInteger;
 
 public class eProductActivity extends AppCompatActivity {
 
@@ -326,12 +321,12 @@ public class eProductActivity extends AppCompatActivity {
                 return true;
             }
             case R.id.menu_login:
-                Intent main_to_login = new Intent(getApplicationContext(), mem_LoginActivity.class);
+                Intent main_to_login = new Intent(getApplicationContext(), LoginActivity.class);
 
                 startActivity(main_to_login);
                 return true;
             case R.id.menu_signup:
-                Intent main_to_signup = new Intent(getApplicationContext(), mem_SignupActivity.class);
+                Intent main_to_signup = new Intent(getApplicationContext(), SignupActivity.class);
 
                 startActivity(main_to_signup);
                 return true;

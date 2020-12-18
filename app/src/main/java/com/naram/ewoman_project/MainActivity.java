@@ -9,7 +9,6 @@ import androidx.drawerlayout.widget.DrawerLayout;
 
 import android.app.ProgressDialog;
 import android.app.SearchManager;
-import android.content.ActivityNotFoundException;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
@@ -36,8 +35,6 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-
-import java.io.File;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -138,7 +135,7 @@ public class MainActivity extends AppCompatActivity {
             tv_username.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent navi_to_login = new Intent(getApplicationContext(), mem_LoginActivity.class);
+                    Intent navi_to_login = new Intent(getApplicationContext(), LoginActivity.class);
 
                     startActivity(navi_to_login);
                 }
@@ -305,12 +302,12 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             }
             case R.id.menu_login :
-                Intent main_to_login = new Intent(getApplicationContext(), mem_LoginActivity.class);
+                Intent main_to_login = new Intent(getApplicationContext(), LoginActivity.class);
 
                 startActivity(main_to_login);
                 return true;
             case R.id.menu_signup :
-                Intent main_to_signup = new Intent(getApplicationContext(), mem_SignupActivity.class);
+                Intent main_to_signup = new Intent(getApplicationContext(), SignupActivity.class);
 
                 startActivity(main_to_signup);
                 return true;

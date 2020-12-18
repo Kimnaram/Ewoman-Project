@@ -4,8 +4,6 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -241,10 +239,10 @@ public class ProductDetailActivity extends AppCompatActivity {
         firebaseDatabase = FirebaseDatabase.getInstance();
 
         rl_calendar_container = findViewById(R.id.rl_calendar_container);
-        FragmentManager fm = getSupportFragmentManager();
-        FragmentTransaction fragmentTransaction = fm.beginTransaction();
-        fragmentTransaction.replace(R.id.fl_calendar_view, fr_calender);
-        fragmentTransaction.commit();
+//        FragmentManager fm = getSupportFragmentManager();
+//        FragmentTransaction fragmentTransaction = fm.beginTransaction();
+//        fragmentTransaction.replace(R.id.fl_calendar_view, fr_calender);
+//        fragmentTransaction.commit();
 
         tv_toolbar_title = findViewById(R.id.tv_toolbar_title);
 
@@ -604,13 +602,13 @@ public class ProductDetailActivity extends AppCompatActivity {
                 return true;
             }
             case R.id.menu_login:
-                Intent product_to_login = new Intent(getApplicationContext(), mem_LoginActivity.class);
+                Intent product_to_login = new Intent(getApplicationContext(), LoginActivity.class);
 
                 finish();
                 startActivity(product_to_login);
                 return true;
             case R.id.menu_signup:
-                Intent product_to_signup = new Intent(getApplicationContext(), mem_SignupActivity.class);
+                Intent product_to_signup = new Intent(getApplicationContext(), SignupActivity.class);
 
                 finish();
                 startActivity(product_to_signup);

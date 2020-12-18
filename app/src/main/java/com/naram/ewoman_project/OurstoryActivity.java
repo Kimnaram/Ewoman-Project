@@ -142,12 +142,12 @@ public class OurstoryActivity extends AppCompatActivity {
                 return true;
             }
             case R.id.menu_login:
-                Intent stry_to_login = new Intent(getApplicationContext(), mem_LoginActivity.class);
+                Intent stry_to_login = new Intent(getApplicationContext(), LoginActivity.class);
 
                 startActivity(stry_to_login);
                 return true;
             case R.id.menu_signup:
-                Intent stry_to_signup = new Intent(getApplicationContext(), mem_SignupActivity.class);
+                Intent stry_to_signup = new Intent(getApplicationContext(), SignupActivity.class);
 
                 startActivity(stry_to_signup);
                 return true;

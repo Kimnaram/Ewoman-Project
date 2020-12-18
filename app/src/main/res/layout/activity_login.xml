@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".mem_LoginActivity">
+    tools:context=".LoginActivity">
 
     <!--상단 툴바-->
     <androidx.appcompat.widget.Toolbar
@@ -67,7 +67,7 @@
                 android:layout_height="40dp"
                 android:layout_gravity="center"
                 android:layout_margin="8dp"
-                android:background="@drawable/btn_style_border_line"
+                android:background="@drawable/btn_style_border_line_white_background"
                 android:fontFamily="@font/nanumbarungothic"
                 android:gravity="center"
                 android:text="Google 로그인"
@@ -131,7 +131,7 @@
                 android:hint="이메일"
                 android:fontFamily="@font/nanumbarungothic"
                 android:textSize="18dp"
-                android:background="@drawable/btn_style_border_line"
+                android:background="@drawable/btn_style_border_line_white_background"
                 android:layout_below="@id/tv_social_or"
                 android:layout_centerHorizontal="true"
                 android:layout_marginBottom="5dp"
@@ -145,7 +145,7 @@
                 android:hint="비밀번호"
                 android:fontFamily="@font/nanumbarungothic"
                 android:textSize="18dp"
-                android:background="@drawable/btn_style_border_line"
+                android:background="@drawable/btn_style_border_line_white_background"
                 android:layout_below="@id/et_user_email"
                 android:layout_centerHorizontal="true"
                 android:inputType="textPassword"
@@ -159,7 +159,7 @@
                 android:layout_below="@+id/et_user_passwd"
                 android:layout_centerHorizontal="true"
                 android:textColor="@color/colorGray"
-                android:background="@drawable/btn_style_border_line"
+                android:background="@drawable/btn_style_border_line_white_background"
                 android:gravity="center"
                 android:textSize="18dp"
                 android:fontFamily="@font/nanumbarungothic"

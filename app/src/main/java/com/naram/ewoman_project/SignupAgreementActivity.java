@@ -14,7 +14,7 @@ import android.widget.CheckBox;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class mem_SignupAgreementActivity extends AppCompatActivity {
+public class SignupAgreementActivity extends AppCompatActivity {
 
     private String termsofuse_text;
     private String personalinfo_text;
@@ -31,7 +31,7 @@ public class mem_SignupAgreementActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_mem__signup_agreement);
+        setContentView(R.layout.activity_signup_agreement);
 
         //상단 툴바 설정
         setSupportActionBar((Toolbar) findViewById(R.id.toolbar));
@@ -156,7 +156,7 @@ public class mem_SignupAgreementActivity extends AppCompatActivity {
                     btn_signup_try.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            Intent agreement_to_form = new Intent(getApplicationContext(), mem_SignupFormActivity.class);
+                            Intent agreement_to_form = new Intent(getApplicationContext(), SignupFormActivity.class);
 
                             startActivity(agreement_to_form);
                         }
@@ -179,7 +179,7 @@ public class mem_SignupAgreementActivity extends AppCompatActivity {
                     btn_signup_try.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            Intent agreement_to_form = new Intent(getApplicationContext(), mem_SignupFormActivity.class);
+                            Intent agreement_to_form = new Intent(getApplicationContext(), SignupFormActivity.class);
 
                             startActivity(agreement_to_form);
                         }
@@ -226,13 +226,13 @@ public class mem_SignupAgreementActivity extends AppCompatActivity {
                 return true;
             }
             case R.id.menu_login :
-                Intent main_to_login = new Intent(getApplicationContext(), mem_LoginActivity.class);
+                Intent main_to_login = new Intent(getApplicationContext(), LoginActivity.class);
 
                 startActivity(main_to_login);
                 return true;
 
             case R.id.menu_signup :
-                Intent main_to_signup = new Intent(getApplicationContext(), mem_SignupActivity.class);
+                Intent main_to_signup = new Intent(getApplicationContext(), SignupActivity.class);
 
                 startActivity(main_to_signup);
                 return true;

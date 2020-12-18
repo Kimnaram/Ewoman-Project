@@ -6,7 +6,9 @@ import androidx.appcompat.widget.Toolbar;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -28,12 +30,19 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.auth.UserInfo;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 
-import java.util.HashMap;
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 
-public class mem_SignupActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener {
+public class SignupActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener {
+
+    private static final String TAG = "SignupActivity";
+
+    private static String IP_ADDRESS = "IP ADDRESS";
 
     private TextView tv_naver_signup;
     private TextView tv_google_signup;
@@ -49,7 +58,7 @@ public class mem_SignupActivity extends AppCompatActivity implements GoogleApiCl
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_mem__signup);
+        setContentView(R.layout.activity_signup);
 
         //상단 툴바 설정
         setSupportActionBar((Toolbar) findViewById(R.id.toolbar));
@@ -91,7 +100,7 @@ public class mem_SignupActivity extends AppCompatActivity implements GoogleApiCl
         tv_normal_signup.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent signup_to_form = new Intent(getApplicationContext(), mem_SignupAgreementActivity.class);
+                Intent signup_to_form = new Intent(getApplicationContext(), SignupAgreementActivity.class);
 
                 startActivity(signup_to_form);
             }
@@ -125,7 +134,7 @@ public class mem_SignupActivity extends AppCompatActivity implements GoogleApiCl
     }
 
     private void firebaseAuthWithGoogle(GoogleSignInAccount acct){
-        final ProgressDialog mDialog = new ProgressDialog(mem_SignupActivity.this);
+        final ProgressDialog mDialog = new ProgressDialog(SignupActivity.this);
         mDialog.setMessage("구글 인증 중입니다.");
         mDialog.show();
         AuthCredential credential = GoogleAuthProvider.getCredential(acct.getIdToken(),null);
@@ -146,28 +155,19 @@ public class mem_SignupActivity extends AppCompatActivity implements GoogleApiCl
                                         // Id of the provider (ex: google.com)
                                         String providerId = profile.getProviderId();
 
-                                        // UID specific to the provider
-                                        String uid = profile.getUid();
-
                                         // Name, email address, and profile photo Url
                                         String name = profile.getDisplayName();
                                         String email = profile.getEmail();
-                                        String pnumber = profile.getPhoneNumber();
+                                        String phone = profile.getPhoneNumber();
+                                        String pwd = "000000";
+                                        String gender = "입력 필요";
 
-                                        if(pnumber == null) {
-                                            pnumber = "입력 필요";
+                                        if(phone == null) {
+                                            phone = "입력 필요";
                                         }
 
-                                        HashMap<Object, String> hashMap = new HashMap<>();
-                                        hashMap.put("email", email);
-                                        hashMap.put("uid", uid);
-                                        hashMap.put("name", name);
-                                        hashMap.put("gender", "입력 필요");
-                                        hashMap.put("phone", pnumber);
-
-                                        FirebaseDatabase database = FirebaseDatabase.getInstance();
-                                        DatabaseReference reference = database.getReference("users");
-                                        reference.child(uid).setValue(hashMap);
+                                        InsertData Itask = new InsertData();
+                                        Itask.execute("http://" + IP_ADDRESS + "/ewoman-php/insertUser.php", email, name, pwd, gender, phone);
                                     }
                                 }
                             }
@@ -205,17 +205,113 @@ public class mem_SignupActivity extends AppCompatActivity implements GoogleApiCl
                 return true;
             }
             case R.id.menu_login :
-                Intent main_to_login = new Intent(getApplicationContext(), mem_LoginActivity.class);
+                Intent main_to_login = new Intent(getApplicationContext(), LoginActivity.class);
 
                 startActivity(main_to_login);
                 return true;
             case R.id.menu_signup :
-                Intent main_to_signup = new Intent(getApplicationContext(), mem_SignupActivity.class);
+                Intent main_to_signup = new Intent(getApplicationContext(), SignupActivity.class);
 
                 startActivity(main_to_signup);
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    class InsertData extends AsyncTask<String, Void, String> {
+        ProgressDialog progressDialog;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+
+            progressDialog = ProgressDialog.show(SignupActivity.this,
+                    "회원가입 중입니다.", null, true, true);
+
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+
+            progressDialog.dismiss();
+
+            //가입이 이루어졌을시 가입 화면을 빠져나감.
+            Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+
+            startActivity(intent);
+            finish();
+
+            Toast.makeText(SignupActivity.this, "회원가입에 성공하셨습니다.", Toast.LENGTH_SHORT).show();
+
+            Log.d(TAG, "POST response  - " + result);
+        }
+
+
+        @Override
+        protected String doInBackground(String... params) {
+
+            String email = (String) params[1];
+            String name = (String) params[2];
+            String password = (String) params[3];
+            String gender = (String) params[4];
+            String phone = (String) params[5];
+
+            String serverURL = (String) params[0];
+            String postParameters = "email=" + email +  "&name=" + name + "&password=" + password + "&gender=" + gender + "&phone=" + phone;
+
+            try {
+
+                URL url = new URL(serverURL);
+                HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
+
+                httpURLConnection.setReadTimeout(5000);
+                httpURLConnection.setConnectTimeout(5000);
+                httpURLConnection.setRequestMethod("POST");
+                httpURLConnection.connect();
+
+
+                OutputStream outputStream = httpURLConnection.getOutputStream();
+                outputStream.write(postParameters.getBytes("UTF-8"));
+                outputStream.flush();
+                outputStream.close();
+
+
+                int responseStatusCode = httpURLConnection.getResponseCode();
+                Log.d(TAG, "POST response code - " + responseStatusCode);
+
+                InputStream inputStream;
+                if (responseStatusCode == HttpURLConnection.HTTP_OK) {
+                    inputStream = httpURLConnection.getInputStream();
+                } else {
+                    inputStream = httpURLConnection.getErrorStream();
+                }
+
+                InputStreamReader inputStreamReader = new InputStreamReader(inputStream, "UTF-8");
+                BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+
+                StringBuilder sb = new StringBuilder();
+                String line = null;
+
+                while ((line = bufferedReader.readLine()) != null) {
+                    sb.append(line);
+                }
+
+
+                bufferedReader.close();
+
+
+                return sb.toString();
+
+
+            } catch (Exception e) {
+
+                Log.d(TAG, "InsertData: Error ", e);
+
+                return new String("Error: " + e.getMessage());
+            }
+
+        }
     }
 
 }

@@ -8,19 +8,14 @@ import androidx.appcompat.widget.Toolbar;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -292,12 +287,12 @@ public class ReviewDetailActivity extends AppCompatActivity {
                 return true;
             }
             case R.id.menu_login :
-                Intent revdetail_to_login = new Intent(getApplicationContext(), mem_LoginActivity.class);
+                Intent revdetail_to_login = new Intent(getApplicationContext(), LoginActivity.class);
 
                 startActivity(revdetail_to_login);
                 return true;
             case R.id.menu_signup :
-                Intent revdetail_to_signup = new Intent(getApplicationContext(), mem_SignupActivity.class);
+                Intent revdetail_to_signup = new Intent(getApplicationContext(), SignupActivity.class);
 
                 startActivity(revdetail_to_signup);
                 return true;

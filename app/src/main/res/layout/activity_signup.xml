@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".mem_SignupActivity">
+    tools:context=".SignupActivity">
 
     <!--상단 툴바-->
     <androidx.appcompat.widget.Toolbar
@@ -67,7 +67,7 @@
                 android:layout_height="40dp"
                 android:layout_gravity="center"
                 android:layout_margin="8dp"
-                android:background="@drawable/btn_style_border_line"
+                android:background="@drawable/btn_style_border_line_white_background"
                 android:fontFamily="@font/nanumbarungothic"
                 android:gravity="center"
                 android:text="Google 계정으로 가입"
@@ -144,7 +144,7 @@
                 android:layout_below="@+id/tv_social_or"
                 android:layout_centerHorizontal="true"
                 android:textColor="@color/colorGray"
-                android:background="@drawable/btn_style_border_line"
+                android:background="@drawable/btn_style_border_line_white_background"
                 android:gravity="center"
                 android:fontFamily="@font/nanumbarungothic"
                 android:text="ID/PW 회원가입" />

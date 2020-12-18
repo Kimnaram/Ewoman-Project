@@ -6,16 +6,12 @@ import androidx.appcompat.widget.Toolbar;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
-import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -25,7 +21,6 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
-import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -33,10 +28,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import java.io.File;
 import java.io.InputStream;
-import java.sql.Blob;
-import java.util.HashMap;
 
 public class ReviewUpdateActivity extends AppCompatActivity {
 
@@ -278,12 +270,12 @@ public class ReviewUpdateActivity extends AppCompatActivity {
                 return true;
             }
             case R.id.menu_login:
-                Intent revupdate_to_login = new Intent(getApplicationContext(), mem_LoginActivity.class);
+                Intent revupdate_to_login = new Intent(getApplicationContext(), LoginActivity.class);
 
                 startActivity(revupdate_to_login);
                 return true;
             case R.id.menu_signup:
-                Intent revupdate_to_signup = new Intent(getApplicationContext(), mem_SignupActivity.class);
+                Intent revupdate_to_signup = new Intent(getApplicationContext(), SignupActivity.class);
 
                 startActivity(revupdate_to_signup);
                 return true;

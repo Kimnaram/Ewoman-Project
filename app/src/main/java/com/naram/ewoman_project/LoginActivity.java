@@ -1,15 +1,12 @@
 package com.naram.ewoman_project;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -30,18 +27,10 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
-import com.google.firebase.auth.UserInfo;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 
-import java.util.HashMap;
-
-public class mem_LoginActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener {
+public class LoginActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener {
 
 
     private EditText et_user_email;
@@ -66,7 +55,7 @@ public class mem_LoginActivity extends AppCompatActivity implements GoogleApiCli
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_mem__login);
+        setContentView(R.layout.activity_login);
 
         //상단 툴바 설정
         setSupportActionBar((Toolbar) findViewById(R.id.toolbar));
@@ -102,29 +91,10 @@ public class mem_LoginActivity extends AppCompatActivity implements GoogleApiCli
                 String passwd = et_user_passwd.getText().toString();
 
                 if(!email.isEmpty() && !passwd.isEmpty()) {
-                    final ProgressDialog mDialog = new ProgressDialog(mem_LoginActivity.this);
+                    final ProgressDialog mDialog = new ProgressDialog(LoginActivity.this);
                     mDialog.setMessage("로그인 중입니다.");
                     mDialog.show();
 
-                    firebaseAuth.signInWithEmailAndPassword(email, passwd)
-                            .addOnCompleteListener(mem_LoginActivity.this, new OnCompleteListener<AuthResult>() {
-                                @Override
-                                public void onComplete(@NonNull Task<AuthResult> task) {
-                                    if (task.isSuccessful()) {
-                                        mDialog.dismiss();
-
-                                        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-
-                                        startActivity(intent);
-
-                                        // 세션 유지 부분 추가 필요
-                                    } else {
-                                        mDialog.dismiss();
-
-                                        Toast.makeText(getApplicationContext(), "아이디 또는 비밀번호를 틀렸습니다.", Toast.LENGTH_SHORT).show();
-                                    }
-                                }
-                            });
                 } else {
                     Toast.makeText(getApplicationContext(), "이메일과 비밀번호를 모두 입력해야 합니다.", Toast.LENGTH_SHORT).show();
                 }
@@ -151,7 +121,7 @@ public class mem_LoginActivity extends AppCompatActivity implements GoogleApiCli
         tv_to_signup.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent login_to_signup = new Intent(getApplicationContext(), mem_SignupActivity.class);
+                Intent login_to_signup = new Intent(getApplicationContext(), SignupActivity.class);
 
                 startActivity(login_to_signup);
             }
@@ -196,12 +166,13 @@ public class mem_LoginActivity extends AppCompatActivity implements GoogleApiCli
             }
             else{
                 //구글 로그인 실패
+                Toast.makeText(getApplicationContext(), "구글 로그인에 실패하였습니다.", Toast.LENGTH_SHORT);
             }
         }
     }
 
     private void firebaseAuthWithGoogle(GoogleSignInAccount acct){
-        final ProgressDialog mDialog = new ProgressDialog(mem_LoginActivity.this);
+        final ProgressDialog mDialog = new ProgressDialog(LoginActivity.this);
         mDialog.setMessage("구글 로그인 중입니다.");
         mDialog.show();
         AuthCredential credential = GoogleAuthProvider.getCredential(acct.getIdToken(),null);
@@ -215,39 +186,6 @@ public class mem_LoginActivity extends AppCompatActivity implements GoogleApiCli
                             Toast.makeText(getApplicationContext(), "로그인 실패", Toast.LENGTH_SHORT).show();
 
                         } else {
-
-                            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                            if (user != null) {
-                                for (UserInfo profile : user.getProviderData()) {
-                                    if(profile.getUid() == user.getUid()) {
-                                        // Id of the provider (ex: google.com)
-                                        String providerId = profile.getProviderId();
-
-                                        // UID specific to the provider
-                                        String uid = profile.getUid();
-
-                                        // Name, email address, and profile photo Url
-                                        String name = profile.getDisplayName();
-                                        String email = profile.getEmail();
-                                        String pnumber = profile.getPhoneNumber();
-
-                                        if(pnumber == null) {
-                                            pnumber = "입력 필요";
-                                        }
-
-                                        HashMap<Object, String> hashMap = new HashMap<>();
-                                        hashMap.put("email", email);
-                                        hashMap.put("uid", uid);
-                                        hashMap.put("name", name);
-                                        hashMap.put("gender", "입력 필요");
-                                        hashMap.put("phone", pnumber);
-
-                                        FirebaseDatabase database = FirebaseDatabase.getInstance();
-                                        DatabaseReference reference = database.getReference("users");
-                                        reference.child(uid).setValue(hashMap);
-                                    }
-                                }
-                            }
 
                             mDialog.dismiss();
                             // 로그인 성공 시 가입 화면을 빠져나감.
@@ -281,12 +219,12 @@ public class mem_LoginActivity extends AppCompatActivity implements GoogleApiCli
                 return true;
             }
             case R.id.menu_login :
-                Intent main_to_login = new Intent(getApplicationContext(), mem_LoginActivity.class);
+                Intent main_to_login = new Intent(getApplicationContext(), LoginActivity.class);
 
                 startActivity(main_to_login);
                 return true;
             case R.id.menu_signup :
-                Intent main_to_signup = new Intent(getApplicationContext(), mem_SignupActivity.class);
+                Intent main_to_signup = new Intent(getApplicationContext(), SignupActivity.class);
 
                 startActivity(main_to_signup);
                 return true;

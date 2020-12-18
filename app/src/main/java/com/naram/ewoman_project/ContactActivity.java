@@ -4,8 +4,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.UiThread;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -20,7 +18,6 @@ import android.widget.TextView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.naver.maps.geometry.LatLng;
 import com.naver.maps.map.CameraPosition;
-import com.naver.maps.map.CameraUpdate;
 import com.naver.maps.map.MapFragment;
 import com.naver.maps.map.NaverMap;
 import com.naver.maps.map.OnMapReadyCallback;
@@ -108,13 +105,13 @@ public class ContactActivity extends AppCompatActivity implements OnMapReadyCall
                 return true;
             }
             case R.id.menu_login:
-                Intent contact_to_login = new Intent(getApplicationContext(), mem_LoginActivity.class);
+                Intent contact_to_login = new Intent(getApplicationContext(), LoginActivity.class);
 
                 finish();
                 startActivity(contact_to_login);
                 return true;
             case R.id.menu_signup:
-                Intent contact_to_signup = new Intent(getApplicationContext(), mem_SignupActivity.class);
+                Intent contact_to_signup = new Intent(getApplicationContext(), SignupActivity.class);
 
                 finish();
                 startActivity(contact_to_signup);

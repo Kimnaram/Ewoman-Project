@@ -12,7 +12,6 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -22,7 +21,6 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
-import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -263,12 +261,12 @@ public class ReviewCreateActivity extends AppCompatActivity {
                 return true;
             }
             case R.id.menu_login :
-                Intent revcreate_to_login = new Intent(getApplicationContext(), mem_LoginActivity.class);
+                Intent revcreate_to_login = new Intent(getApplicationContext(), LoginActivity.class);
 
                 startActivity(revcreate_to_login);
                 return true;
             case R.id.menu_signup :
-                Intent revcreate_to_signup = new Intent(getApplicationContext(), mem_SignupActivity.class);
+                Intent revcreate_to_signup = new Intent(getApplicationContext(), SignupActivity.class);
 
                 startActivity(revcreate_to_signup);
                 return true;

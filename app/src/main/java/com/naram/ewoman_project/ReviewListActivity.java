@@ -8,28 +8,21 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.database.Cursor;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.storage.FirebaseStorage;
-
-import java.util.ArrayList;
 
 public class ReviewListActivity extends AppCompatActivity {
 
@@ -300,12 +293,12 @@ public class ReviewListActivity extends AppCompatActivity {
                 return true;
             }
             case R.id.menu_login:
-                Intent revlist_to_login = new Intent(getApplicationContext(), mem_LoginActivity.class);
+                Intent revlist_to_login = new Intent(getApplicationContext(), LoginActivity.class);
 
                 startActivity(revlist_to_login);
                 return true;
             case R.id.menu_signup:
-                Intent revlist_to_signup = new Intent(getApplicationContext(), mem_SignupActivity.class);
+                Intent revlist_to_signup = new Intent(getApplicationContext(), SignupActivity.class);
 
                 startActivity(revlist_to_signup);
                 return true;
