@@ -6,7 +6,9 @@ import androidx.appcompat.widget.Toolbar;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -30,8 +32,34 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.database.FirebaseDatabase;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+
 public class LoginActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener {
 
+    private static final String TAG = "LoginActivity";
+
+    private static String IP_ADDRESS = "IP ADDRESS";
+
+    private static final String TAG_RESULTS = "result";
+    private static final String TAG_EMAIL = "email";
+    private static final String TAG_NAME = "name";
+
+    private String JSONString;
+    private JSONArray user = null;
+
+    private String name = "";
+    private String email = "";
+
+    private DBOpenHelper dbOpenHelper;
 
     private EditText et_user_email;
     private EditText et_user_passwd;
@@ -44,7 +72,6 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     private TextView tv_find_account;
 
     private FirebaseAuth firebaseAuth;
-    private FirebaseDatabase firebaseDatabase;
 
     private static final int RC_SIGN_IN = 9001;
     public GoogleSignInClient mGoogleSignInClient;
@@ -91,9 +118,9 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                 String passwd = et_user_passwd.getText().toString();
 
                 if(!email.isEmpty() && !passwd.isEmpty()) {
-                    final ProgressDialog mDialog = new ProgressDialog(LoginActivity.this);
-                    mDialog.setMessage("로그인 중입니다.");
-                    mDialog.show();
+
+                    GetData task = new GetData();
+                    task.execute(email, passwd);
 
                 } else {
                     Toast.makeText(getApplicationContext(), "이메일과 비밀번호를 모두 입력해야 합니다.", Toast.LENGTH_SHORT).show();
@@ -150,7 +177,9 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         tv_find_account = findViewById(R.id.tv_find_account);
 
         firebaseAuth = FirebaseAuth.getInstance();
-        firebaseDatabase = FirebaseDatabase.getInstance();
+
+        dbOpenHelper = new DBOpenHelper(this);
+        dbOpenHelper.open();
 
     }
 
@@ -230,5 +259,125 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private class GetData extends AsyncTask<String, Void, String> {
+
+        ProgressDialog progressDialog;
+        String errorString = null;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+
+            progressDialog = ProgressDialog.show(LoginActivity.this,
+                    "로그인 중입니다.", null, true, true);
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+
+            progressDialog.dismiss();
+            Log.d(TAG, "response - " + result);
+
+            if (result == null) {
+                // 오류 시
+            } else {
+
+                if(result.contains("찾을 수 없습니다.")) {
+                    Toast.makeText(getApplicationContext(), "아이디 혹은 비밀번호를 잘못 입력하셨습니다.", Toast.LENGTH_SHORT).show();
+                } else {
+                    showResult();
+                }
+
+            }
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+
+            String email = params[0];
+            String password = params[1];
+
+            String serverURL = "http://" + IP_ADDRESS + "/ewoman-php/selectUser.php";
+            Log.d(TAG, "URL");
+            String postParameters = "email=" + email + "password" + password;
+
+            try {
+
+                URL url = new URL(serverURL);
+                HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
+
+                httpURLConnection.setReadTimeout(5000);
+                httpURLConnection.setConnectTimeout(5000);
+                httpURLConnection.setRequestMethod("POST");
+                httpURLConnection.setDoInput(true);
+                httpURLConnection.connect();
+
+                OutputStream outputStream = httpURLConnection.getOutputStream();
+                outputStream.write(postParameters.getBytes("UTF-8"));
+                outputStream.flush();
+                outputStream.close();
+
+                int responseStatusCode = httpURLConnection.getResponseCode();
+                Log.d(TAG, "response code - " + responseStatusCode);
+
+                InputStream inputStream;
+                if (responseStatusCode == HttpURLConnection.HTTP_OK) {
+                    inputStream = httpURLConnection.getInputStream();
+                } else {
+                    inputStream = httpURLConnection.getErrorStream();
+                }
+
+                InputStreamReader inputStreamReader = new InputStreamReader(inputStream, "UTF-8");
+                BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+
+                StringBuilder sb = new StringBuilder();
+                String line;
+
+                while ((line = bufferedReader.readLine()) != null) {
+                    sb.append(line);
+                }
+
+                bufferedReader.close();
+
+                return sb.toString().trim();
+
+            } catch (Exception e) {
+
+                Log.d(TAG, "SelectData: Error ", e);
+                errorString = e.toString();
+
+                return null;
+            }
+
+        }
+    }
+
+    private void showResult() {
+        try {
+            JSONObject jsonObject = new JSONObject(JSONString);
+            JSONArray jsonArray = jsonObject.getJSONArray(TAG_RESULTS);
+
+            for (int i = 0; i < jsonArray.length(); i++) {
+
+                JSONObject item = jsonArray.getJSONObject(i);
+
+                email = item.getString(TAG_EMAIL);
+                name = item.getString(TAG_NAME);
+
+                dbOpenHelper.insertColumn(email, name);
+
+            }
+
+            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+            startActivity(intent);
+
+        } catch (JSONException e) {
+
+            Log.d(TAG, "showResult : ", e);
+        }
+
     }
 }

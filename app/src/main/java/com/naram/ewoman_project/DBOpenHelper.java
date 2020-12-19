@@ -36,7 +36,7 @@ public class DBOpenHelper {
 
     private static final String TAG = "DBOpenHelper";
 
-    private static final String DATABASE_NAME = "ReviewBoard.db";
+    private static final String DATABASE_NAME = "userInfo.db";
     private static final int DATABASE_VERSION = 1;
     public static SQLiteDatabase mDB;
     private DatabaseHelper mDBHelper;
@@ -56,12 +56,12 @@ public class DBOpenHelper {
 
         @Override
         public void onCreate(SQLiteDatabase db) {
-            db.execSQL(Databases.ReviewDB.SQL_CREATE_TABLE);
+            db.execSQL(Databases.UserDB.SQL_CREATE_TABLE);
         }
 
         @Override
         public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-            db.execSQL(Databases.ReviewDB.SQL_DROP_TABLE);
+            db.execSQL(Databases.UserDB.SQL_DROP_TABLE);
             onCreate(db);
         }
 
@@ -86,7 +86,7 @@ public class DBOpenHelper {
     }
 
     public void drop() {
-        mDB.execSQL("DROP TABLE IF EXISTS " + Databases.ReviewDB.TABLE_NAME + ";");
+        mDB.execSQL("DROP TABLE IF EXISTS " + Databases.UserDB.TABLE_NAME + ";");
     }
 
 
@@ -95,159 +95,50 @@ public class DBOpenHelper {
     }
 
     public Cursor selectIDColumn() {
-        Cursor c = mDB.rawQuery("SELECT max(_id) AS postid FROM " + Databases.ReviewDB.TABLE_NAME + ";",null);
+        Cursor c = mDB.rawQuery("SELECT max(_id) AS postid FROM " + Databases.UserDB.TABLE_NAME + ";",null);
         return c;
     }
 
-    public long insertColumn(String title, String userid, String name, String content, @Nullable Drawable image) {
+    public long insertColumn(String email, String name) {
         SQLiteDatabase db = mDBHelper.getReadableDatabase();
 
         ContentValues values = new ContentValues();
-        values.put(Databases.ReviewDB.TITLE, title);
-        values.put(Databases.ReviewDB.USERID, userid);
-        values.put(Databases.ReviewDB.NAME, name);
-        values.put(Databases.ReviewDB.CONTENT, content);
-        // SQLite 이미지 저장 코드 추가 필요
+        values.put(Databases.UserDB.EMAIL, email);
+        values.put(Databases.UserDB.NAME, name);
 
-        if(image != null) {
-            values.put(Databases.ReviewDB.IMAGE, "Y");
-            insertImageColumns(image);
-        }
-
-        return mDB.insert(Databases.ReviewDB.TABLE_NAME, null, values);
-    }
-
-    public void insertImageColumns(Drawable image) {
-
-        // firebase storage에 이미지를 저장하는 코드
-        byte[] byteimage = getByteArrayFromDrawable(image);
-        int _id = 0;
-
-        Cursor c = selectIDColumn();
-        while(c.moveToNext()) {
-            _id = c.getInt(c.getColumnIndex("postid"));
-        }
-
-        _id += 1;
-
-        FirebaseStorage storage = FirebaseStorage.getInstance();
-        StorageReference storageRef = storage.getReference("board");
-        StorageReference boardRef = storageRef.child(_id + ".png");
-
-        UploadTask uploadTask = boardRef.putBytes(byteimage);
-        uploadTask.addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception exception) {
-                // Handle unsuccessful uploads
-            }
-        }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-            @Override
-            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                // taskSnapshot.getMetadata() contains file metadata such as size, content-type, etc.
-                // ...
-                Log.d(TAG, "저장 완료");
-            }
-        });
-
+        return mDB.insert(Databases.UserDB.TABLE_NAME, null, values);
     }
 
     public Cursor selectColumns() {
-        return mDB.query(Databases.ReviewDB.TABLE_NAME, null, null, null, null, null, null);
+        return mDB.query(Databases.UserDB.TABLE_NAME, null, null, null, null, null, null);
     }
 
-    public boolean updateColumn(long id, String title, String content, @Nullable Drawable image) {
+    public boolean updateColumn(long id, String email, String name, @Nullable Drawable image) {
         ContentValues values = new ContentValues();
-        values.put(Databases.ReviewDB.TITLE, title);
-        values.put(Databases.ReviewDB.CONTENT, content);
+        values.put(Databases.UserDB.EMAIL, email);
+        values.put(Databases.UserDB.NAME, name);
 
-        if(image != null) {
-            values.put(Databases.ReviewDB.IMAGE, "Y");
-            updateImageColumns(id, image);
-        }
-
-        return mDB.update(Databases.ReviewDB.TABLE_NAME, values, "_id=" + id, null) > 0;
-    }
-
-    public void updateImageColumns(long _id, Drawable image) {
-
-        // firebase storage에 이미지를 저장하는 코드
-        byte[] byteimage = getByteArrayFromDrawable(image);
-
-        FirebaseStorage storage = FirebaseStorage.getInstance();
-        StorageReference storageRef = storage.getReference("board");
-        if (storageRef.child("" + _id).getDownloadUrl() != null) {
-            storageRef.child("" + _id).delete();
-        }
-        StorageReference boardRef = storageRef.child(_id + ".png");
-
-        UploadTask uploadTask = boardRef.putBytes(byteimage);
-        uploadTask.addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception exception) {
-                // Handle unsuccessful uploads
-            }
-        }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-            @Override
-            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                // taskSnapshot.getMetadata() contains file metadata such as size, content-type, etc.
-                // ...
-                Log.d(TAG, "저장 완료");
-            }
-        });
+        return mDB.update(Databases.UserDB.TABLE_NAME, values, "_id=" + id, null) > 0;
     }
 
     public void deleteAllColumns() {
-        mDB.delete(Databases.ReviewDB.TABLE_NAME, null, null);
+        mDB.delete(Databases.UserDB.TABLE_NAME, null, null);
     }
 
     // Delete Column
     public boolean deleteColumn(long id) {
-        return mDB.delete(Databases.ReviewDB.TABLE_NAME, "_id=" + id, null) > 0;
+        return mDB.delete(Databases.UserDB.TABLE_NAME, "_id=" + id, null) > 0;
     }
 
     // sort by column
     public Cursor sortColumn(String sort) { // 최신글이 더 위로 올라오도록
-        Cursor c = mDB.rawQuery("SELECT _id, title, userid, name, like, content FROM " + Databases.ReviewDB.TABLE_NAME + " ORDER BY " + sort + " DESC;", null);
+        Cursor c = mDB.rawQuery("SELECT _id, email, name FROM " + Databases.UserDB.TABLE_NAME + " ORDER BY " + sort + " DESC;", null);
         return c;
     }
 
     public Cursor selectColumn(long id) {
-        Cursor c = mDB.rawQuery("SELECT * FROM " + Databases.ReviewDB.TABLE_NAME + " WHERE _id=" + id + ";", null);
+        Cursor c = mDB.rawQuery("SELECT * FROM " + Databases.UserDB.TABLE_NAME + " WHERE _id=" + id + ";", null);
         return c;
-    }
-
-    public Drawable selectImageColumns(long id) {
-
-        StorageReference storageReference;
-        storageReference = FirebaseStorage.getInstance().getReference("board");
-        StorageReference imagePath = storageReference.child(id + ".png");
-
-        imagePath.getBytes(Long.MAX_VALUE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
-            @Override
-            public void onSuccess(byte[] bytes) {
-
-                ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(bytes);
-                image = Drawable.createFromStream(byteArrayInputStream, "Review Image");
-
-            }
-        });
-
-        return image;
-    }
-
-    public byte[] getByteArrayFromDrawable(Drawable d) {
-        Bitmap bitmap = ((BitmapDrawable) d).getBitmap();
-        ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
-        byte[] data = stream.toByteArray();
-
-        return data;
-    }
-
-    public Bitmap getBitmapFromByteArray(byte[] b) {
-        Bitmap bitmap = BitmapFactory.decodeByteArray(b, 0, b.length);
-
-        return bitmap;
     }
 
 }

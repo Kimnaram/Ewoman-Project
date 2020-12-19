@@ -6,27 +6,19 @@ import android.provider.BaseColumns;
 public final class Databases {
 
     /* Inner class that defines the table contents */
-    public static final class ReviewDB implements BaseColumns {
-        public static final String TABLE_NAME = "Reviews";
-        public static final String TITLE = "title";
-        public static final String USERID = "userid";
+    public static final class UserDB implements BaseColumns {
+        public static final String TABLE_NAME = "userInfo";
+        public static final String EMAIL = "email";
         public static final String NAME = "name";
-        public static final String CONTENT = "content";
-        public static final String LIKE = "like";
-        public static final String IMAGE = "image";
 
         public static final String SQL_CREATE_TABLE =
-                "CREATE TABLE " + ReviewDB.TABLE_NAME + " (" +
+                "CREATE TABLE " + UserDB.TABLE_NAME + " (" +
                         _ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                        ReviewDB.TITLE + " TEXT NOT NULL, " +
-                        ReviewDB.USERID + " TEXT NOT NULL, " +
-                        ReviewDB.NAME + " TEXT NOT NULL, " +
-                        ReviewDB.CONTENT + " TEXT NOT NULL, " +
-                        ReviewDB.LIKE + " INTEGER DEFAULT 0, " +
-                        ReviewDB.IMAGE + " TEXT DEFAULT 'N')";
+                        UserDB.EMAIL + " TEXT NOT NULL, " +
+                        UserDB.NAME + " TEXT NOT NULL)";
 
         public static final String SQL_DROP_TABLE =
-                "DROP TABLE " + ReviewDB.TABLE_NAME + ";";
+                "DROP TABLE " + UserDB.TABLE_NAME + ";";
     }
 
 }
