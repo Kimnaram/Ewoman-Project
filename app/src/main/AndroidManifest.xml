@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.naram.ewoman_project">
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher_ewoman"
+        android:label="ewoman"
+        android:roundIcon="@mipmap/ic_launcher_ewoman_round"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme">
+        <activity android:name=".CartActivity"></activity>
+        <activity android:name=".ReviewUpdateActivity" />
+        <activity android:name=".ReviewDetailActivity" />
+        <activity android:name=".ReviewCreateActivity" />
+        <activity android:name=".ReviewListActivity" />
+        <activity android:name=".ContactActivity" />
+        <activity android:name=".eProductActivity" />
+        <activity android:name=".ProductDetailActivity" />
+        <activity android:name=".OurstoryActivity" />
+        <activity android:name=".SplashActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".eCollegeActivity" />
+        <activity android:name=".SignupAgreementActivity" />
+        <activity android:name=".SignupFormActivity" />
+        <activity android:name=".SignupActivity" />
+        <activity android:name=".LoginActivity" />
+        <activity android:name=".MainActivity" />
+
+        <meta-data
+            android:name="com.naver.maps.map.CLIENT_ID"
+            android:value="CLIENT ID" />
+    </application>
+
+</manifest>

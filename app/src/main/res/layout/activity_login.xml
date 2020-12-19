@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".LoginActivity">
+
+    <!--상단 툴바-->
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:minHeight="?attr/actionBarSize">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="35dp"
+            android:layout_marginTop="15dp"
+            android:layout_marginRight="10dp"
+            android:text="LOGIN"
+            android:fontFamily="@font/nanumbarungothic"
+            android:textStyle="bold"
+            android:textSize="23dp"/>
+
+    </androidx.appcompat.widget.Toolbar>
+
+    <RelativeLayout
+        android:id="@+id/rl_all_login_container"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true">
+
+        <LinearLayout
+            android:id="@+id/ll_social_signup_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="소셜 로그인"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:fontFamily="@font/nanumbarungothic"
+                android:textSize="18dp"
+                android:layout_marginBottom="10dp"/>
+
+            <TextView
+                android:id="@+id/tv_naver_login"
+                android:layout_width="300dp"
+                android:layout_height="40dp"
+                android:layout_gravity="center"
+                android:layout_margin="8dp"
+                android:background="@color/colorLightGreen"
+                android:fontFamily="@font/nanumbarungothic"
+                android:gravity="center"
+                android:text="네이버 로그인"
+                android:drawableLeft="@drawable/mem_naver_logo"
+                android:textColor="@color/colorWhite" />
+
+            <TextView
+                android:id="@+id/tv_google_login"
+                android:layout_width="300dp"
+                android:layout_height="40dp"
+                android:layout_gravity="center"
+                android:layout_margin="8dp"
+                android:background="@drawable/btn_style_border_line_white_background"
+                android:fontFamily="@font/nanumbarungothic"
+                android:gravity="center"
+                android:text="Google 로그인"
+                android:drawableLeft="@drawable/mem_google_logo"
+                android:paddingLeft="5dp"
+                android:textColor="@color/colorGray" />
+
+            <TextView
+                android:id="@+id/tv_kakao_login"
+                android:layout_width="300dp"
+                android:layout_height="40dp"
+                android:layout_gravity="center"
+                android:layout_margin="8dp"
+                android:background="@color/colorLightYellow"
+                android:fontFamily="@font/nanumbarungothic"
+                android:drawableLeft="@drawable/mem_kakao_logo"
+                android:paddingLeft="5dp"
+                android:gravity="center"
+                android:text="카카오 로그인"
+                android:textColor="@color/colorWhite" />
+
+            <TextView
+                android:id="@+id/tv_facebook_login"
+                android:layout_width="300dp"
+                android:layout_height="40dp"
+                android:layout_gravity="center"
+                android:layout_margin="8dp"
+                android:background="@color/colorDeepBlue"
+                android:fontFamily="@font/nanumbarungothic"
+                android:gravity="center"
+                android:text="Facebook 로그인"
+                android:textColor="@color/colorWhite"
+                android:drawableLeft="@drawable/mem_facebook_logo" />
+
+        </LinearLayout>
+
+        <RelativeLayout
+            android:id="@+id/rl_normal_login_container"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/ll_social_signup_container"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="30dp">
+
+            <TextView
+                android:id="@+id/tv_social_or"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:fontFamily="@font/nanumbarungothic"
+                android:text="또는"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:layout_marginBottom="10dp"
+                android:textSize="17dp" />
+
+            <EditText
+                android:id="@+id/et_user_email"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:hint="이메일"
+                android:fontFamily="@font/nanumbarungothic"
+                android:textSize="18dp"
+                android:background="@drawable/btn_style_border_line_white_background"
+                android:layout_below="@id/tv_social_or"
+                android:layout_centerHorizontal="true"
+                android:layout_marginBottom="5dp"
+                android:inputType="textEmailAddress"
+                android:paddingLeft="5dp"/>
+
+            <EditText
+                android:id="@+id/et_user_passwd"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:hint="비밀번호"
+                android:fontFamily="@font/nanumbarungothic"
+                android:textSize="18dp"
+                android:background="@drawable/btn_style_border_line_white_background"
+                android:layout_below="@id/et_user_email"
+                android:layout_centerHorizontal="true"
+                android:inputType="textPassword"
+                android:layout_marginBottom="15dp"
+                android:paddingLeft="5dp"/>
+
+            <TextView
+                android:id="@+id/tv_login_try"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_below="@+id/et_user_passwd"
+                android:layout_centerHorizontal="true"
+                android:textColor="@color/colorGray"
+                android:background="@drawable/btn_style_border_line_white_background"
+                android:gravity="center"
+                android:textSize="18dp"
+                android:fontFamily="@font/nanumbarungothic"
+                android:text="로그인" />
+
+            <TextView
+                android:id="@+id/tv_to_signup"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/nanumbarungothic"
+                android:text="회원가입"
+                android:textSize="16dp"
+                android:layout_alignParentLeft="true"
+                android:layout_below="@+id/tv_login_try"
+                android:layout_marginTop="5dp"
+                android:drawableLeft="@drawable/common_join"
+                android:drawablePadding="2dp"
+                android:gravity="center"/>
+
+            <TextView
+                android:id="@+id/tv_find_account"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/nanumbarungothic"
+                android:text="내 계정 찾기"
+                android:textSize="16dp"
+                android:layout_alignParentRight="true"
+                android:layout_below="@+id/tv_login_try"
+                android:layout_marginTop="5dp"
+                android:drawableLeft="@drawable/mem_forgot_passwd"
+                android:drawablePadding="2dp"
+                android:gravity="center"/>
+
+        </RelativeLayout>
+
+    </RelativeLayout>
+
+</RelativeLayout>

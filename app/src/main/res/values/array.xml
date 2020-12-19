@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string-array name = "eCollege_menu">
+        <item>등록일순</item>
+        <item>인기순</item>
+        <item>낮은가격순</item>
+        <item>높은가격순</item>
+        <item>상품평많은순</item>
+        <item>이름순</item>
+        <item>이름역순</item>
+
+    </string-array>
+
+</resources>

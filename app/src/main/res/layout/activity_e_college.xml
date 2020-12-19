@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.naram.ewoman_project.eCollegeActivity"
+    tools:showIn="@layout/activity_e_college">
+
+    <!--상단 툴바-->
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:minHeight="?attr/actionBarSize">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="35dp"
+            android:layout_marginTop="15dp"
+            android:layout_marginRight="10dp"
+            android:text="e College"
+            android:fontFamily="@font/nanumbarungothic"
+            android:textStyle="bold"
+            android:textSize="23dp">
+        </TextView>
+
+    </androidx.appcompat.widget.Toolbar>
+
+    <RelativeLayout
+        android:id="@+id/rl_college_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="10dp"
+        android:layout_below="@+id/toolbar" >
+
+        <EditText
+            android:id="@+id/et_search_text"
+            android:layout_width="280dp"
+            android:layout_height="40dp"
+            android:paddingLeft="5dp"
+            android:hint="검색어를 입력하세요."
+            android:layout_margin="10dp"
+            android:fontFamily="@font/nanumbarungothic"
+            android:textSize="18dp"
+            android:background="@drawable/btn_style_border_line_white_background"/>
+
+        <TextView
+            android:id="@+id/tv_search_btn"
+            android:layout_width="110dp"
+            android:layout_height="40dp"
+            android:text="검색"
+            android:fontFamily="@font/nanumbarungothic"
+            android:textColor="@color/colorWhite"
+            android:textSize="18dp"
+            android:layout_marginRight="10dp"
+            android:gravity="center"
+            android:background="@color/colorCocoa"
+            android:layout_marginTop="10dp"
+            android:layout_toRightOf="@id/et_search_text"/>
+
+        <ListView
+            android:id="@+id/lv_eCollege_product"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/et_search_text"
+            android:divider="@color/colorCocoa"
+            android:dividerHeight="0.5dp" >
+
+        </ListView>
+
+    </RelativeLayout>
+
+</RelativeLayout>

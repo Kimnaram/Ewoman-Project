@@ -1,0 +1,390 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+    <androidx.drawerlayout.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/drawerLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <!--상단 툴바-->
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:minHeight="?attr/actionBarSize">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/nanumbarungothicbold"
+                    android:gravity="center"
+                    android:text="ewoman"
+                    android:textSize="25dp"
+                    android:textStyle="bold"></TextView>
+
+            </androidx.appcompat.widget.Toolbar>
+
+            <ScrollView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_below="@+id/toolbar">
+
+                <LinearLayout
+                    android:id="@+id/rl_main_container"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+                    <RelativeLayout
+                        android:id="@+id/rl_header_container"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <ImageView
+                            android:id="@+id/iv_ewoman_main_banner"
+                            android:layout_width="match_parent"
+                            android:layout_height="300dp"
+                            android:layout_centerHorizontal="true"
+                            android:scaleType="centerCrop"
+                            android:src="@drawable/ewoman_main_banner"
+                            android:text="ewoman" />
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="300dp"
+                            android:orientation="vertical"
+                            android:gravity="center">
+
+                            <TextView
+                                android:id="@+id/tv_main_title"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:fontFamily="@font/nanumbarungothicbold"
+                                android:text="e - flagship store project"
+                                android:textColor="@color/colorWhite"
+                                android:textStyle="bold"
+                                android:textSize="26dp" />
+
+                            <RelativeLayout
+                                android:id="@+id/rl_ewoman_main_btn_container"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_below="@+id/tv_main_title"
+                                android:layout_centerHorizontal="true">
+
+                                <Button
+                                    android:id="@+id/btn_to_ecollege"
+                                    android:layout_width="120dp"
+                                    android:layout_height="60dp"
+                                    android:layout_centerVertical="true"
+                                    android:layout_margin="20dp"
+                                    android:background="@drawable/btn_style_border_line"
+                                    android:fontFamily="@font/nanumbarungothicbold"
+                                    android:text="College"
+                                    android:textColor="@color/colorWhite"
+                                    android:textSize="17dp" />
+
+                                <Button
+                                    android:id="@+id/btn_to_ourstry"
+                                    android:layout_width="120dp"
+                                    android:layout_height="60dp"
+                                    android:layout_centerVertical="true"
+                                    android:layout_margin="20dp"
+                                    android:layout_toRightOf="@+id/btn_to_ecollege"
+                                    android:background="@drawable/btn_style_border_line"
+                                    android:fontFamily="@font/nanumbarungothicbold"
+                                    android:text="Our Story"
+                                    android:textColor="@color/colorWhite"
+                                    android:textSize="17dp" />
+
+                            </RelativeLayout>
+
+                        </LinearLayout>
+
+                    </RelativeLayout>
+
+                    <LinearLayout
+                        android:id="@+id/ll_main_content_container"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="40dp"
+                        android:gravity="center"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="10dp"
+                            android:fontFamily="@font/nanumbarungothicbold"
+                            android:text="ewoman college"
+                            android:textColor="@color/colorGray"
+                            android:textSize="23dp" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="40dp"
+                            android:fontFamily="@font/nanumbarungothic"
+                            android:text="입체적인 3단 관리를 통해 일과 일상의 아름다운 반전을 경험해 보세요."
+                            android:textColor="@color/colorGray"
+                            android:textSize="13dp" />
+
+                        <ImageView
+                            android:layout_width="match_parent"
+                            android:layout_height="150dp"
+                            android:scaleType="centerCrop"
+                            android:src="@drawable/prd_front_look_theraphy" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="5dp"
+                            android:layout_marginTop="10dp"
+                            android:fontFamily="@font/nanumbarungothicbold"
+                            android:text="Look Therapy"
+                            android:textColor="@color/colorGray"
+                            android:textSize="23dp" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="5dp"
+                            android:layout_marginTop="5dp"
+                            android:fontFamily="@font/nanumbarungothic"
+                            android:text="차별화된 나로 돋보이게 만드는, 한 장의 대표 이미지"
+                            android:textColor="@color/colorGray"
+                            android:textSize="14dp" />
+
+                        <Button
+                            android:id="@+id/btn_to_lookth"
+                            android:layout_width="100dp"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="left"
+                            android:layout_marginLeft="5dp"
+                            android:layout_marginTop="10dp"
+                            android:layout_marginBottom="40dp"
+                            android:background="@drawable/btn_style_border_line_white_background"
+                            android:fontFamily="@font/nanumbarungothic"
+                            android:text="Go shop"
+                            android:textColor="@color/colorGray"
+                            android:textSize="13dp" />
+
+                        <ImageView
+                            android:layout_width="match_parent"
+                            android:layout_height="150dp"
+                            android:scaleType="centerCrop"
+                            android:src="@drawable/prd_book_theraphy" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="5dp"
+                            android:layout_marginTop="10dp"
+                            android:fontFamily="@font/nanumbarungothicbold"
+                            android:text="Book Therapy"
+                            android:textColor="@color/colorGray"
+                            android:textSize="23dp" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="5dp"
+                            android:layout_marginTop="5dp"
+                            android:fontFamily="@font/nanumbarungothic"
+                            android:text="책을 통한 액션 플래닝으로 시작부터, 디퍼런트"
+                            android:textColor="@color/colorGray"
+                            android:textSize="14dp" />
+
+                        <Button
+                            android:id="@+id/btn_to_bookth"
+                            android:layout_width="100dp"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="left"
+                            android:layout_marginLeft="5dp"
+                            android:layout_marginTop="10dp"
+                            android:layout_marginBottom="40dp"
+                            android:background="@drawable/btn_style_border_line_white_background"
+                            android:fontFamily="@font/nanumbarungothic"
+                            android:text="Go shop"
+                            android:textColor="@color/colorGray"
+                            android:textSize="13dp" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/ll_footer_container"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@color/colorCocoa"
+                        android:orientation="vertical"
+                        android:paddingLeft="5dp"
+                        android:paddingTop="20dp"
+                        android:paddingRight="5dp"
+                        android:paddingBottom="20dp">
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:layout_marginBottom="10dp"
+                            android:orientation="horizontal">
+
+                            <ImageButton
+                                android:id="@+id/ib_instagram"
+                                android:layout_width="25dp"
+                                android:layout_height="25dp"
+                                android:layout_marginRight="5dp"
+                                android:background="@null"
+                                android:padding="2dp"
+                                android:src="@drawable/main_instagram" />
+
+                            <ImageButton
+                                android:id="@+id/ib_facebook"
+                                android:layout_width="25dp"
+                                android:layout_height="25dp"
+                                android:background="@null"
+                                android:padding="2dp"
+                                android:src="@drawable/main_facebook" />
+
+                        </LinearLayout>
+
+                        <org.apmem.tools.layouts.FlowLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_margin="5dp"
+                                android:fontFamily="@font/nanumbarungothic"
+                                android:text="이우먼"
+                                android:textColor="@color/colorWhite"
+                                android:textSize="14dp" />
+
+                            <View
+                                android:layout_width="2dp"
+                                android:layout_height="18dp"
+                                android:layout_margin="5dp"
+                                android:background="@color/colorWhite" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_margin="5dp"
+                                android:fontFamily="@font/nanumbarungothic"
+                                android:text="대표 정슬기"
+                                android:textColor="@color/colorWhite"
+                                android:textSize="14dp" />
+
+                            <View
+                                android:layout_width="2dp"
+                                android:layout_height="18dp"
+                                android:layout_margin="5dp"
+                                android:background="@color/colorWhite" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_margin="5dp"
+                                android:fontFamily="@font/nanumbarungothic"
+                                android:text="사업자 등록번호 : 362-01-01618"
+                                android:textColor="@color/colorWhite"
+                                android:textSize="14dp" />
+
+                            <View
+                                android:layout_width="2dp"
+                                android:layout_height="18dp"
+                                android:layout_margin="5dp"
+                                android:background="@color/colorWhite" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_margin="5dp"
+                                android:fontFamily="@font/nanumbarungothic"
+                                android:text="통신판매업 신고번호 : 2020-서울강남-03327"
+                                android:textColor="@color/colorWhite"
+                                android:textSize="14dp" />
+
+                            <View
+                                android:layout_width="2dp"
+                                android:layout_height="18dp"
+                                android:layout_margin="5dp"
+                                android:background="@color/colorWhite" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_margin="5dp"
+                                android:fontFamily="@font/nanumbarungothic"
+                                android:text="서울특별시 강남구 역삼로 165, 608호"
+                                android:textColor="@color/colorWhite"
+                                android:textSize="14dp" />
+
+                            <View
+                                android:layout_width="2dp"
+                                android:layout_height="18dp"
+                                android:layout_margin="5dp"
+                                android:background="@color/colorWhite"
+                                android:textColor="@color/colorWhite" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_margin="5dp"
+                                android:fontFamily="@font/nanumbarungothic"
+                                android:text="suntteut@gmail.com"
+                                android:textColor="@color/colorWhite"
+                                android:textSize="14dp" />
+
+                            <View
+                                android:layout_width="2dp"
+                                android:layout_height="18dp"
+                                android:layout_margin="5dp"
+                                android:background="@color/colorWhite" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_margin="5dp"
+                                android:fontFamily="@font/nanumbarungothic"
+                                android:text="FAX : 02-3440-7574"
+                                android:textColor="@color/colorWhite"
+                                android:textSize="14dp" />
+
+                        </org.apmem.tools.layouts.FlowLayout>
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+            </ScrollView>
+
+        </RelativeLayout>
+
+        <com.google.android.material.navigation.NavigationView
+            android:id="@+id/navigationView"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="start"
+            android:fitsSystemWindows="true"
+            app:headerLayout="@layout/navigation_item"
+            app:itemTextAppearance="@style/NavigationViewStyle"
+            app:menu="@menu/navigation_menu" />
+
+    </androidx.drawerlayout.widget.DrawerLayout>
+
+
+</RelativeLayout>

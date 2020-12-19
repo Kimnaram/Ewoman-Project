@@ -1,0 +1,31 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+
+        <!--Status Bar 배경색-->
+        <item name="android:statusBarColor">@color/colorCocoa</item>
+        <!--Status Bar 글자색깔-->
+        <item name="android:windowLightStatusBar" tools:targetApi="m">false</item>
+
+    </style>
+
+    <style name="AlertDialogStyle" parent="Theme.AppCompat.Light.Dialog">
+        <item name="colorAccent">@color/colorCocoa</item>
+        <item name="android:textColorPrimary">@color/colorCocoa</item>
+        <item name="android:fontFamily">@font/nanumbarungothic</item>
+        <item name="android:textSize">@dimen/dialog_min_textSize</item>
+        <item name="android:windowMinWidthMajor">@dimen/dialog_min_width_major</item>
+        <item name="android:windowMinWidthMinor">@dimen/dialog_min_width_minor</item>
+    </style>
+
+    <style name="NavigationViewStyle">
+        <item name="android:fontFamily">@font/nanumbarungothic</item>
+        <item name="android:textSize">18dp</item>
+    </style>
+
+</resources>
