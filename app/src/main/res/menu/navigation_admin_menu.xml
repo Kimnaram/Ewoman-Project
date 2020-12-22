@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/item_our_story"
+            android:title="Our Story" />
+
+        <item
+            android:id="@+id/item_e_college"
+            android:title="e College" />
+
+        <item
+            android:id="@+id/item_e_product"
+            android:title="e Product" />
+
+        <item
+            android:id="@+id/item_e_today"
+            android:title="e Today" />
+
+        <item
+            android:id="@+id/item_e_review"
+            android:title="e Review" />
+
+        <item
+            android:id="@+id/item_contact"
+            android:title="Contact" />
+
+        <item
+            android:id="@+id/item_empty1"
+            android:title=""/>
+
+        <item
+            android:id="@+id/item_empty2"
+            android:title=""/>
+
+        <item
+            android:id="@+id/item_administrator"
+            android:title="Administration" />
+    </group>
+</menu>

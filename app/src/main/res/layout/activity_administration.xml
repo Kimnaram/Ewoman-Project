@@ -1,0 +1,324 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Administration">
+
+    <!--상단 툴바-->
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:minHeight="?attr/actionBarSize">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:layout_marginRight="10dp"
+            android:fontFamily="@font/nanumsquare"
+            android:gravity="center_vertical"
+            android:text="Administration"
+            android:textSize="23dp" />
+
+    </androidx.appcompat.widget.Toolbar>
+
+    <Button
+        android:id="@+id/btn_item_save"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_marginTop="65dp"
+        android:layout_marginRight="10dp"
+        android:background="@drawable/btn_style_border_line_cocoa_background"
+        android:fontFamily="@font/nanumbarungothic"
+        android:gravity="center"
+        android:text="저장"
+        android:textColor="@color/colorWhite"
+        android:textSize="18dp" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/toolbar">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="20dp">
+
+            <TextView
+                android:id="@+id/tv_category_info"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:fontFamily="@font/nanumbarungothicbold"
+                android:text="Category"
+                android:textColor="@color/colorGray"
+                android:textSize="20dp" />
+
+            <RadioGroup
+                android:id="@+id/rg_category"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/tv_category_info"
+                android:layout_marginBottom="10dp">
+
+                <RadioButton
+                    android:id="@+id/rb_category_ecollege"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="5dp"
+                    android:paddingLeft="5dp"
+                    android:fontFamily="@font/nanumbarungothicbold"
+                    android:text="e College"
+                    android:textColor="@color/colorCocoa"
+                    android:button="@drawable/btn_style_radio"
+                    android:textSize="18dp">
+
+                </RadioButton>
+
+                <RadioButton
+                    android:id="@+id/rb_category_eproduct"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="5dp"
+                    android:fontFamily="@font/nanumbarungothicbold"
+                    android:text="e Product"
+                    android:textColor="@color/colorCocoa"
+                    android:button="@drawable/btn_style_radio"
+                    android:textSize="18dp">
+
+                </RadioButton>
+
+            </RadioGroup>
+
+            <View
+                android:id="@+id/v_divide_line_1"
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:layout_below="@+id/rg_category"
+                android:layout_marginBottom="15dp"
+                android:background="@color/colorLightGray" />
+
+            <TextView
+                android:id="@+id/tv_breif_info"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/v_divide_line_1"
+                android:layout_marginBottom="10dp"
+                android:fontFamily="@font/nanumbarungothicbold"
+                android:text="Item Brief Information"
+                android:textColor="@color/colorGray"
+                android:textSize="20dp" />
+
+            <EditText
+                android:id="@+id/et_name_data"
+                android:layout_width="300dp"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/tv_breif_info"
+                android:layout_marginBottom="10dp"
+                android:background="@drawable/btn_style_border_line_white_background"
+                android:fontFamily="@font/nanumbarungothicbold"
+                android:hint="Item Name"
+                android:paddingLeft="5dp"
+                android:textSize="18dp" />
+
+            <EditText
+                android:id="@+id/et_price_data"
+                android:layout_width="300dp"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/et_name_data"
+                android:layout_marginBottom="10dp"
+                android:background="@drawable/btn_style_border_line_white_background"
+                android:fontFamily="@font/nanumbarungothicbold"
+                android:hint="Item Price"
+                android:paddingLeft="5dp"
+                android:textSize="18dp" />
+
+            <TextView
+                android:id="@+id/tv_upload_pic"
+                android:layout_width="300dp"
+                android:layout_height="40dp"
+                android:layout_below="@+id/et_price_data"
+                android:layout_marginBottom="10dp"
+                android:background="@color/colorCocoa"
+                android:fontFamily="@font/nanumbarungothicbold"
+                android:gravity="center"
+                android:text="Upload Item Picture"
+                android:textColor="@color/colorWhite"
+                android:textSize="18dp" />
+
+            <RelativeLayout
+                android:id="@+id/rl_image_container"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:layout_below="@+id/tv_upload_pic"
+                android:visibility="gone">
+
+                <ImageView
+                    android:id="@+id/iv_image_data"
+                    android:layout_width="250dp"
+                    android:layout_height="250dp"
+                    android:scaleType="centerCrop"/>
+
+                <ImageButton
+                    android:id="@+id/ib_image_remove"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginRight="8dp"
+                    android:src="@drawable/rev_x" />
+
+            </RelativeLayout>
+
+            <EditText
+                android:id="@+id/et_info_data"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/rl_image_container"
+                android:layout_marginBottom="15dp"
+                android:background="@drawable/btn_style_border_line_white_background"
+                android:fontFamily="@font/nanumbarungothicbold"
+                android:gravity="left|start"
+                android:hint="Item Information"
+                android:minHeight="100dp"
+                android:padding="5dp"
+                android:textColor="@color/colorCocoa"
+                android:textSize="17dp" />
+
+            <View
+                android:id="@+id/v_divide_line_2"
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:layout_below="@+id/et_info_data"
+                android:layout_marginBottom="15dp"
+                android:background="@color/colorLightGray" />
+
+            <TextView
+                android:id="@+id/tv_delivery_info"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/v_divide_line_2"
+                android:layout_marginBottom="10dp"
+                android:fontFamily="@font/nanumbarungothicbold"
+                android:text="Item Delivery Information"
+                android:textColor="@color/colorGray"
+                android:textSize="20dp" />
+
+            <EditText
+                android:id="@+id/et_delivery_method_data"
+                android:layout_width="300dp"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/tv_delivery_info"
+                android:layout_marginBottom="10dp"
+                android:background="@drawable/btn_style_border_line_white_background"
+                android:fontFamily="@font/nanumbarungothicbold"
+                android:hint="Item Delivery Method"
+                android:paddingLeft="5dp" />
+
+            <EditText
+                android:id="@+id/et_delivery_price_data"
+                android:layout_width="300dp"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/et_delivery_method_data"
+                android:layout_marginBottom="10dp"
+                android:background="@drawable/btn_style_border_line_white_background"
+                android:fontFamily="@font/nanumbarungothicbold"
+                android:hint="Item Delivery Price"
+                android:paddingLeft="5dp" />
+
+            <EditText
+                android:id="@+id/et_delivery_inform_data"
+                android:layout_width="300dp"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/et_delivery_price_data"
+                android:layout_marginBottom="15dp"
+                android:background="@drawable/btn_style_border_line_white_background"
+                android:fontFamily="@font/nanumbarungothicbold"
+                android:hint="Item Delivery Inform"
+                android:paddingLeft="5dp" />
+
+            <View
+                android:id="@+id/v_divide_line_3"
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:layout_below="@+id/et_delivery_inform_data"
+                android:layout_marginBottom="15dp"
+                android:background="@color/colorLightGray" />
+
+            <TextView
+                android:id="@+id/tv_quantity_info"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/v_divide_line_3"
+                android:layout_marginBottom="10dp"
+                android:fontFamily="@font/nanumbarungothicbold"
+                android:text="Item Quantity Information"
+                android:textColor="@color/colorGray"
+                android:textSize="20dp" />
+
+            <EditText
+                android:id="@+id/et_minimum_quantity_data"
+                android:layout_width="300dp"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/tv_quantity_info"
+                android:layout_marginBottom="10dp"
+                android:background="@drawable/btn_style_border_line_white_background"
+                android:fontFamily="@font/nanumbarungothicbold"
+                android:hint="Item Minimum Quantity"
+                android:paddingLeft="5dp" />
+
+            <EditText
+                android:id="@+id/et_maximum_quantity_data"
+                android:layout_width="300dp"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/et_minimum_quantity_data"
+                android:layout_marginBottom="15dp"
+                android:background="@drawable/btn_style_border_line_white_background"
+                android:fontFamily="@font/nanumbarungothicbold"
+                android:hint="Item Maximum Quantity"
+                android:paddingLeft="5dp" />
+
+            <View
+                android:id="@+id/v_divide_line_4"
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:layout_below="@+id/et_maximum_quantity_data"
+                android:layout_marginBottom="15dp"
+                android:background="@color/colorLightGray" />
+
+            <TextView
+                android:id="@+id/tv_class_info"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/v_divide_line_4"
+                android:layout_marginBottom="10dp"
+                android:fontFamily="@font/nanumbarungothicbold"
+                android:text="Item Class Information"
+                android:textColor="@color/colorGray"
+                android:textSize="20dp" />
+
+            <EditText
+                android:id="@+id/et_class_data"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/tv_class_info"
+                android:layout_marginBottom="30dp"
+                android:background="@drawable/btn_style_border_line_white_background"
+                android:fontFamily="@font/nanumbarungothicbold"
+                android:gravity="left|start"
+                android:minHeight="100dp"
+                android:padding="5dp"
+                android:hint="Item Class Option (옵션이 여러개라면 /를 통해 구분해주세요.)" />
+
+        </RelativeLayout>
+
+    </ScrollView>
+
+</RelativeLayout>

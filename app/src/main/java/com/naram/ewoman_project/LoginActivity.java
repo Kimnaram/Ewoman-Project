@@ -127,6 +127,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                 }
             }
         });
+
         tv_login_try.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
@@ -288,6 +289,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                 if(result.contains("찾을 수 없습니다.")) {
                     Toast.makeText(getApplicationContext(), "아이디 혹은 비밀번호를 잘못 입력하셨습니다.", Toast.LENGTH_SHORT).show();
                 } else {
+                    JSONString = result;
                     showResult();
                 }
 
@@ -301,8 +303,8 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
             String password = params[1];
 
             String serverURL = "http://" + IP_ADDRESS + "/ewoman-php/selectUser.php";
-            Log.d(TAG, "URL");
-            String postParameters = "email=" + email + "password" + password;
+            Log.d(TAG, "URL" + serverURL);
+            String postParameters = "email=" + email + "&password=" + password;
 
             try {
 

@@ -11,6 +11,7 @@ import android.app.ProgressDialog;
 import android.app.SearchManager;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
@@ -30,17 +31,13 @@ import android.widget.Toast;
 
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 
 public class MainActivity extends AppCompatActivity {
 
     private final static String TAG = "MainActivity";
 
     private FirebaseAuth firebaseAuth;
+    private DBOpenHelper dbOpenHelper;
 
     private NavigationView navigationView;
     private DrawerLayout drawerLayout;
@@ -53,7 +50,8 @@ public class MainActivity extends AppCompatActivity {
     private ImageButton ib_instagram;
     private ImageButton ib_facebook;
 
-    private String username;
+    private String username = null;
+    private String useremail = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -104,29 +102,41 @@ public class MainActivity extends AppCompatActivity {
         param.setMargins(20, 0, 20, 20);
         tv_useremail.setLayoutParams(param);
 
-        final FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
-        if(firebaseUser != null) {
-            String uid = firebaseUser.getUid();
-            FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
-            firebaseDatabase.getReference("users").child(uid).addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    for(DataSnapshot dataSnapshot : snapshot.getChildren())
-                        if(dataSnapshot.getKey().equals("name")) {
-                            username = dataSnapshot.getValue().toString();
-                            tv_username.setText(username + " 님");
-                        }
-                }
+        ll_navigation_container.addView(iv_userpicture);
+        ll_navigation_container.addView(tv_username);
+        ll_navigation_container.addView(tv_useremail);
 
-                @Override
-                public void onCancelled(@NonNull DatabaseError error) {
+        navigationView.addHeaderView(ll_navigation_container);
 
-                }
-            });
+        Cursor iCursor = dbOpenHelper.selectColumns();
 
-            tv_useremail.setText(firebaseUser.getEmail());
+        while (iCursor.moveToNext()) {
 
-        } else if(firebaseUser == null) {
+            String tempName = iCursor.getString(iCursor.getColumnIndex("name"));
+            username = tempName;
+            String tempEmail = iCursor.getString(iCursor.getColumnIndex("email"));
+            useremail = tempEmail;
+
+            tv_username.setText(tempName + " 님");
+            tv_useremail.setText(tempEmail);
+
+        }
+
+        if(username != null) {
+
+            if(useremail.equals("develop@naver.com")) {
+
+                navigationView.inflateMenu(R.menu.navigation_admin_menu);
+
+            } else {
+
+                navigationView.inflateMenu(R.menu.navigation_menu);
+
+            }
+
+        } else {
+
+            navigationView.inflateMenu(R.menu.navigation_menu);
 
             iv_userpicture.setImageDrawable(getResources().getDrawable(R.mipmap.ic_launcher_ewoman_round));
             tv_username.setText("로그인이 필요합니다.");
@@ -143,12 +153,6 @@ public class MainActivity extends AppCompatActivity {
 
         }
 
-        ll_navigation_container.addView(iv_userpicture);
-        ll_navigation_container.addView(tv_username);
-        ll_navigation_container.addView(tv_useremail);
-
-        navigationView.addHeaderView(ll_navigation_container);
-
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
@@ -158,26 +162,20 @@ public class MainActivity extends AppCompatActivity {
                 int id = menuItem.getItemId();
 
                 if(id == R.id.item_our_story) {
-                    Intent main_to_ourstry = new Intent(getApplicationContext(), OurstoryActivity.class);
-
-                    startActivity(main_to_ourstry);
+                    startActivity(new Intent(getApplicationContext(), OurstoryActivity.class));
                 } else if (id == R.id.item_e_college) {
-                    Intent main_to_ecollege = new Intent(getApplicationContext(), eCollegeActivity.class);
-
-                    startActivity(main_to_ecollege);
+                    startActivity(new Intent(getApplicationContext(), eCollegeActivity.class));
                 } else if (id == R.id.item_e_product) {
-                    Intent main_to_eproduct = new Intent(getApplicationContext(), eProductActivity.class);
-
-                    startActivity(main_to_eproduct);
+                    startActivity(new Intent(getApplicationContext(), eProductActivity.class));
                 } else if (id == R.id.item_e_review) {
                     Intent main_to_review = new Intent(getApplicationContext(), ReviewListActivity.class);
                     main_to_review.putExtra("username", username);
 
                     startActivity(main_to_review);
                 } else if (id == R.id.item_contact) {
-                    Intent main_to_contact = new Intent(getApplicationContext(), ContactActivity.class);
-
-                    startActivity(main_to_contact);
+                    startActivity(new Intent(getApplicationContext(), ContactActivity.class));
+                } else if (id == R.id.item_administrator) {
+                    startActivity(new Intent(getApplicationContext(), Administration.class));
                 }
 
                 return true;
@@ -280,13 +278,16 @@ public class MainActivity extends AppCompatActivity {
         ib_instagram = findViewById(R.id.ib_instagram);
         ib_facebook = findViewById(R.id.ib_facebook);
 
+        dbOpenHelper = new DBOpenHelper(this);
+        dbOpenHelper.open();
+
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        if(firebaseAuth.getCurrentUser() == null) {
+        if(username == null) {
             getMenuInflater().inflate(R.menu.toolbar_bl_menu, menu);
-        } else if(firebaseAuth.getCurrentUser() != null) {
+        } else if(username != null) {
             getMenuInflater().inflate(R.menu.toolbar_al_menu, menu);
         }
 
@@ -313,7 +314,9 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             case R.id.menu_logout :
 
-                FirebaseAuth.getInstance().signOut();
+                username = null;
+                useremail = null;
+                dbOpenHelper.deleteAllColumns();
 
                 final ProgressDialog mDialog = new ProgressDialog(MainActivity.this);
                 mDialog.setMessage("로그아웃 중입니다.");

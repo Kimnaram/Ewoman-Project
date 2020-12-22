@@ -89,14 +89,8 @@ public class DBOpenHelper {
         mDB.execSQL("DROP TABLE IF EXISTS " + Databases.UserDB.TABLE_NAME + ";");
     }
 
-
     public void close() {
         mDB.close();
-    }
-
-    public Cursor selectIDColumn() {
-        Cursor c = mDB.rawQuery("SELECT max(_id) AS postid FROM " + Databases.UserDB.TABLE_NAME + ";",null);
-        return c;
     }
 
     public long insertColumn(String email, String name) {
@@ -109,9 +103,9 @@ public class DBOpenHelper {
         return mDB.insert(Databases.UserDB.TABLE_NAME, null, values);
     }
 
-    public Cursor selectColumns() {
-        return mDB.query(Databases.UserDB.TABLE_NAME, null, null, null, null, null, null);
-    }
+//    public Cursor selectColumns() {
+//        return mDB.query(Databases.UserDB.TABLE_NAME, null, null, null, null, null, null);
+//    }
 
     public boolean updateColumn(long id, String email, String name, @Nullable Drawable image) {
         ContentValues values = new ContentValues();
@@ -131,8 +125,13 @@ public class DBOpenHelper {
     }
 
     // sort by column
-    public Cursor sortColumn(String sort) { // 최신글이 더 위로 올라오도록
+    public Cursor sortColumn(String sort) {
         Cursor c = mDB.rawQuery("SELECT _id, email, name FROM " + Databases.UserDB.TABLE_NAME + " ORDER BY " + sort + " DESC;", null);
+        return c;
+    }
+
+    public Cursor selectColumns() {
+        Cursor c = mDB.rawQuery("SELECT email, name FROM " + Databases.UserDB.TABLE_NAME, null);
         return c;
     }
 
