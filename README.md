@@ -63,10 +63,13 @@ FOREIGN KEY (item_no) REFERENCES item(item_no) ON DELETE CASCADE ON UPDATE CASCA
 );
 
 CREATE TABLE cart (
-item_no         int(12) PRIMARY KEY,
+item_no         int(12),
+email           varchar(100),
 count           int(5) NOT NULL,
 date            date NOT NULL,
-FOREIGN KEY (item_no) REFERENCES item(item_no) ON DELETE CASCADE ON UPDATE CASCADE
+PRIMARY KEY(item_no, email),
+FOREIGN KEY (item_no) REFERENCES item(item_no) ON DELETE CASCADE ON UPDATE CASCADE,
+FOREIGN KEY (email) REFERENCES user(email) ON DELETE CASCADE ON UPDATE CASCADE
 );
 ```
 -->
