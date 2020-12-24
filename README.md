@@ -40,23 +40,33 @@ gender    varchar(6),
 phone     varchar(11) NOT NULL
 );
 
-CREATE TABLE ecollege (
-product_no        int(12) PRIMARY KEY,
+CREATE TABLE item (
+item_no           int(12) PRIMARY KEY AUTO_INCREMENT,
+category          varchar(10) NOT NULL, 
 name              varchar(50) NOT NULL,
 price             int(10) NOT NULL,
+image             longblob NOT NULL,
 inform            varchar(500),
 deliv_method      varchar(20),
 deliv_price       int(5),
 deliv_inform      varchar(30),
 minimum_quantity  int(5),
-maximum_quantity  int(5),
+maximum_quantity  int(5)
 );
 
 CREATE TABLE class (
-product_no       int(12) NOT NULL,
+item_no          int(12) NOT NULL,
 name             varchar(100) NOT NULL,
 price            int(10) NOT NULL,
-PRIMARY KEY()
+PRIMARY KEY(item_no, name),
+FOREIGN KEY (item_no) REFERENCES item(item_no) ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+CREATE TABLE cart (
+item_no         int(12) PRIMARY KEY,
+count           int(5) NOT NULL,
+date            date NOT NULL,
+FOREIGN KEY (item_no) REFERENCES item(item_no) ON DELETE CASCADE ON UPDATE CASCADE
 );
 ```
 -->
