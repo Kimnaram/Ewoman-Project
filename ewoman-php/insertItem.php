@@ -33,7 +33,7 @@
 
 	if(!isset($errMSG))	{
 		try {
-			$stmt = $con->prepare('INSERT INTO :category(name, price, image, inform, deliv_method, deliv_price, deliv_inform, minimum_quantity, maximum_quantity) VALUES(:name, $price, :image, :inform, :deliv_method, $deliv_price, :deliv_inform, $minimum_quantity, $maximum_quantity)');
+			$stmt = $con->prepare('INSERT INTO item(category, name, price, image, inform, deliv_method, deliv_price, deliv_inform, minimum_quantity, maximum_quantity) VALUES(:category, :name, $price, :image, :inform, :deliv_method, $deliv_price, :deliv_inform, $minimum_quantity, $maximum_quantity)');
 			$stmt->bindParam(':category', $category);
 			$stmt->bindParam(':name', $name);
 			$stmt->bindParam(':image', $image);
@@ -69,7 +69,7 @@
        <body>
 
             <form action="<?php $_PHP_SELF ?>" method="POST">
-                DB NAME : <input type = "text" name = "category" />
+                CATEGORY : <input type = "text" name = "category" />
                 NAME : <input type = "text" name = "name" />
                 PRICE : <input type = "text" name = "price" />
                 IMAGE : <input type = "text" name = "image" />
