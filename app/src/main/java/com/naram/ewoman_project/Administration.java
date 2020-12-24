@@ -3,7 +3,6 @@ package com.naram.ewoman_project;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.core.view.GravityCompat;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -33,8 +32,6 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Date;
-
-import static java.lang.Integer.parseInt;
 
 public class Administration extends AppCompatActivity {
 
@@ -131,21 +128,29 @@ public class Administration extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                if (iv_image_data.getDrawable() != null) {
+                if (!itemName.isEmpty() && !itemPrice.isEmpty() && iv_image_data.getDrawable() != null && !itemCategory.isEmpty()) {
 
-                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                    img.compress(Bitmap.CompressFormat.JPEG, 100, baos);
-                    byte[] bytes = baos.toByteArray();
-                    itemImage = byteArrayToBinaryString(bytes);
+                    if (iv_image_data.getDrawable() != null) {
+
+                        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                        img.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+                        byte[] bytes = baos.toByteArray();
+                        itemImage = byteArrayToBinaryString(bytes);
+
+                    }
+
+                    Date date = new Date();
+                    date.getTime();
+
+                    InsertData task = new InsertData();
+                    task.execute("http://" + IP_ADDRESS + "ewoman-php/insertItem.php", itemCategory, itemName, itemPrice, itemImage, itemInform,
+                            itemDeliveryMethod, itemDeliveryPrice, itemDeliveryInform, itemMinimumQuantity, itemMaximumQuantity);
+
+                } else {
+
+                    Toast.makeText(getApplicationContext(), "상품의 이름, 가격, 이미지, 카테코리는 모두 작성되어야 합니다.", Toast.LENGTH_SHORT).show();
 
                 }
-
-                Date date = new Date();
-                date.getTime();
-
-                InsertData task = new InsertData();
-                task.execute("http://" + IP_ADDRESS + "ewoman-php/insertCollege.php", itemCategory, itemName, itemPrice, itemImage, itemInform,
-                        itemDeliveryMethod, itemDeliveryPrice, itemDeliveryInform, itemMinimumQuantity, itemMaximumQuantity);
             }
         });
 
@@ -337,7 +342,7 @@ public class Administration extends AppCompatActivity {
 
             Log.d(TAG, "POST response  - " + result);
 
-            Toast.makeText(getApplicationContext(), "저장 완료되었습니다.", Toast.LENGTH_SHORT);
+            Toast.makeText(getApplicationContext(), "저장 완료되었습니다.", Toast.LENGTH_SHORT).show();
         }
 
 

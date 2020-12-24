@@ -51,7 +51,7 @@ public class ListCartAdapter extends BaseAdapter {
         final ListCart displayItem = getItem(position);
 
         // 아이템 내 각 위젯에 데이터 반영
-//        iv_item_image.setImageDrawable(displayItem.getImage());
+        iv_item_image.setImageBitmap(displayItem.getImage());
         tv_item_name.setText(displayItem.getName());
         tv_item_price.setText(displayItem.getPrice() + "\\");
         tv_item_count.setText(Integer.toString(displayItem.getCount()));

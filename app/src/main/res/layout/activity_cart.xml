@@ -29,8 +29,35 @@
     <RelativeLayout
         android:id="@+id/rl_cart_container"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_below="@id/toolbar">
+
+        <RelativeLayout
+            android:id="@+id/rl_warn_container"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:visibility="gone">
+
+            <ImageView
+                android:id="@+id/iv_empty_cart"
+                android:layout_width="150dp"
+                android:layout_height="150dp"
+                android:src="@drawable/item_cart_512"
+                android:layout_marginBottom="10dp"
+                android:layout_centerHorizontal="true"/>
+
+            <TextView
+                android:id="@+id/tv_warn_cart"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="카트에 제품이 없습니다."
+                android:fontFamily="@font/nanumsquare"
+                android:textSize="22dp"
+                android:gravity="center"
+                android:layout_below="@id/iv_empty_cart"/>
+
+        </RelativeLayout>
 
         <ListView
             android:id="@+id/lv_cart_product"

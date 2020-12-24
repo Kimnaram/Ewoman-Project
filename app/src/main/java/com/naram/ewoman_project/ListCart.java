@@ -1,29 +1,30 @@
 package com.naram.ewoman_project;
 
+import android.graphics.Bitmap;
+
 public class ListCart {
 
-    private int pdnumber;
+    private int item_no;
     private String name;
+    private Bitmap image;
     private String date;
     private int count;
     private String price;
-    private String category;
 
-    public ListCart(int pdnumber, String name, String date, int count, String price, String category) {
-        this.pdnumber = pdnumber;
+    public ListCart(int item_no, String name, String date, Bitmap image, int count, String price) {
+        this.item_no = item_no;
         this.name = name;
         this.date = date;
         this.count = count;
         this.price = price;
-        this.category = category;
     }
 
-    public int getPdnumber() {
-        return pdnumber;
+    public int getItem_no() {
+        return item_no;
     }
 
-    public void setPdnumber(int pdnumber) {
-        this.pdnumber = pdnumber;
+    public void setItem_no(int item_no) {
+        this.item_no = item_no;
     }
 
     public String getName() {
@@ -32,6 +33,14 @@ public class ListCart {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public Bitmap getImage() {
+        return image;
+    }
+
+    public void setImage(Bitmap image) {
+        this.image = image;
     }
 
     public String getDate() {
@@ -56,14 +65,6 @@ public class ListCart {
 
     public void setPrice(String price) {
         this.price = price;
-    }
-
-    public String getCategory() {
-        return category;
-    }
-
-    public void setCategory(String category) {
-        this.category = category;
     }
 
 }
