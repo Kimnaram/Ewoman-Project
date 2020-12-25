@@ -6,12 +6,11 @@ include('dbcon.php');
 
 //POST 값을 읽어온다.
 $email=isset($_POST['email']) ? $_POST['email'] : '';
-$password=isset($_POST['password']) ? $_POST['password'] : '';
 $android = strpos($_SERVER['HTTP_USER_AGENT'], "Android");
 
-if ($email != "" && $password != ""){
+if ($email != ""){
 
-  $sql="select email, name from user where email='$email' and password='$password'";
+  $sql="select C.item_no, name, price, image, count, date from item I, cart C where I.item_no = C.item_no AND email='$email'";
   $stmt = $con->prepare($sql);
   $stmt->execute();
 
@@ -19,7 +18,7 @@ if ($email != "" && $password != ""){
 
         echo "";
         echo $email;
-        echo "은 찾을 수 없습니다.";
+        echo "이 카트에 담은 것이 없습니다.";
   }
         else{
 
@@ -30,8 +29,7 @@ if ($email != "" && $password != ""){
                 extract($row);
 
                 array_push($result,
-			array("email"=>$row["email"],
-			   "name"=>$row["name"]
+                        array("name"=>$row["name"]
                 ));
         }
 
@@ -48,7 +46,7 @@ if ($email != "" && $password != ""){
     }
 }
 else {
-    echo "User : ";
+    echo "Cart : ";
 }
 
 ?>
@@ -66,8 +64,7 @@ if (!$android){
    <body>
 
       <form action="<?php $_PHP_SELF ?>" method="POST">
-         email : <input type = "text" name = "email" />
-         password : <input type= "text" name = "password" />
+         EMAIL : <input type = "text" name = "email" />
          <input type = "submit" />
       </form>
 
@@ -76,6 +73,4 @@ if (!$android){
 <?php
 }
 
-
 ?>
-
