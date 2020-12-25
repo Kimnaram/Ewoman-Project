@@ -1,18 +1,18 @@
 package com.naram.ewoman_project;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
+import android.os.AsyncTask;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextWatcher;
-import android.view.KeyEvent;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -22,25 +22,45 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.text.DecimalFormat;
+
+import static com.naram.ewoman_project.CartActivity.binaryStringToByteArray;
 
 public class eCollegeActivity extends AppCompatActivity {
 
+    private static final String TAG = "eCollegeActivity";
+
+    private static final String TAG_RESULTS = "result";
+    private static final String TAG_ITEMNO = "item_no";
+    private static final String TAG_NAME = "name";
+    private static final String TAG_PRICE = "price";
+    private static final String TAG_IMAGE = "image";
+    private static final String TAG_WISHLIST = "wishlist";
+    private static String IP_ADDRESS = "IP ADDRESS";
+
+    private String JSONString;
+    private JSONArray items = null;
+
+    private DBOpenHelper dbOpenHelper;
+
     private ListView lv_eCollege_product;
     private ListViewAdapter adapter;
-    private ListProduct listProduct;
+    private ListItem listItem;
 
     private FirebaseAuth firebaseAuth;
-    private FirebaseDatabase firebaseDatabase;
 
-    private static final String TAG = "eCollegeActivity";
-    private Drawable[] d_image;
-//    private Drawable storage_image;
+    private String useremail = "";
+    private Bitmap img = null;
 
     private EditText et_search_text;
     private TextView tv_search_btn;
@@ -60,19 +80,25 @@ public class eCollegeActivity extends AppCompatActivity {
 
         InitAllComponent();
 
+        Cursor iCursor = dbOpenHelper.selectColumns();
+
+        while (iCursor.moveToNext()) {
+
+            String tempEmail = iCursor.getString(iCursor.getColumnIndex("email"));
+            useremail = tempEmail;
+
+        }
+
         lv_eCollege_product.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent intent = new Intent(getApplicationContext(), ProductDetailActivity.class);
 
-                int number = adapter.getItem(position).getPdnumber();
+                int number = adapter.getItem(position).getItem_no();
 
-                intent.putExtra("pdnumber", Integer.toString(number));
-                intent.putExtra("category", "e-College");
-                intent.putExtra("DBpath", "ecollege");
+                intent.putExtra("item_no", Integer.toString(number));
 
-                adapter.notifyDataSetChanged();
-
+                onPause();
                 startActivity(intent);
             }
         });
@@ -81,233 +107,84 @@ public class eCollegeActivity extends AppCompatActivity {
     }
 
     @Override
-    public void onStart() {
+    protected void onStart() {
+
         super.onStart();
 
-        adapter.clearAllItems();
-        listviewSetting();
-
-        et_search_text.setOnKeyListener(new View.OnKeyListener() {
-            @Override
-            public boolean onKey(View v, int keyCode, KeyEvent event) {
-                if(keyCode == event.KEYCODE_ENTER) {
-                    return true;
-                }
-                return false;
-            }
-        });
-
-        et_search_text.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                String search = et_search_text.getText().toString();
-                adapter.fillter(search);
-            }
-        });
-
-        tv_search_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                adapter.fillter(et_search_text.getText().toString());
-            }
-        });
-
     }
 
     @Override
-    public void onPause() {
+    protected void onPause() {
+
         super.onPause();
 
-        adapter.clearAllItems();
-
     }
 
     @Override
-    public void onResume() {
+    protected void onResume() {
+
         super.onResume();
 
         adapter.clearAllItems();
+        getData("http://" + IP_ADDRESS + "/ewoman-php/selectItems.php");
+        adapter.notifyDataSetChanged();
 
-        et_search_text.setOnKeyListener(new View.OnKeyListener() {
-            @Override
-            public boolean onKey(View v, int keyCode, KeyEvent event) {
-                if(keyCode == event.KEYCODE_ENTER) {
-                    return true;
-                }
-                return false;
-            }
-        });
+    }
 
-        et_search_text.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+    @Override
+    protected void onDestroy() {
 
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                String search = et_search_text.getText().toString();
-                adapter.fillter(search);
-            }
-        });
-
-        tv_search_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                adapter.fillter(et_search_text.getText().toString());
-            }
-        });
+        super.onDestroy();
 
     }
 
     public void InitAllComponent() {
+
+        dbOpenHelper = new DBOpenHelper(this);
+        dbOpenHelper.open();
 
         lv_eCollege_product = findViewById(R.id.lv_eCollege_product);
         et_search_text = findViewById(R.id.et_search_text);
         tv_search_btn = findViewById(R.id.tv_search_btn);
 
         adapter = new ListViewAdapter();
+        lv_eCollege_product.setAdapter(adapter);
 
         firebaseAuth = FirebaseAuth.getInstance();
 
     }
 
-//    private int listviewCount() {
-//
-//        final AtomicInteger count = new AtomicInteger();
-//        firebaseDatabase.getInstance().getReference("product/ecollege").addChildEventListener(new ChildEventListener() {
-//            @Override
-//            public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-//                childCount = count.incrementAndGet();
-//                System.out.println("childCount : " + childCount);
-//            }
-//
-//            @Override
-//            public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-//
-//            }
-//
-//            @Override
-//            public void onChildRemoved(@NonNull DataSnapshot snapshot) {
-//
-//            }
-//
-//            @Override
-//            public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-//
-//            }
-//
-//            @Override
-//            public void onCancelled(@NonNull DatabaseError error) {
-//
-//            }
-//
-//        });
-//
-//        return childCount;
-//
-//    }
-
-    private void listviewSetting() {
-
-        d_image = new Drawable[2];
-
-        for(int i = 0; i < 2; i++) {
-            final int d_pdnumber = i;
-            if(i == 0) {
-                d_image[i] = getResources().getDrawable(R.drawable.prd_front_look_theraphy);
-            } else if(i == 1) {
-                d_image[i] = getResources().getDrawable(R.drawable.prd_book_theraphy);
+    // 바이너리 바이트를 스트링으로
+    public static String byteToBinaryString(byte n) {
+        StringBuilder sb = new StringBuilder("00000000");
+        for (int bit = 0; bit < 8; bit++) {
+            if (((n >> bit) & 1) > 0) {
+                sb.setCharAt(7 - bit, '1');
             }
-
-            firebaseDatabase.getInstance().getReference("product/ecollege/" + i).addValueEventListener(new ValueEventListener() {
-
-                @Override
-                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    String d_name = " ";
-                    int t_price = 0;
-                    String d_price = " ";
-                    int d_wishlist = 0;
-                    for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
-
-                        if (dataSnapshot.getKey().equals("name")) {
-                            d_name = dataSnapshot.getValue().toString();
-                        } else if (dataSnapshot.getKey().equals("price")) {
-                            t_price = Integer.parseInt(dataSnapshot.getValue().toString());
-                            DecimalFormat format = new DecimalFormat("###,###");
-                            d_price = format.format(t_price);
-
-                        } else if (dataSnapshot.getKey().equals("wishlist")) {
-                            d_wishlist = Integer.parseInt(dataSnapshot.getValue().toString());
-                        }
-
-
-                    }
-
-//                    Drawable d_image = downloadInLocal(product_no);
-
-                    listProduct = new ListProduct(d_pdnumber, d_image[d_pdnumber], d_name, d_price, d_wishlist);
-                    adapter.addItem(listProduct);
-
-                }
-
-                @Override
-                public void onCancelled(@NonNull DatabaseError error) {
-
-                }
-            });
-
         }
-
-        lv_eCollege_product.setAdapter(adapter);
-
+        return sb.toString();
     }
 
-//    private Drawable downloadInLocal(int i) {
-//
-//        StorageReference storageReference;
-//        storageReference = FirebaseStorage.getInstance().getReference("product/ecollege/" + i);
-//        StorageReference pathReference = storageReference.child("image.png");
-//
-//        final int number = i;
-//
-//        long MAX_IMAGE_SIZE = 1024 * 1024;
-//
-//        pathReference.getBytes(MAX_IMAGE_SIZE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
-//            @Override
-//            public void onSuccess(byte[] bytes) {
-//
-//                ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(bytes);
-//                storage_image = Drawable.createFromStream(byteArrayInputStream, "Product Image");
-//                if(storage_image == null) {
-//                    storage_image = getResources().getDrawable(R.drawable.ewoman_main_logo);
-//                }
-//
-//            }
-//        });
-//
-//        return storage_image;
-//
-//    }
+    public static Bitmap StringToBitmap(String ImageString) {
+        try {
+
+            byte[] bytes = binaryStringToByteArray(ImageString);
+            ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
+            Bitmap bitmap = BitmapFactory.decodeStream(bais);
+            return bitmap;
+
+        } catch (Exception e) {
+            e.getMessage();
+            return null;
+        }
+    }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        if(firebaseAuth.getCurrentUser() == null) {
+        if(useremail == null) {
             getMenuInflater().inflate(R.menu.toolbar_bl_menu, menu);
-        } else if(firebaseAuth.getCurrentUser() != null) {
+        } else if(useremail != null) {
             getMenuInflater().inflate(R.menu.toolbar_al_menu, menu);
         }
 
@@ -333,7 +210,8 @@ public class eCollegeActivity extends AppCompatActivity {
                 return true;
             case R.id.menu_logout :
 
-                FirebaseAuth.getInstance().signOut();
+                useremail = null;
+                dbOpenHelper.deleteAllColumns();
 
                 final ProgressDialog mDialog = new ProgressDialog(eCollegeActivity.this);
                 mDialog.setMessage("로그아웃 중입니다.");
@@ -342,6 +220,7 @@ public class eCollegeActivity extends AppCompatActivity {
                 Intent logout_to_main = new Intent(getApplicationContext(), eCollegeActivity.class);
                 mDialog.dismiss();
 
+                finish();
                 startActivity(logout_to_main);
                 return true;
             case R.id.menu_cart :
@@ -351,6 +230,88 @@ public class eCollegeActivity extends AppCompatActivity {
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    protected void showList() {
+        try {
+            JSONObject jsonObj = new JSONObject(JSONString);
+            items = jsonObj.getJSONArray(TAG_RESULTS);
+
+            for (int i = 0; i < items.length(); i++) {
+                JSONObject c = items.getJSONObject(i);
+                int item_no = Integer.parseInt(c.getString(TAG_ITEMNO));
+                String image = c.getString(TAG_IMAGE);
+                img = StringToBitmap(image);
+                String name = c.getString(TAG_NAME);
+                int price = Integer.parseInt(c.getString(TAG_PRICE));
+                DecimalFormat format = new DecimalFormat("###,###");
+                String real_price = format.format(price);
+                int wishlist = Integer.parseInt(c.getString(TAG_WISHLIST));
+
+                listItem = new ListItem(item_no, img, name, real_price, wishlist);
+                adapter.addItem(listItem);
+            }
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    public void getData(String url) {
+        class GetDataJSON extends AsyncTask<String, Void, String> {
+
+            ProgressDialog progressDialog;
+
+            @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+
+                progressDialog = ProgressDialog.show(eCollegeActivity.this,
+                        "로딩중입니다.", null, true, true);
+
+            }
+
+            @Override
+            protected String doInBackground(String... params) {
+
+                String uri = params[0];
+
+                BufferedReader bufferedReader = null;
+                try {
+                    URL url = new URL(uri);
+                    HttpURLConnection con = (HttpURLConnection) url.openConnection();
+                    StringBuilder sb = new StringBuilder();
+
+                    bufferedReader = new BufferedReader(new InputStreamReader(con.getInputStream()));
+
+                    String json;
+                    while ((json = bufferedReader.readLine()) != null) {
+                        sb.append(json + "\n");
+                    }
+
+                    return sb.toString().trim();
+
+                } catch (Exception e) {
+                    return null;
+                }
+
+            }
+
+            @Override
+            protected void onPostExecute(String result) {
+
+                progressDialog.dismiss();
+
+                JSONString = result;
+
+                Log.d(TAG, "response - " + result);
+                showList();
+
+            }
+        }
+        GetDataJSON g = new GetDataJSON();
+        g.execute(url);
     }
 
 }
