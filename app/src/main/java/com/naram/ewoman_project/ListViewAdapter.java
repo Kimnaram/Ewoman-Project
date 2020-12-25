@@ -15,8 +15,8 @@ public class ListViewAdapter extends BaseAdapter {
     // Adapter에 추가된 데이터를 저장하기 위한 ArrayList
     public static final String TAG = "ListViewAdapter";
 
-    private ArrayList<ListProduct> listViewItemList = new ArrayList<ListProduct>() ;
-    private ArrayList<ListProduct> displayItemList = new ArrayList<ListProduct>();
+    private ArrayList<ListItem> listViewItemList = new ArrayList<ListItem>() ;
+    private ArrayList<ListItem> displayItemList = new ArrayList<ListItem>();
 
     // ListViewAdapter의 생성자
 
@@ -49,10 +49,10 @@ public class ListViewAdapter extends BaseAdapter {
         TextView tv_wishlist = (TextView) convertView.findViewById(R.id.tv_wishlist);
 
         // Data Set(listViewItemList)에서 position에 위치한 데이터 참조 획득
-        final ListProduct displayItem = getItem(position);
+        final ListItem displayItem = getItem(position);
 
         // 아이템 내 각 위젯에 데이터 반영
-        iv_item_image.setImageDrawable(displayItem.getImage());
+        iv_item_image.setImageBitmap(displayItem.getImage());
         tv_item_name.setText(displayItem.getName());
         tv_item_price.setText(displayItem.getPrice() + "원");
         tv_wishlist.setText(Integer.toString(displayItem.getWishlist()));
@@ -68,16 +68,16 @@ public class ListViewAdapter extends BaseAdapter {
 
     // 지정한 위치(position)에 있는 데이터 리턴 : 필수 구현
     @Override
-    public ListProduct getItem(int position) {
+    public ListItem getItem(int position) {
         return displayItemList.get(position) ;
     }
 
     // 아이템 데이터 추가를 위한 함수. 개발자가 원하는대로 작성 가능.
-    public void addItem(ListProduct listProduct) {
+    public void addItem(ListItem listItem) {
 
         Log.d(TAG, "Item Add");
-        listViewItemList.add(listProduct);
-        displayItemList.add(listProduct);
+        listViewItemList.add(listItem);
+        displayItemList.add(listItem);
 
         notifyDataSetChanged();
 
@@ -100,7 +100,7 @@ public class ListViewAdapter extends BaseAdapter {
         if(search.length() == 0) {
             displayItemList.addAll(listViewItemList);
         } else {
-            for(ListProduct item : listViewItemList) {
+            for(ListItem item : listViewItemList) {
                 if(item.getName().toLowerCase().contains(search)
                         || item.getName().toUpperCase().contains(search)) {
                     displayItemList.add(item);

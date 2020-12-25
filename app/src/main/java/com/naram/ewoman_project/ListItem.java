@@ -1,29 +1,29 @@
 package com.naram.ewoman_project;
 
-import android.graphics.drawable.Drawable;
+import android.graphics.Bitmap;
 
-public class ListProduct {
+public class ListItem {
 
-    private int pdnumber;
-    private Drawable image;
+    private int item_no;
+    private Bitmap image;
     private String name;
     private String price;
     private int wishlist;
 
-    public ListProduct(int pdnumber, Drawable image, String name, String price, int wishlist) {
-        this.pdnumber = pdnumber;
+    public ListItem(int item_no, Bitmap image, String name, String price, int wishlist) {
+        this.item_no = item_no;
         this.image = image;
         this.name = name;
         this.price = price;
         this.wishlist = wishlist;
     }
 
-    public int getPdnumber() {
-        return pdnumber;
+    public int getItem_no() {
+        return item_no;
     }
 
-    public void setPdnumber(int pdnumber) {
-        this.pdnumber = pdnumber;
+    public void setItem_no(int item_no) {
+        this.item_no = item_no;
     }
 
     public String getName() {
@@ -50,11 +50,11 @@ public class ListProduct {
         this.wishlist = wishlist;
     }
 
-    public Drawable getImage() {
+    public Bitmap getImage() {
         return image;
     }
 
-    public void setImage(Drawable image) {
+    public void setImage(Bitmap image) {
         this.image = image;
     }
 }

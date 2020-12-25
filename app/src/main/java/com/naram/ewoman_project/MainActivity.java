@@ -325,6 +325,7 @@ public class MainActivity extends AppCompatActivity {
                 Intent logout_to_main = new Intent(getApplicationContext(), MainActivity.class);
                 mDialog.dismiss();
 
+                finish();
                 startActivity(logout_to_main);
                 return true;
             case R.id.menu_cart :
