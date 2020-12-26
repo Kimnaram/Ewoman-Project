@@ -4,6 +4,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.text.method.ScrollingMovementMethod;
 import android.view.Menu;
@@ -39,7 +41,7 @@ public class SignupAgreementActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true); //툴바 뒤로가기 생성
         getSupportActionBar().setDisplayShowCustomEnabled(true); //커스터마이징 하기 위해 필요
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.common_backspace); //뒤로가기 버튼 모양 설정
-//        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.GRAY)); //툴바 배경색
+        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.WHITE)); //툴바 배경색
 
         InitAllComponent();
 

@@ -84,6 +84,7 @@
             android:layout_alignParentRight="true"
             android:layout_marginRight="5dp"
             android:textSize="15dp"
+            android:inputType="text"
             android:visibility="gone"/>
 
         <TextView

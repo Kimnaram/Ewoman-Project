@@ -12,14 +12,14 @@
         android:roundIcon="@mipmap/ic_launcher_ewoman_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".Administration"></activity>
+        <activity android:name=".Administration" android:windowSoftInputMode="stateAlwaysHidden"></activity>
         <activity android:name=".CartActivity" />
-        <activity android:name=".ReviewUpdateActivity" />
+        <activity android:name=".ReviewUpdateActivity" android:windowSoftInputMode="stateAlwaysHidden"/>
         <activity android:name=".ReviewDetailActivity" />
         <activity android:name=".ReviewCreateActivity" />
-        <activity android:name=".ReviewListActivity" />
+        <activity android:name=".ReviewListActivity" android:windowSoftInputMode="stateAlwaysHidden"/>
         <activity android:name=".ContactActivity" />
-        <activity android:name=".eProductActivity" />
+        <activity android:name=".eProductActivity" android:windowSoftInputMode="stateAlwaysHidden"/>
         <activity android:name=".ProductDetailActivity" />
         <activity android:name=".OurstoryActivity" />
         <activity android:name=".SplashActivity">
@@ -29,11 +29,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".eCollegeActivity" />
+        <activity android:name=".eCollegeActivity" android:windowSoftInputMode="stateAlwaysHidden"/>
         <activity android:name=".SignupAgreementActivity" />
         <activity android:name=".SignupFormActivity" />
         <activity android:name=".SignupActivity" />
-        <activity android:name=".LoginActivity" />
+        <activity android:name=".LoginActivity" android:windowSoftInputMode="stateAlwaysHidden"/>
         <activity android:name=".MainActivity" />
 
         <meta-data

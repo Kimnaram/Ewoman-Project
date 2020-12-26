@@ -12,6 +12,8 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -19,9 +21,9 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.EditText;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
-
-import com.google.firebase.auth.FirebaseAuth;
+import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -29,7 +31,9 @@ import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.text.DecimalFormat;
@@ -53,17 +57,17 @@ public class eCollegeActivity extends AppCompatActivity {
 
     private DBOpenHelper dbOpenHelper;
 
+    private RelativeLayout rl_warn_container;
+
     private ListView lv_eCollege_product;
     private ListViewAdapter adapter;
     private ListItem listItem;
 
-    private FirebaseAuth firebaseAuth;
-
-    private String useremail = "";
-    private Bitmap img = null;
-
     private EditText et_search_text;
     private TextView tv_search_btn;
+
+    private String useremail = null;
+    private Bitmap img = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,6 +92,27 @@ public class eCollegeActivity extends AppCompatActivity {
             useremail = tempEmail;
 
         }
+
+        et_search_text.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                rl_warn_container.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                String search = et_search_text.getText().toString();
+                adapter.fillter(search);
+                if(adapter.getCount() == 0) {
+                    rl_warn_container.setVisibility(View.VISIBLE);
+                }
+            }
+        });
 
         lv_eCollege_product.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -126,7 +151,10 @@ public class eCollegeActivity extends AppCompatActivity {
         super.onResume();
 
         adapter.clearAllItems();
-        getData("http://" + IP_ADDRESS + "/ewoman-php/selectItems.php");
+
+        GetData task = new GetData();
+        task.execute("ecollege");
+
         adapter.notifyDataSetChanged();
 
     }
@@ -143,14 +171,14 @@ public class eCollegeActivity extends AppCompatActivity {
         dbOpenHelper = new DBOpenHelper(this);
         dbOpenHelper.open();
 
+        rl_warn_container = findViewById(R.id.rl_warn_container);
+
         lv_eCollege_product = findViewById(R.id.lv_eCollege_product);
         et_search_text = findViewById(R.id.et_search_text);
         tv_search_btn = findViewById(R.id.tv_search_btn);
 
         adapter = new ListViewAdapter();
         lv_eCollege_product.setAdapter(adapter);
-
-        firebaseAuth = FirebaseAuth.getInstance();
 
     }
 
@@ -182,9 +210,9 @@ public class eCollegeActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        if(useremail == null) {
+        if (useremail == null) {
             getMenuInflater().inflate(R.menu.toolbar_bl_menu, menu);
-        } else if(useremail != null) {
+        } else if (useremail != null) {
             getMenuInflater().inflate(R.menu.toolbar_al_menu, menu);
         }
 
@@ -193,22 +221,22 @@ public class eCollegeActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()){
-            case android.R.id.home:{ //툴바 뒤로가기 동작
+        switch (item.getItemId()) {
+            case android.R.id.home: { //툴바 뒤로가기 동작
                 finish();
                 return true;
             }
-            case R.id.menu_login :
+            case R.id.menu_login:
                 Intent main_to_login = new Intent(getApplicationContext(), LoginActivity.class);
 
                 startActivity(main_to_login);
                 return true;
-            case R.id.menu_signup :
+            case R.id.menu_signup:
                 Intent main_to_signup = new Intent(getApplicationContext(), SignupActivity.class);
 
                 startActivity(main_to_signup);
                 return true;
-            case R.id.menu_logout :
+            case R.id.menu_logout:
 
                 useremail = null;
                 dbOpenHelper.deleteAllColumns();
@@ -223,7 +251,7 @@ public class eCollegeActivity extends AppCompatActivity {
                 finish();
                 startActivity(logout_to_main);
                 return true;
-            case R.id.menu_cart :
+            case R.id.menu_cart:
                 startActivity(new Intent(getApplicationContext(), CartActivity.class));
                 finish();
 
@@ -258,60 +286,98 @@ public class eCollegeActivity extends AppCompatActivity {
 
     }
 
-    public void getData(String url) {
-        class GetDataJSON extends AsyncTask<String, Void, String> {
+    private class GetData extends AsyncTask<String, Void, String> {
 
-            ProgressDialog progressDialog;
+        ProgressDialog progressDialog;
 
-            @Override
-            protected void onPreExecute() {
-                super.onPreExecute();
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
 
-                progressDialog = ProgressDialog.show(eCollegeActivity.this,
-                        "로딩중입니다.", null, true, true);
+            progressDialog = ProgressDialog.show(eCollegeActivity.this,
+                    "로딩중입니다.", null, true, true);
 
-            }
+        }
 
-            @Override
-            protected String doInBackground(String... params) {
+        @Override
+        protected String doInBackground(String... params) {
 
-                String uri = params[0];
+            String category = params[0];
 
-                BufferedReader bufferedReader = null;
-                try {
-                    URL url = new URL(uri);
-                    HttpURLConnection con = (HttpURLConnection) url.openConnection();
-                    StringBuilder sb = new StringBuilder();
+            String serverURL = "http://" + IP_ADDRESS + "/ewoman-php/selectItems.php";
+            Log.d(TAG, "serverURL : " + serverURL);
+            String postParameters = "category=" + category;
 
-                    bufferedReader = new BufferedReader(new InputStreamReader(con.getInputStream()));
+            try {
 
-                    String json;
-                    while ((json = bufferedReader.readLine()) != null) {
-                        sb.append(json + "\n");
-                    }
+                URL url = new URL(serverURL);
+                HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
 
-                    return sb.toString().trim();
+                httpURLConnection.setReadTimeout(5000);
+                httpURLConnection.setConnectTimeout(5000);
+                httpURLConnection.setRequestMethod("POST");
+                httpURLConnection.setDoInput(true);
+                httpURLConnection.connect();
 
-                } catch (Exception e) {
-                    return null;
+                OutputStream outputStream = httpURLConnection.getOutputStream();
+                outputStream.write(postParameters.getBytes("UTF-8"));
+                outputStream.flush();
+                outputStream.close();
+
+                int responseStatusCode = httpURLConnection.getResponseCode();
+                Log.d(TAG, "response code - " + responseStatusCode);
+
+                InputStream inputStream;
+                if (responseStatusCode == HttpURLConnection.HTTP_OK) {
+                    inputStream = httpURLConnection.getInputStream();
+                } else {
+                    inputStream = httpURLConnection.getErrorStream();
                 }
 
+                InputStreamReader inputStreamReader = new InputStreamReader(inputStream, "UTF-8");
+                BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+
+                StringBuilder sb = new StringBuilder();
+                String line;
+
+                while ((line = bufferedReader.readLine()) != null) {
+                    sb.append(line);
+                }
+
+                bufferedReader.close();
+
+                return sb.toString().trim();
+
+            } catch (Exception e) {
+                return null;
             }
 
-            @Override
-            protected void onPostExecute(String result) {
+        }
 
-                progressDialog.dismiss();
+        @Override
+        protected void onPostExecute(String result) {
 
-                JSONString = result;
+            progressDialog.dismiss();
 
-                Log.d(TAG, "response - " + result);
-                showList();
+            Log.d(TAG, "response - " + result);
 
+            if (result == null) {
+                Toast.makeText(getApplicationContext(), "오류가 발생했습니다!", Toast.LENGTH_SHORT).show();
+            } else {
+
+                if (result.contains("결과가 없습니다.")) {
+
+                    rl_warn_container.setVisibility(View.VISIBLE);
+
+
+                } else {
+
+                    JSONString = result;
+                    showList();
+
+                }
             }
         }
-        GetDataJSON g = new GetDataJSON();
-        g.execute(url);
     }
 
 }

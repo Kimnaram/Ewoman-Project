@@ -59,6 +59,33 @@
             android:layout_marginTop="10dp"
             android:layout_toRightOf="@id/et_search_text"/>
 
+        <RelativeLayout
+            android:id="@+id/rl_warn_container"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:visibility="gone">
+
+            <ImageView
+                android:id="@+id/iv_empty_cart"
+                android:layout_width="150dp"
+                android:layout_height="150dp"
+                android:src="@drawable/item_empty_100"
+                android:layout_marginBottom="10dp"
+                android:layout_centerHorizontal="true"/>
+
+            <TextView
+                android:id="@+id/tv_warn_cart"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="e College를 준비중입니다."
+                android:fontFamily="@font/nanumsquare"
+                android:textSize="22dp"
+                android:layout_centerHorizontal="true"
+                android:layout_below="@id/iv_empty_cart"/>
+
+        </RelativeLayout>
+
         <ListView
             android:id="@+id/lv_eProduct_product"
             android:layout_width="match_parent"

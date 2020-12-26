@@ -19,109 +19,121 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="15dp"
             android:layout_marginRight="10dp"
+            android:fontFamily="@font/nanumbarungothic"
             android:gravity="center_vertical"
             android:text="JOIN"
-            android:fontFamily="@font/nanumbarungothic"
-            android:textStyle="bold"
-            android:textSize="23dp">
-        </TextView>
+            android:textSize="23dp"
+            android:textStyle="bold"></TextView>
 
     </androidx.appcompat.widget.Toolbar>
 
-    <RelativeLayout
-        android:id="@+id/rl_form_container"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp">
+        android:layout_height="match_parent"
+        android:layout_below="@+id/toolbar">
 
-        <CheckBox
-            android:id="@+id/cb_termsofuse_form"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:fontFamily="@font/nanumbarungothic"
-            android:paddingLeft="10dp"
-            android:text="이용약관 동의 (필수)"
-            android:textColor="@color/colorGray"
-            android:textSize="18dp" />
-
-        <TextView
-            android:id="@+id/tv_termsofuse_form"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="250dp"
-            android:layout_below="@id/cb_termsofuse_form"
-            android:layout_alignParentLeft="true"
-            android:ems="10"
-            android:gravity="top|left"
-            android:scrollbars="vertical"
-            android:textColor="@color/colorGray"
-            android:fontFamily="@font/nanumbarungothic"
-            android:paddingTop="10dp"
-            android:paddingLeft="10dp"
-            android:paddingRight="10dp"
-            android:layout_marginBottom="20dp"/>
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
-        <CheckBox
-            android:id="@+id/cb_personalinfo_form"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/tv_termsofuse_form"
-            android:fontFamily="@font/nanumbarungothic"
-            android:paddingLeft="10dp"
-            android:layout_marginTop="10dp"
-            android:text="개인정보 수집 및 이용 (필수)"
-            android:textColor="@color/colorGray"
-            android:textSize="18dp" />
+            <RelativeLayout
+                android:id="@+id/rl_form_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp">
 
-        <TextView
-            android:id="@+id/tv_personalinfo_form"
-            android:layout_width="match_parent"
-            android:layout_height="250dp"
-            android:layout_below="@id/cb_personalinfo_form"
-            android:layout_alignParentLeft="true"
-            android:ems="10"
-            android:gravity="top|left"
-            android:scrollbars="vertical"
-            android:textColor="@color/colorGray"
-            android:fontFamily="@font/nanumbarungothic"
-            android:paddingTop="10dp"
-            android:paddingLeft="10dp"
-            android:paddingRight="10dp" />
+                <CheckBox
+                    android:id="@+id/cb_termsofuse_form"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/nanumbarungothic"
+                    android:paddingLeft="10dp"
+                    android:text="이용약관 동의 (필수)"
+                    android:textColor="@color/colorGray"
+                    android:textSize="18dp" />
 
-    </RelativeLayout>
+                <TextView
+                    android:id="@+id/tv_termsofuse_form"
+                    android:layout_width="match_parent"
+                    android:layout_height="250dp"
+                    android:layout_below="@id/cb_termsofuse_form"
+                    android:layout_alignParentLeft="true"
+                    android:layout_marginBottom="20dp"
+                    android:ems="10"
+                    android:fontFamily="@font/nanumbarungothic"
+                    android:gravity="top|left"
+                    android:paddingLeft="10dp"
+                    android:paddingTop="10dp"
+                    android:paddingRight="10dp"
+                    android:scrollbars="vertical"
+                    android:textColor="@color/colorGray" />
 
-    <RelativeLayout
-        android:id="@+id/rl_btn_container"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/rl_form_container"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="15dp">
+                <CheckBox
+                    android:id="@+id/cb_personalinfo_form"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/tv_termsofuse_form"
+                    android:layout_marginTop="10dp"
+                    android:fontFamily="@font/nanumbarungothic"
+                    android:paddingLeft="10dp"
+                    android:text="개인정보 수집 및 이용 (필수)"
+                    android:textColor="@color/colorGray"
+                    android:textSize="18dp" />
 
-        <Button
-            android:id="@+id/btn_signup_cancel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="10dp"
-            android:background="@drawable/btn_style_border_line_white_background"
-            android:fontFamily="@font/nanumbarungothic"
-            android:text="취소"
-            android:textColor="@color/colorGray"
-            android:textSize="18dp" />
+                <TextView
+                    android:id="@+id/tv_personalinfo_form"
+                    android:layout_width="match_parent"
+                    android:layout_height="250dp"
+                    android:layout_below="@id/cb_personalinfo_form"
+                    android:layout_alignParentLeft="true"
+                    android:ems="10"
+                    android:fontFamily="@font/nanumbarungothic"
+                    android:gravity="top|left"
+                    android:paddingLeft="10dp"
+                    android:paddingTop="10dp"
+                    android:paddingRight="10dp"
+                    android:scrollbars="vertical"
+                    android:textColor="@color/colorGray" />
 
-        <Button
-            android:id="@+id/btn_signup_try"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_toRightOf="@+id/btn_signup_cancel"
-            android:background="@drawable/btn_style_common"
-            android:fontFamily="@font/nanumbarungothic"
-            android:text="가입하기"
-            android:textColor="@color/colorWhite"
-            android:backgroundTint="@color/colorCocoa"
-            android:textSize="18dp" />
+            </RelativeLayout>
 
-    </RelativeLayout>
+            <RelativeLayout
+                android:id="@+id/rl_btn_container"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="15dp">
+
+                <Button
+                    android:id="@+id/btn_signup_cancel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="10dp"
+                    android:background="@drawable/btn_style_border_line_white_background"
+                    android:fontFamily="@font/nanumbarungothic"
+                    android:text="취소"
+                    android:textColor="@color/colorGray"
+                    android:textSize="18dp" />
+
+                <Button
+                    android:id="@+id/btn_signup_try"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toRightOf="@+id/btn_signup_cancel"
+                    android:background="@drawable/btn_style_common"
+                    android:backgroundTint="@color/colorCocoa"
+                    android:fontFamily="@font/nanumbarungothic"
+                    android:text="가입하기"
+                    android:textColor="@color/colorWhite"
+                    android:textSize="18dp" />
+
+            </RelativeLayout>
+
+        </LinearLayout>
+
+    </ScrollView>
 
 </RelativeLayout>
