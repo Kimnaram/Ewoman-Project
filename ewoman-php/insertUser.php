@@ -37,10 +37,10 @@
         {
             try{
                 $stmt = $con->prepare('INSERT INTO user(email, password, name, gender, phone) VALUES(:email, :password, :name, :gender, :phone)');
-	$stmt->bindParam(':email', $email);
-	$stmt->bindParam(':password', $password);
-	$stmt->bindParam(':name', $name);
-                $stmt->bindParam(':gender', $gender);
+		$stmt->bindParam(':email', $email);
+		$stmt->bindParam(':password', $password);
+		$stmt->bindParam(':name', $name);
+		$stmt->bindParam(':gender', $gender);
                 $stmt->bindParam(':phone', $phone);
 
                 if($stmt->execute())

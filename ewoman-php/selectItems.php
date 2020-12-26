@@ -14,7 +14,7 @@ if ($category != ""){
   $stmt = $con->prepare($sql);
   $stmt->execute();
 
-  if ($i_stmt->rowCount() == 0){
+  if ($stmt->rowCount() == 0){
 
         echo "결과가 없습니다.";
 
