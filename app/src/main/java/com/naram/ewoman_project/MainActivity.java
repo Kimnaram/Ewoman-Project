@@ -174,8 +174,8 @@ public class MainActivity extends AppCompatActivity {
                     startActivity(main_to_review);
                 } else if (id == R.id.item_contact) {
                     startActivity(new Intent(getApplicationContext(), ContactActivity.class));
-                } else if (id == R.id.item_administrator) {
-                    startActivity(new Intent(getApplicationContext(), Administration.class));
+                } else if (id == R.id.item_add) {
+                    startActivity(new Intent(getApplicationContext(), ItemAddActivity.class));
                 }
 
                 return true;
@@ -205,9 +205,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(getApplicationContext(), ProductDetailActivity.class);
 
-                intent.putExtra("pdnumber", "0");
-                intent.putExtra("category", "e-College");
-                intent.putExtra("DBpath", "ecollege");
+                intent.putExtra("category", "ecollege");
 
                 startActivity(intent);
             }
@@ -218,9 +216,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(getApplicationContext(), ProductDetailActivity.class);
 
-                intent.putExtra("pdnumber", "1");
-                intent.putExtra("category", "e-College");
-                intent.putExtra("DBpath", "ecollege");
+                intent.putExtra("category", "ecollege");
 
                 startActivity(intent);
             }

@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Administration">
+    tools:context=".ItemAddActivity">
 
     <!--상단 툴바-->
     <androidx.appcompat.widget.Toolbar
@@ -123,7 +123,9 @@
                 android:layout_marginBottom="10dp"
                 android:background="@drawable/btn_style_border_line_white_background"
                 android:fontFamily="@font/nanumbarungothicbold"
+                android:textColor="@color/colorGray"
                 android:hint="Item Name"
+                android:inputType="text"
                 android:paddingLeft="5dp"
                 android:textSize="18dp" />
 
@@ -135,8 +137,10 @@
                 android:layout_marginBottom="10dp"
                 android:background="@drawable/btn_style_border_line_white_background"
                 android:fontFamily="@font/nanumbarungothicbold"
+                android:textColor="@color/colorGray"
                 android:hint="Item Price"
                 android:paddingLeft="5dp"
+                android:inputType="text"
                 android:textSize="18dp" />
 
             <TextView
@@ -154,16 +158,16 @@
 
             <RelativeLayout
                 android:id="@+id/rl_image_container"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="250dp"
+                android:layout_height="250dp"
                 android:layout_marginBottom="10dp"
                 android:layout_below="@+id/tv_upload_pic"
                 android:visibility="gone">
 
                 <ImageView
                     android:id="@+id/iv_image_data"
-                    android:layout_width="250dp"
-                    android:layout_height="250dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
                     android:scaleType="centerCrop"/>
 
                 <ImageButton
@@ -189,7 +193,7 @@
                 android:hint="Item Information"
                 android:minHeight="100dp"
                 android:padding="5dp"
-                android:textColor="@color/colorCocoa"
+                android:textColor="@color/colorGray"
                 android:textSize="17dp" />
 
             <View
@@ -220,6 +224,9 @@
                 android:background="@drawable/btn_style_border_line_white_background"
                 android:fontFamily="@font/nanumbarungothicbold"
                 android:hint="Item Delivery Method"
+                android:textColor="@color/colorGray"
+                android:inputType="text"
+                android:textSize="18dp"
                 android:paddingLeft="5dp" />
 
             <EditText
@@ -231,6 +238,9 @@
                 android:background="@drawable/btn_style_border_line_white_background"
                 android:fontFamily="@font/nanumbarungothicbold"
                 android:hint="Item Delivery Price"
+                android:textColor="@color/colorGray"
+                android:inputType="text"
+                android:textSize="18dp"
                 android:paddingLeft="5dp" />
 
             <EditText
@@ -242,6 +252,9 @@
                 android:background="@drawable/btn_style_border_line_white_background"
                 android:fontFamily="@font/nanumbarungothicbold"
                 android:hint="Item Delivery Inform"
+                android:textColor="@color/colorGray"
+                android:inputType="text"
+                android:textSize="18dp"
                 android:paddingLeft="5dp" />
 
             <View
@@ -272,6 +285,9 @@
                 android:background="@drawable/btn_style_border_line_white_background"
                 android:fontFamily="@font/nanumbarungothicbold"
                 android:hint="Item Minimum Quantity"
+                android:textColor="@color/colorGray"
+                android:inputType="text"
+                android:textSize="18dp"
                 android:paddingLeft="5dp" />
 
             <EditText
@@ -283,6 +299,9 @@
                 android:background="@drawable/btn_style_border_line_white_background"
                 android:fontFamily="@font/nanumbarungothicbold"
                 android:hint="Item Maximum Quantity"
+                android:textColor="@color/colorGray"
+                android:inputType="text"
+                android:textSize="18dp"
                 android:paddingLeft="5dp" />
 
             <View
@@ -295,7 +314,7 @@
 
             <TextView
                 android:id="@+id/tv_class_info"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/v_divide_line_4"
                 android:layout_marginBottom="10dp"
@@ -304,18 +323,77 @@
                 android:textColor="@color/colorGray"
                 android:textSize="20dp" />
 
-            <EditText
+            <ImageButton
+                android:id="@+id/ib_item_plus"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/item_plus"
+                android:background="@null"
+                android:layout_alignParentRight="true"
+                android:layout_below="@+id/v_divide_line_4" />
+
+            <LinearLayout
+                android:id="@+id/ll_class_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_below="@+id/tv_class_info"
+                android:layout_marginBottom="30dp">
+
+                <EditText
+                    android:id="@+id/et_class_data"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/btn_style_border_line_white_background"
+                    android:paddingLeft="5dp"
+                    android:hint="클래스의 이름과 가격을 /로 구분해주세요."
+                    android:fontFamily="@font/nanumbarungothicbold"
+                    android:textColor="@color/colorGray"
+                    android:textSize="18dp"
+                    android:inputType="text"
+                    android:layout_marginBottom="15dp" />
+
+                <!-- <LinearLayout
+                    android:id="@+id/ll_basic_class"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginBottom="10dp">
+
+                    <EditText
+                        android:layout_width="200dp"
+                        android:layout_height="wrap_content"
+                        android:padding="5dp"
+                        android:background="@drawable/btn_style_border_line_white_background"
+                        android:fontFamily="@font/nanumbarungothicbold"
+                        android:hint="Class Name"
+                        android:layout_marginRight="15dp"/>
+
+                    <EditText
+                        android:layout_width="150dp"
+                        android:layout_height="wrap_content"
+                        android:padding="5dp"
+                        android:background="@drawable/btn_style_border_line_white_background"
+                        android:fontFamily="@font/nanumbarungothicbold"
+                        android:hint="Class Price"/>
+
+                </LinearLayout> -->
+
+
+            </LinearLayout>
+
+            <!-- <EditText
                 android:id="@+id/et_class_data"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/tv_class_info"
+                android:layout_below="@+id/ll_class_container"
                 android:layout_marginBottom="30dp"
                 android:background="@drawable/btn_style_border_line_white_background"
                 android:fontFamily="@font/nanumbarungothicbold"
                 android:gravity="left|start"
                 android:minHeight="100dp"
                 android:padding="5dp"
-                android:hint="Item Class Option (옵션이 여러개라면 /를 통해 구분해주세요.)" />
+                android:hint="Item Class Option (옵션이 여러개라면 /를 통해 구분해주세요.)" /> -->
 
         </RelativeLayout>
 

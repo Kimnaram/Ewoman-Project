@@ -9,20 +9,36 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
@@ -31,17 +47,39 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.Date;
+import java.util.ArrayList;
+import java.util.List;
 
-public class Administration extends AppCompatActivity {
+public class ItemAddActivity extends AppCompatActivity {
 
-    private static final String TAG = "Administration";
+    private class Class {
+
+        private String item_name;
+        private String item_price;
+
+        public Class(String item_name, String item_price) {
+            this.item_name = item_name;
+            this.item_price = item_price;
+        }
+
+        public String getItem_name() {
+            return item_name;
+        }
+
+        public String getItem_price() {
+            return item_price;
+        }
+
+    }
+
+    private static final String TAG = "ItemAddActivity";
     private static final int REQUEST_CODE = 1001;
 
     private static String IP_ADDRESS = "IP ADDRESS";
 
     private DBOpenHelper dbOpenHelper;
 
+    private LinearLayout ll_class_container;
     private RelativeLayout rl_image_container;
 
     private RadioGroup rg_category;
@@ -60,31 +98,38 @@ public class Administration extends AppCompatActivity {
 
     private ImageView iv_image_data;
 
+    private ImageButton ib_item_plus;
     private ImageButton ib_image_remove;
 
     private Button btn_item_save;
 
-    private String itemCategory;
-    private String itemName;
-    private String itemPrice;
-    private String itemImage;
-    private String itemInform;
+    private String itemCategory = null;
+    private String itemName = null;
+    private String itemPrice = null;
+    private String itemImage = null;
+    private String itemInform = null;
     private String itemDeliveryMethod;
     private String itemDeliveryPrice;
     private String itemDeliveryInform;
     private String itemMinimumQuantity;
     private String itemMaximumQuantity;
-    private String[] itemClass;
 
     private Bitmap img;
+
+    private List<EditText> allClass = new ArrayList<EditText>();
+    private List<Class> listClass = new ArrayList<Class>();
+
+    private JSONObject jsonObject = new JSONObject();
 
     private String username = null;
     private String useremail = null;
 
+    private ProgressDialog progressDialog;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_administration);
+        setContentView(R.layout.activity_item_add);
 
         //상단 툴바 설정
         setSupportActionBar((Toolbar) findViewById(R.id.toolbar));
@@ -112,21 +157,53 @@ public class Administration extends AppCompatActivity {
             }
         });
 
-        itemName = et_name_data.getText().toString();
-        itemPrice = et_price_data.getText().toString();
-        itemInform = et_info_data.getText().toString();
-        itemDeliveryMethod = et_delivery_method_data.getText().toString();
-        itemDeliveryPrice = et_delivery_price_data.getText().toString();
-        itemDeliveryInform = et_delivery_inform_data.getText().toString();
-        itemMinimumQuantity = et_minimum_quantity_data.getText().toString();
-        itemMaximumQuantity = et_maximum_quantity_data.getText().toString();
-        String tempClass = et_class_data.getText().toString();
-        itemClass = new String[tempClass.split("/").length];
-        itemClass = tempClass.split("/").clone();
+        et_price_data.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+//                int before_format = Integer.parseInt(et_price_data.getText().toString());
+//                DecimalFormat format = new DecimalFormat("###,###");
+//                String after_format = format.format(before_format);
+//                et_price_data.setText(after_format);
+            }
+        });
+
+        ib_item_plus.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if (!et_class_data.getText().toString().isEmpty()) {
+
+                    allClass.add(et_class_data);
+
+                    addEditText("클래스의 이름과 가격을 /로 구분해주세요.");
+
+                }
+
+            }
+        });
 
         btn_item_save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                itemName = et_name_data.getText().toString();
+                itemPrice = et_price_data.getText().toString();
+                itemInform = et_info_data.getText().toString();
+                itemDeliveryMethod = et_delivery_method_data.getText().toString();
+                itemDeliveryPrice = et_delivery_price_data.getText().toString();
+                itemDeliveryInform = et_delivery_inform_data.getText().toString();
+                itemMinimumQuantity = et_minimum_quantity_data.getText().toString();
+                itemMaximumQuantity = et_maximum_quantity_data.getText().toString();
 
                 if (!itemName.isEmpty() && !itemPrice.isEmpty() && iv_image_data.getDrawable() != null && !itemCategory.isEmpty()) {
 
@@ -139,16 +216,25 @@ public class Administration extends AppCompatActivity {
 
                     }
 
-                    Date date = new Date();
-                    date.getTime();
+                    if(itemDeliveryPrice.isEmpty()) {
+                        itemDeliveryPrice = "null";
+                    }
+
+                    if(itemMaximumQuantity.isEmpty()) {
+                        itemMaximumQuantity = "null";
+                    }
+
+                    if(itemMinimumQuantity.isEmpty()) {
+                        itemMinimumQuantity = "null";
+                    }
 
                     InsertData task = new InsertData();
-                    task.execute("http://" + IP_ADDRESS + "ewoman-php/insertItem.php", itemCategory, itemName, itemPrice, itemImage, itemInform,
+                    task.execute("http://" + IP_ADDRESS + "/ewoman-php/insertItem.php", itemCategory, itemName, itemPrice, itemImage, itemInform,
                             itemDeliveryMethod, itemDeliveryPrice, itemDeliveryInform, itemMinimumQuantity, itemMaximumQuantity);
 
                 } else {
 
-                    Toast.makeText(getApplicationContext(), "상품의 이름, 가격, 이미지, 카테코리는 모두 작성되어야 합니다.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), "상품의 이름, 가격, 이미지, 카테고리는 모두 작성되어야 합니다.", Toast.LENGTH_SHORT).show();
 
                 }
             }
@@ -179,6 +265,8 @@ public class Administration extends AppCompatActivity {
         username = "developer";
         useremail = "develop@naver.com";
 
+        ll_class_container = findViewById(R.id.ll_class_container);
+
         rl_image_container = findViewById(R.id.rl_image_container);
 
         rg_category = findViewById(R.id.rg_category);
@@ -197,12 +285,32 @@ public class Administration extends AppCompatActivity {
 
         iv_image_data = findViewById(R.id.iv_image_data);
 
+        ib_item_plus = findViewById(R.id.ib_item_plus);
         ib_image_remove = findViewById(R.id.ib_image_remove);
 
         btn_item_save = findViewById(R.id.btn_item_save);
 
         dbOpenHelper = new DBOpenHelper(this);
         dbOpenHelper.open();
+
+    }
+
+    public void addEditText(String arg) {
+
+        LinearLayout.LayoutParams param1 = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT);
+
+        final EditText et_data = new EditText(this);
+        et_data.setBackground(getResources().getDrawable(R.drawable.btn_style_border_line_white_background));
+        et_data.setHint(arg);
+        et_data.setTextColor(getResources().getColor(R.color.colorGray));
+        et_data.setTypeface(Typeface.create("nanumbarungothicbold", Typeface.NORMAL));
+        et_data.setPadding(5, 0, 0, 0);
+        param1.setMargins(0, 0, 0, 20);
+        et_data.setLayoutParams(param1);
+
+        allClass.add(et_data);
+        ll_class_container.addView(et_data);
 
     }
 
@@ -303,7 +411,7 @@ public class Administration extends AppCompatActivity {
                 useremail = null;
                 dbOpenHelper.deleteAllColumns();
 
-                final ProgressDialog mDialog = new ProgressDialog(Administration.this);
+                final ProgressDialog mDialog = new ProgressDialog(ItemAddActivity.this);
                 mDialog.setMessage("로그아웃 중입니다.");
                 mDialog.show();
 
@@ -323,14 +431,13 @@ public class Administration extends AppCompatActivity {
     }
 
     class InsertData extends AsyncTask<String, Void, String> {
-        ProgressDialog progressDialog;
 
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
 
-            progressDialog = ProgressDialog.show(Administration.this,
-                    "저장중입니다.", null, true, true);
+            progressDialog = ProgressDialog.show(ItemAddActivity.this,
+                    "상품 추가중입니다.", null, true, true);
         }
 
 
@@ -338,11 +445,53 @@ public class Administration extends AppCompatActivity {
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
 
-            progressDialog.dismiss();
-
             Log.d(TAG, "POST response  - " + result);
 
-            Toast.makeText(getApplicationContext(), "저장 완료되었습니다.", Toast.LENGTH_SHORT).show();
+            if(result.contains("새로운 상품을 추가했습니다.")) {
+
+                Toast.makeText(getApplicationContext(), "추가 완료되었습니다.", Toast.LENGTH_SHORT).show();
+
+                String [] classes = new String[allClass.size()];
+
+                for(int i = 0; i < allClass.size(); i++){
+
+                    classes[i] = allClass.get(i).getText().toString();
+                    String name = classes[i].split("/")[0];
+                    String price = classes[i].split("/")[1];
+                    Class classObject = new Class(name, price);
+                    listClass.add(classObject);
+
+                    try {
+                        JSONArray jArray = new JSONArray();
+                        for (int j = 0; j < listClass.size(); j++) {
+                            JSONObject sObject = new JSONObject();//배열 내에 들어갈 json
+                            sObject.put("itemName", listClass.get(j).getItem_name());
+                            sObject.put("itemPrice", listClass.get(j).getItem_price());
+                            jArray.put(sObject);
+                        }
+                        if(i >= allClass.size() - 1) {
+
+                            jsonObject.put("class", jArray);
+                            postData(jsonObject);
+
+                        }
+
+                        System.out.println(jsonObject.toString());
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+                }
+
+            } else {
+
+                Toast.makeText(getApplicationContext(), "오류가 발생했습니다.", Toast.LENGTH_SHORT).show();
+
+            }
+
+            progressDialog.dismiss();
+
         }
 
 
@@ -423,5 +572,26 @@ public class Administration extends AppCompatActivity {
         }
     }
 
+    public void postData(JSONObject json) throws JSONException {
+        HttpClient httpclient = new DefaultHttpClient();
+
+        try {
+            HttpPost httppost = new HttpPost("http://" + IP_ADDRESS + "/ewoman-php/test2.php");
+
+            List<NameValuePair> nvp = new ArrayList<NameValuePair>(2);
+            nvp.add(new BasicNameValuePair("json", json.toString()));
+            //httppost.setHeader("Content-type", "application/json");
+            httppost.setEntity(new UrlEncodedFormEntity(nvp));
+            HttpResponse response = httpclient.execute(httppost);
+
+            if(response != null) {
+                InputStream is = response.getEntity().getContent();
+                //input stream is response that can be shown back on android
+            }
+
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
 }

@@ -12,7 +12,7 @@
         android:roundIcon="@mipmap/ic_launcher_ewoman_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".Administration" android:windowSoftInputMode="stateAlwaysHidden"></activity>
+        <activity android:name=".ItemAddActivity" android:windowSoftInputMode="stateAlwaysHidden"></activity>
         <activity android:name=".CartActivity" />
         <activity android:name=".ReviewUpdateActivity" android:windowSoftInputMode="stateAlwaysHidden"/>
         <activity android:name=".ReviewDetailActivity" />

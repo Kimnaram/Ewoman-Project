@@ -34,7 +34,8 @@
             android:title=""/>
 
         <item
-            android:id="@+id/item_administrator"
-            android:title="Administration" />
+            android:id="@+id/item_add"
+            android:title="Item Add" />
+
     </group>
 </menu>
