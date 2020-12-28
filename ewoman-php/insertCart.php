@@ -27,7 +27,7 @@
 
 	if(!isset($errMSG))	{
 		try {
-			$stmt = $con->prepare('INSERT INTO cart(item_no, email, count, date) VALUES(&item_no, :email, &count, :date)');
+			$stmt = $con->prepare('INSERT INTO cart(item_no, email, count, date) VALUES($item_no, :email, $count, :date)');
 			$stmt->bindParam(':email', $email);
 			$stmt->bindParam(':date', $date);
 
