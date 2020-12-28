@@ -306,7 +306,7 @@ public class eProductActivity extends AppCompatActivity {
             String category = params[0];
 
             String serverURL = "http://" + IP_ADDRESS + "/ewoman-php/selectItems.php";
-            Log.d(TAG, "serverURL : " + serverURL);
+
             String postParameters = "category=" + category;
 
             try {
@@ -363,13 +363,14 @@ public class eProductActivity extends AppCompatActivity {
             Log.d(TAG, "response - " + result);
 
             if (result == null) {
+
                 Toast.makeText(getApplicationContext(), "오류가 발생했습니다!", Toast.LENGTH_SHORT).show();
+
             } else {
 
-                if (result.contains("결과가 없습니다.")) {
+                if(result.contains("결과가 없습니다.")) {
 
                     rl_warn_container.setVisibility(View.VISIBLE);
-
 
                 } else {
 

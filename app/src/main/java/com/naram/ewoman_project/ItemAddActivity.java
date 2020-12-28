@@ -482,6 +482,17 @@ public class ItemAddActivity extends AppCompatActivity {
                         e.printStackTrace();
                     }
 
+                    et_name_data.setText(null);
+                    et_price_data.setText(null);
+                    iv_image_data.setImageBitmap(null);
+                    rl_image_container.setVisibility(View.GONE);
+                    et_info_data.setText(null);
+                    et_delivery_method_data.setText(null);
+                    et_delivery_price_data.setText(null);
+                    et_delivery_inform_data.setText(null);
+                    et_minimum_quantity_data.setText(null);
+                    et_maximum_quantity_data.setText(null);
+
                 }
 
             } else {

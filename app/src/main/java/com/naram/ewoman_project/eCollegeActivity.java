@@ -262,6 +262,7 @@ public class eCollegeActivity extends AppCompatActivity {
 
     protected void showList() {
         try {
+
             JSONObject jsonObj = new JSONObject(JSONString);
             items = jsonObj.getJSONArray(TAG_RESULTS);
 
@@ -305,7 +306,6 @@ public class eCollegeActivity extends AppCompatActivity {
             String category = params[0];
 
             String serverURL = "http://" + IP_ADDRESS + "/ewoman-php/selectItems.php";
-            Log.d(TAG, "serverURL : " + serverURL);
             String postParameters = "category=" + category;
 
             try {
@@ -365,10 +365,9 @@ public class eCollegeActivity extends AppCompatActivity {
                 Toast.makeText(getApplicationContext(), "오류가 발생했습니다!", Toast.LENGTH_SHORT).show();
             } else {
 
-                if (result.contains("결과가 없습니다.")) {
+                if(result.contains("결과가 없습니다.")) {
 
                     rl_warn_container.setVisibility(View.VISIBLE);
-
 
                 } else {
 
