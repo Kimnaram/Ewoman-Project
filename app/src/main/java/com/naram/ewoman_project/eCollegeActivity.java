@@ -122,6 +122,7 @@ public class eCollegeActivity extends AppCompatActivity {
                 int number = adapter.getItem(position).getItem_no();
 
                 intent.putExtra("item_no", Integer.toString(number));
+                Log.d(TAG, "number : " + number);
 
                 onPause();
                 startActivity(intent);
@@ -182,17 +183,6 @@ public class eCollegeActivity extends AppCompatActivity {
 
     }
 
-    // 바이너리 바이트를 스트링으로
-    public static String byteToBinaryString(byte n) {
-        StringBuilder sb = new StringBuilder("00000000");
-        for (int bit = 0; bit < 8; bit++) {
-            if (((n >> bit) & 1) > 0) {
-                sb.setCharAt(7 - bit, '1');
-            }
-        }
-        return sb.toString();
-    }
-
     public static Bitmap StringToBitmap(String ImageString) {
         try {
 
@@ -238,12 +228,12 @@ public class eCollegeActivity extends AppCompatActivity {
                 return true;
             case R.id.menu_logout:
 
-                useremail = null;
-                dbOpenHelper.deleteAllColumns();
-
                 final ProgressDialog mDialog = new ProgressDialog(eCollegeActivity.this);
                 mDialog.setMessage("로그아웃 중입니다.");
                 mDialog.show();
+
+                useremail = null;
+                dbOpenHelper.deleteAllColumns();
 
                 Intent logout_to_main = new Intent(getApplicationContext(), eCollegeActivity.class);
                 mDialog.dismiss();

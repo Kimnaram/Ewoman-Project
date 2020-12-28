@@ -32,340 +32,360 @@
         android:layout_below="@+id/toolbar">
 
         <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginBottom="20dp" >
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp">
 
             <RelativeLayout
-                android:id="@+id/rl_category_container"
+                android:id="@+id/rl_warn_container"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="35dp">
-
-                <TextView
-                    android:id="@+id/tv_category_home"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginTop="30dp"
-                    android:fontFamily="@font/nanumbarungothic"
-                    android:text="Home"
-                    android:textColor="@color/colorLightGray"
-                    android:textSize="17dp" />
-
-                <TextView
-                    android:id="@+id/tv_category_dv1"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginTop="30dp"
-                    android:layout_marginRight="10dp"
-                    android:layout_toRightOf="@+id/tv_category_home"
-                    android:fontFamily="@font/nanumbarungothic"
-                    android:text=">"
-                    android:textColor="@color/colorLightGray"
-                    android:textSize="17dp" />
-
-                <TextView
-                    android:id="@+id/tv_category_name"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="30dp"
-                    android:layout_toRightOf="@+id/tv_category_dv1"
-                    android:fontFamily="@font/nanumbarungothic"
-                    android:textColor="@color/colorLightGray"
-                    android:textSize="17dp" />
-
-                <TextView
-                    android:id="@+id/tv_category_dv2"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginTop="30dp"
-                    android:layout_marginRight="10dp"
-                    android:layout_marginBottom="10dp"
-                    android:layout_toRightOf="@+id/tv_category_name"
-                    android:fontFamily="@font/nanumbarungothic"
-                    android:text=">"
-                    android:textColor="@color/colorLightGray"
-                    android:textSize="17dp" />
-
-                <TextView
-                    android:id="@+id/tv_category_pd"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="30dp"
-                    android:layout_toRightOf="@id/tv_category_dv2"
-                    android:fontFamily="@font/nanumbarungothic"
-                    android:textColor="@color/colorLightBlack"
-                    android:textSize="17dp" />
-
-            </RelativeLayout>
-
-            <RelativeLayout
-                android:id="@+id/rl_product_container"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/rl_category_container"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp">
+                android:layout_centerInParent="true"
+                android:visibility="gone" >
 
                 <ImageView
-                    android:id="@+id/iv_item_image"
-                    android:layout_width="match_parent"
-                    android:layout_height="300dp"
-                    android:layout_marginBottom="15dp" />
-
-                <TextView
-                    android:id="@+id/tv_item_name"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@id/iv_item_image"
-                    android:layout_marginBottom="15dp"
-                    android:fontFamily="@font/nanumbarungothicbold"
-                    android:text="상품 이름"
-                    android:textColor="@color/colorLightBlack"
-                    android:textSize="22dp" />
-
-                <TextView
-                    android:id="@+id/tv_item_price"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/tv_item_name"
-                    android:layout_marginBottom="17dp"
-                    android:fontFamily="@font/nanumbarungothic"
-                    android:text="상품 가격"
-                    android:textColor="@color/colorCocoa"
-                    android:textSize="22dp" />
-
-                <TextView
-                    android:id="@+id/tv_item_detail"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/tv_item_price"
-                    android:layout_marginBottom="15dp"
-                    android:fontFamily="@font/nanumbarungothic"
-                    android:text="상품 설명"
-                    android:textColor="@color/colorGray"
-                    android:textSize="18dp" />
-
-                <TextView
-                    android:id="@+id/tv_item_origin"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/tv_item_detail"
-                    android:layout_marginRight="7dp"
-                    android:layout_marginBottom="5dp"
-                    android:fontFamily="@font/nanumbarungothicbold"
-                    android:text="원산지"
-                    android:textColor="@color/colorLightBlack"
-                    android:textSize="16.5dp" />
-
-                <TextView
-                    android:id="@+id/tv_item_origin_is"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/tv_item_detail"
-                    android:layout_marginBottom="5dp"
-                    android:layout_toRightOf="@+id/tv_item_origin"
-                    android:fontFamily="@font/nanumbarungothic"
-                    android:textColor="@color/colorLightBlack"
-                    android:textSize="16.5dp" />
-
-                <TextView
-                    android:id="@+id/tv_item_delivery"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/tv_item_origin"
-                    android:layout_marginRight="7dp"
-                    android:layout_marginBottom="5dp"
-                    android:fontFamily="@font/nanumbarungothicbold"
-                    android:text="배송 방법"
-                    android:textColor="@color/colorLightBlack"
-                    android:textSize="16.5dp" />
-
-                <TextView
-                    android:id="@+id/tv_item_delivery_is"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/tv_item_origin"
-                    android:layout_marginBottom="17dp"
-                    android:layout_toRightOf="@+id/tv_item_delivery"
-                    android:fontFamily="@font/nanumbarungothic"
-                    android:textColor="@color/colorLightBlack"
-                    android:textSize="16.5dp" />
-
-                <TextView
-                    android:id="@+id/tv_option_1"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/tv_item_delivery_is"
-                    android:layout_marginBottom="5dp"
-                    android:fontFamily="@font/nanumbarungothicbold"
-                    android:textColor="@color/colorLightBlack"
-                    android:textSize="16.5dp" />
-
-                <Spinner
-                    android:id="@+id/sp_option_1"
-                    android:layout_width="250dp"
-                    android:layout_height="40dp"
-                    android:layout_below="@id/tv_option_1"
+                    android:id="@+id/iv_empty_product"
+                    android:layout_width="150dp"
+                    android:layout_height="150dp"
+                    android:layout_centerHorizontal="true"
                     android:layout_marginBottom="10dp"
-                    android:background="@color/colorWhite"
-                    android:spinnerMode="dropdown" />
+                    android:src="@drawable/item_empty_100" />
 
                 <TextView
-                    android:id="@+id/tv_option_2"
+                    android:id="@+id/tv_warn_product"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_below="@+id/sp_option_1"
-                    android:layout_marginBottom="5dp"
-                    android:fontFamily="@font/nanumbarungothicbold"
-                    android:textColor="@color/colorLightBlack"
-                    android:textSize="16.5dp"
-                    android:visibility="gone"/>
-
-                <Spinner
-                    android:id="@+id/sp_option_2"
-                    android:layout_width="250dp"
-                    android:layout_height="40dp"
-                    android:layout_below="@id/tv_option_2"
-                    android:layout_marginBottom="10dp"
-                    android:background="@color/colorWhite"
-                    android:spinnerMode="dropdown"
-                    android:visibility="gone" />
-
-                <TextView
-                    android:id="@+id/tv_option_3"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/sp_option_2"
-                    android:layout_marginBottom="5dp"
-                    android:fontFamily="@font/nanumbarungothicbold"
-                    android:textColor="@color/colorLightBlack"
-                    android:textSize="16.5dp"
-                    android:visibility="gone" />
-
-                <Spinner
-                    android:id="@+id/sp_option_3"
-                    android:layout_width="250dp"
-                    android:layout_height="40dp"
-                    android:layout_below="@id/tv_option_3"
-                    android:background="@color/colorWhite"
-                    android:spinnerMode="dropdown"
-                    android:visibility="gone" />
+                    android:layout_below="@id/iv_empty_product"
+                    android:layout_centerHorizontal="true"
+                    android:fontFamily="@font/nanumsquare"
+                    android:text="해당 상품을 준비중입니다."
+                    android:textSize="22dp" />
 
             </RelativeLayout>
 
-            <LinearLayout
-                android:id="@+id/rl_count_btn_container"
+            <RelativeLayout
+                android:id="@+id/rl_item_container"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_below="@+id/rl_product_container"
-                android:gravity="center"
-                android:layout_marginBottom="10dp" >
+                android:layout_height="match_parent">
 
-                <Button
-                    android:id="@+id/btn_count_minus"
-                    android:layout_width="50dp"
-                    android:layout_height="40dp"
-                    android:background="@drawable/btn_style_rounded"
-                    android:backgroundTint="@color/colorCocoa"
-                    android:text="-"
-                    android:textColor="@color/colorWhite"
-                    android:textSize="23dp"
-                    android:layout_marginRight="20dp"
-                    android:fontFamily="@font/nanumbarungothicbold" />
+                <RelativeLayout
+                    android:id="@+id/rl_category_container"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="35dp">
 
-                <TextView
-                    android:id="@+id/tv_count_view"
+                    <TextView
+                        android:id="@+id/tv_category_home"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginTop="30dp"
+                        android:fontFamily="@font/nanumbarungothic"
+                        android:text="Home"
+                        android:textColor="@color/colorLightGray"
+                        android:textSize="17dp" />
+
+                    <TextView
+                        android:id="@+id/tv_category_dv1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginTop="30dp"
+                        android:layout_marginRight="10dp"
+                        android:layout_toRightOf="@+id/tv_category_home"
+                        android:fontFamily="@font/nanumbarungothic"
+                        android:text=">"
+                        android:textColor="@color/colorLightGray"
+                        android:textSize="17dp" />
+
+                    <TextView
+                        android:id="@+id/tv_category_name"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="30dp"
+                        android:layout_toRightOf="@+id/tv_category_dv1"
+                        android:fontFamily="@font/nanumbarungothic"
+                        android:textColor="@color/colorLightGray"
+                        android:textSize="17dp" />
+
+                    <TextView
+                        android:id="@+id/tv_category_dv2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginTop="30dp"
+                        android:layout_marginRight="10dp"
+                        android:layout_marginBottom="10dp"
+                        android:layout_toRightOf="@+id/tv_category_name"
+                        android:fontFamily="@font/nanumbarungothic"
+                        android:text=">"
+                        android:textColor="@color/colorLightGray"
+                        android:textSize="17dp" />
+
+                    <TextView
+                        android:id="@+id/tv_category_item_name"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="30dp"
+                        android:layout_toRightOf="@id/tv_category_dv2"
+                        android:fontFamily="@font/nanumbarungothic"
+                        android:textColor="@color/colorLightBlack"
+                        android:textSize="17dp" />
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/rl_product_container"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/rl_category_container"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp">
+
+                    <ImageView
+                        android:id="@+id/iv_item_image"
+                        android:layout_width="match_parent"
+                        android:layout_height="300dp"
+                        android:layout_marginBottom="15dp" />
+
+                    <TextView
+                        android:id="@+id/tv_item_name"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/iv_item_image"
+                        android:layout_marginBottom="15dp"
+                        android:fontFamily="@font/nanumbarungothicbold"
+                        android:text="상품 이름"
+                        android:textColor="@color/colorLightBlack"
+                        android:textSize="22dp" />
+
+                    <TextView
+                        android:id="@+id/tv_item_price"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/tv_item_name"
+                        android:layout_marginBottom="17dp"
+                        android:fontFamily="@font/nanumbarungothicbold"
+                        android:text="상품 가격"
+                        android:textColor="@color/colorCocoa"
+                        android:textSize="22dp" />
+
+                    <TextView
+                        android:id="@+id/tv_item_detail"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/tv_item_price"
+                        android:layout_marginBottom="15dp"
+                        android:fontFamily="@font/nanumbarungothic"
+                        android:text="상품 설명"
+                        android:textColor="@color/colorGray"
+                        android:textSize="18dp" />
+
+                    <TextView
+                        android:id="@+id/tv_item_deliv_method"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/tv_item_detail"
+                        android:layout_marginRight="7dp"
+                        android:layout_marginBottom="5dp"
+                        android:fontFamily="@font/nanumbarungothicbold"
+                        android:text="배송 방법"
+                        android:textColor="@color/colorLightBlack"
+                        android:textSize="16.5dp" />
+
+                    <TextView
+                        android:id="@+id/tv_item_deliv_method_is"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/tv_item_detail"
+                        android:layout_marginBottom="5dp"
+                        android:layout_toRightOf="@+id/tv_item_deliv_method"
+                        android:fontFamily="@font/nanumbarungothic"
+                        android:textColor="@color/colorLightBlack"
+                        android:textSize="16.5dp" />
+
+                    <TextView
+                        android:id="@+id/tv_item_deliv_price"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/tv_item_deliv_method"
+                        android:layout_marginRight="7dp"
+                        android:layout_marginBottom="5dp"
+                        android:fontFamily="@font/nanumbarungothicbold"
+                        android:text="배송비"
+                        android:textColor="@color/colorLightBlack"
+                        android:textSize="16.5dp" />
+
+                    <TextView
+                        android:id="@+id/tv_item_deliv_price_is"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/tv_item_deliv_method"
+                        android:layout_marginBottom="17dp"
+                        android:layout_toRightOf="@+id/tv_item_deliv_price"
+                        android:fontFamily="@font/nanumbarungothic"
+                        android:textColor="@color/colorLightBlack"
+                        android:textSize="16.5dp" />
+
+                    <!--                <TextView-->
+                    <!--                    android:id="@+id/tv_option_1"-->
+                    <!--                    android:layout_width="wrap_content"-->
+                    <!--                    android:layout_height="wrap_content"-->
+                    <!--                    android:layout_below="@+id/tv_item_delivery_is"-->
+                    <!--                    android:layout_marginBottom="5dp"-->
+                    <!--                    android:fontFamily="@font/nanumbarungothicbold"-->
+                    <!--                    android:textColor="@color/colorLightBlack"-->
+                    <!--                    android:textSize="16.5dp" />-->
+
+                    <!--                <Spinner-->
+                    <!--                    android:id="@+id/sp_option_1"-->
+                    <!--                    android:layout_width="250dp"-->
+                    <!--                    android:layout_height="40dp"-->
+                    <!--                    android:layout_below="@id/tv_option_1"-->
+                    <!--                    android:layout_marginBottom="10dp"-->
+                    <!--                    android:background="@color/colorWhite"-->
+                    <!--                    android:spinnerMode="dropdown" />-->
+
+                    <!--                <TextView-->
+                    <!--                    android:id="@+id/tv_option_2"-->
+                    <!--                    android:layout_width="wrap_content"-->
+                    <!--                    android:layout_height="wrap_content"-->
+                    <!--                    android:layout_below="@+id/sp_option_1"-->
+                    <!--                    android:layout_marginBottom="5dp"-->
+                    <!--                    android:fontFamily="@font/nanumbarungothicbold"-->
+                    <!--                    android:textColor="@color/colorLightBlack"-->
+                    <!--                    android:textSize="16.5dp"-->
+                    <!--                    android:visibility="gone"/>-->
+
+                    <!--                <Spinner-->
+                    <!--                    android:id="@+id/sp_option_2"-->
+                    <!--                    android:layout_width="250dp"-->
+                    <!--                    android:layout_height="40dp"-->
+                    <!--                    android:layout_below="@id/tv_option_2"-->
+                    <!--                    android:layout_marginBottom="10dp"-->
+                    <!--                    android:background="@color/colorWhite"-->
+                    <!--                    android:spinnerMode="dropdown"-->
+                    <!--                    android:visibility="gone" />-->
+
+                    <!--                <TextView-->
+                    <!--                    android:id="@+id/tv_option_3"-->
+                    <!--                    android:layout_width="wrap_content"-->
+                    <!--                    android:layout_height="wrap_content"-->
+                    <!--                    android:layout_below="@+id/sp_option_2"-->
+                    <!--                    android:layout_marginBottom="5dp"-->
+                    <!--                    android:fontFamily="@font/nanumbarungothicbold"-->
+                    <!--                    android:textColor="@color/colorLightBlack"-->
+                    <!--                    android:textSize="16.5dp"-->
+                    <!--                    android:visibility="gone" />-->
+
+                    <!--                <Spinner-->
+                    <!--                    android:id="@+id/sp_option_3"-->
+                    <!--                    android:layout_width="250dp"-->
+                    <!--                    android:layout_height="40dp"-->
+                    <!--                    android:layout_below="@id/tv_option_3"-->
+                    <!--                    android:background="@color/colorWhite"-->
+                    <!--                    android:spinnerMode="dropdown"-->
+                    <!--                    android:visibility="gone" />-->
+
+                </RelativeLayout>
+
+                <LinearLayout
+                    android:id="@+id/rl_count_btn_container"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/rl_product_container"
+                    android:layout_marginBottom="15dp"
+                    android:gravity="center"
+                    android:orientation="horizontal">
+
+                    <Button
+                        android:id="@+id/btn_count_minus"
+                        android:layout_width="50dp"
+                        android:layout_height="40dp"
+                        android:layout_marginRight="20dp"
+                        android:background="@drawable/btn_style_rounded"
+                        android:backgroundTint="@color/colorCocoa"
+                        android:fontFamily="@font/nanumbarungothicbold"
+                        android:text="-"
+                        android:textColor="@color/colorWhite"
+                        android:textSize="23dp" />
+
+                    <TextView
+                        android:id="@+id/tv_count_view"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/nanumbarungothicbold"
+                        android:text="1"
+                        android:textColor="@color/colorCocoa"
+                        android:textSize="25dp" />
+
+                    <Button
+                        android:id="@+id/btn_count_plus"
+                        android:layout_width="50dp"
+                        android:layout_height="40dp"
+                        android:layout_marginLeft="20dp"
+                        android:background="@drawable/btn_style_rounded"
+                        android:backgroundTint="@color/colorCocoa"
+                        android:fontFamily="@font/nanumbarungothicbold"
+                        android:text="+"
+                        android:textColor="@color/colorWhite"
+                        android:textSize="23dp" />
+
+                </LinearLayout>
+
+                <RelativeLayout
+                    android:id="@+id/rl_btn_container"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="1"
-                    android:textColor="@color/colorCocoa"
-                    android:textSize="25dp"
-                    android:fontFamily="@font/nanumbarungothicbold" />
+                    android:layout_below="@+id/rl_count_btn_container"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginBottom="20dp">
 
-                <Button
-                    android:id="@+id/btn_count_plus"
-                    android:layout_width="50dp"
-                    android:layout_height="40dp"
-                    android:background="@drawable/btn_style_rounded"
-                    android:backgroundTint="@color/colorCocoa"
-                    android:text="+"
-                    android:textColor="@color/colorWhite"
-                    android:textSize="23dp"
-                    android:layout_marginLeft="20dp"
-                    android:fontFamily="@font/nanumbarungothicbold" />
+                    <TextView
+                        android:id="@+id/tv_buy_try"
+                        android:layout_width="110dp"
+                        android:layout_height="47.5dp"
+                        android:layout_marginRight="10dp"
+                        android:background="@drawable/btn_style_border_line_white_background"
+                        android:backgroundTint="@color/colorCocoa"
+                        android:fontFamily="@font/nanumbarungothic"
+                        android:gravity="center"
+                        android:textColor="@color/colorWhite"
+                        android:textSize="18dp" />
 
-            </LinearLayout>
+                    <TextView
+                        android:id="@+id/tv_cart_try"
+                        android:layout_width="110dp"
+                        android:layout_height="47.5dp"
+                        android:layout_marginRight="10dp"
+                        android:layout_toRightOf="@+id/tv_buy_try"
+                        android:background="@drawable/btn_style_border_line_white_background"
+                        android:fontFamily="@font/nanumbarungothic"
+                        android:gravity="center"
+                        android:text="장바구니"
+                        android:textColor="@color/colorGray"
+                        android:textSize="18dp" />
 
-            <RelativeLayout
-                android:id="@+id/rl_btn_container"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/rl_count_btn_container"
-                android:layout_centerHorizontal="true"
-                android:layout_marginBottom="20dp">
+                    <TextView
+                        android:id="@+id/tv_wishlist_try"
+                        android:layout_width="110dp"
+                        android:layout_height="47.5dp"
+                        android:layout_toRightOf="@+id/tv_cart_try"
+                        android:background="@drawable/btn_style_border_line_white_background"
+                        android:drawableLeft="@drawable/item_heart_ico"
+                        android:fontFamily="@font/nanumbarungothic"
+                        android:gravity="center"
+                        android:paddingLeft="30dp"
+                        android:paddingRight="30dp"
+                        android:textColor="@color/colorGray"
+                        android:textSize="18dp" />
 
-                <TextView
-                    android:id="@+id/tv_buy_try"
-                    android:layout_width="110dp"
-                    android:layout_height="47.5dp"
-                    android:layout_marginRight="10dp"
-                    android:gravity="center"
-                    android:background="@drawable/btn_style_border_line_white_background"
-                    android:fontFamily="@font/nanumbarungothic"
-                    android:textColor="@color/colorWhite"
-                    android:backgroundTint="@color/colorCocoa"
-                    android:textSize="18dp" />
-
-                <TextView
-                    android:id="@+id/tv_cart_try"
-                    android:layout_width="110dp"
-                    android:layout_height="47.5dp"
-                    android:layout_toRightOf="@+id/tv_buy_try"
-                    android:layout_marginRight="10dp"
-                    android:gravity="center"
-                    android:background="@drawable/btn_style_border_line_white_background"
-                    android:fontFamily="@font/nanumbarungothic"
-                    android:text="장바구니"
-                    android:textColor="@color/colorGray"
-                    android:textSize="18dp" />
-
-                <TextView
-                    android:id="@+id/tv_wishlist_try"
-                    android:layout_width="110dp"
-                    android:layout_height="47.5dp"
-                    android:layout_toRightOf="@+id/tv_cart_try"
-                    android:background="@drawable/btn_style_border_line_white_background"
-                    android:fontFamily="@font/nanumbarungothic"
-                    android:paddingLeft="30dp"
-                    android:paddingRight="30dp"
-                    android:gravity="center"
-                    android:drawableLeft="@drawable/item_heart_ico"
-                    android:textColor="@color/colorGray"
-                    android:textSize="18dp" />
+                </RelativeLayout>
 
             </RelativeLayout>
 
         </RelativeLayout>
 
     </ScrollView>
-
-    <RelativeLayout
-        android:id="@+id/rl_calendar_container"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:visibility="gone" >
-
-        <FrameLayout
-            android:id="@+id/fl_calendar_view"
-            android:layout_width="match_parent"
-            android:layout_height="500dp" />
-
-    </RelativeLayout>
 
 </RelativeLayout>

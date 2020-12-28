@@ -140,7 +140,6 @@ public class eProductActivity extends AppCompatActivity {
         et_search_text = findViewById(R.id.et_search_text);
         tv_search_btn = findViewById(R.id.tv_search_btn);
 
-
         adapter = new ListViewAdapter();
         lv_eProduct_product.setAdapter(adapter);
 
@@ -182,17 +181,6 @@ public class eProductActivity extends AppCompatActivity {
 
         super.onDestroy();
 
-    }
-
-    // 바이너리 바이트를 스트링으로
-    public static String byteToBinaryString(byte n) {
-        StringBuilder sb = new StringBuilder("00000000");
-        for (int bit = 0; bit < 8; bit++) {
-            if (((n >> bit) & 1) > 0) {
-                sb.setCharAt(7 - bit, '1');
-            }
-        }
-        return sb.toString();
     }
 
     public static Bitmap StringToBitmap(String ImageString) {
@@ -239,12 +227,12 @@ public class eProductActivity extends AppCompatActivity {
                 return true;
             case R.id.menu_logout:
 
-                useremail = null;
-                dbOpenHelper.deleteAllColumns();
-
                 final ProgressDialog mDialog = new ProgressDialog(eProductActivity.this);
                 mDialog.setMessage("로그아웃 중입니다.");
                 mDialog.show();
+
+                useremail = null;
+                dbOpenHelper.deleteAllColumns();
 
                 Intent logout_to_main = new Intent(getApplicationContext(), eProductActivity.class);
                 mDialog.dismiss();
