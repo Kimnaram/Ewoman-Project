@@ -104,7 +104,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="30dp"
                         android:layout_toRightOf="@+id/tv_category_dv1"
-                        android:fontFamily="@font/nanumbarungothic"
+                        android:fontFamily="@font/nanumbarungothicbold"
                         android:textColor="@color/colorLightGray"
                         android:textSize="17dp" />
 

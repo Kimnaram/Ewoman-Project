@@ -285,8 +285,9 @@ public class eCollegeActivity extends AppCompatActivity {
         protected void onPreExecute() {
             super.onPreExecute();
 
-            progressDialog = ProgressDialog.show(eCollegeActivity.this,
-                    "로딩중입니다.", null, true, true);
+            progressDialog = new ProgressDialog(eCollegeActivity.this, R.style.AlertDialogStyle);
+            progressDialog.setTitle("로딩중입니다.");
+            progressDialog.show();
 
         }
 

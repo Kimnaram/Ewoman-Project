@@ -436,8 +436,10 @@ public class ItemAddActivity extends AppCompatActivity {
         protected void onPreExecute() {
             super.onPreExecute();
 
-            progressDialog = ProgressDialog.show(ItemAddActivity.this,
-                    "상품 추가중입니다.", null, true, true);
+            progressDialog = new ProgressDialog(ItemAddActivity.this, R.style.AlertDialogStyle);
+            progressDialog.setTitle("상품 추가중입니다.");
+            progressDialog.show();
+
         }
 
 

@@ -13,12 +13,16 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
+import android.util.SparseBooleanArray;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import org.json.JSONArray;
@@ -32,6 +36,8 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.text.DecimalFormat;
+import java.util.ArrayList;
 
 public class CartActivity extends AppCompatActivity {
 
@@ -53,11 +59,21 @@ public class CartActivity extends AppCompatActivity {
 
     private RelativeLayout rl_warn_container;
 
+    private Button btn_item_buy;
+    private Button btn_item_delete;
+
     private ListView lv_cart_product;
-    private ListCartAdapter adapter;
+    private CartListAdapter adapter;
     private ListCart listCart;
 
-    private int count = 0;
+    final ArrayList<ListCart> items = new ArrayList<ListCart>();
+    final ArrayList<Integer> removeList = new ArrayList<Integer>();
+    ArrayAdapter ArrayAdapter;
+
+    private TextView tv_all_item_count;
+
+    private int all_count = 0;
+
     private Bitmap img;
 
     private String useremail = null;
@@ -89,13 +105,81 @@ public class CartActivity extends AppCompatActivity {
         lv_cart_product.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent intent = new Intent(getApplicationContext(), ProductDetailActivity.class);
+
+                if (lv_cart_product.isItemChecked(position)) {
+
+                    int count = adapter.getItem(position).getCount();
+                    int price = adapter.getItem(position).getPrice();
+
+                    all_count += price * count;
+
+                } else if(!lv_cart_product.isItemChecked(position)) {
+
+                    int count = adapter.getItem(position).getCount();
+                    int price = adapter.getItem(position).getPrice();
+
+                    all_count -= price * count;
+
+                }
+
+                DecimalFormat decimalFormat = new DecimalFormat("###,###");
+                tv_all_item_count.setText("합계 :  " + decimalFormat.format(all_count) + "\\");
+                Log.d(TAG, "합계 : " + decimalFormat.format(all_count) + "원");
+
+            }
+        });
+
+        btn_item_delete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                SparseBooleanArray checkedItems = lv_cart_product.getCheckedItemPositions();
+                int count = adapter.getCount();
+
+                for (int i = count - 1; i >= 0; i--) {
+                    if(checkedItems.get(i)) {
+                        int item_no = adapter.getItem(i).getItem_no();
+                        removeList.add(item_no);
+                        adapter.clearItems(i);
+                        Log.d(TAG, "items : checkedItems[" + i + "] = " + checkedItems.get(i));
+                    }
+                }
+
+                // 모든 선택 상태 초기화.
+                lv_cart_product.clearChoices();
+                all_count = 0;
+                tv_all_item_count.setText(all_count + "\\");
 
                 adapter.notifyDataSetChanged();
 
-                startActivity(intent);
+                for (int i = 0; i < removeList.size(); i++) {
+
+                    String items = "(";
+
+                    if(i < removeList.size() - 1) {
+
+                        items += removeList.get(i) + ",";
+
+                    } else {
+
+                        items += removeList.get(i) + ")";
+                        DeleteData task = new DeleteData();
+                        task.execute(items, useremail);
+
+                    }
+
+                }
+
             }
         });
+
+        btn_item_buy.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // 주문하기 버튼 클릭시
+            }
+        });
+
     }
 
     public void initAllComponent() {
@@ -103,7 +187,17 @@ public class CartActivity extends AppCompatActivity {
         rl_warn_container = findViewById(R.id.rl_warn_container);
 
         lv_cart_product = findViewById(R.id.lv_cart_product);
-        adapter = new ListCartAdapter();
+
+        adapter = new CartListAdapter();
+
+        ArrayAdapter = new ArrayAdapter(this, android.R.layout.simple_list_item_multiple_choice, items) ;
+
+        lv_cart_product.setAdapter(adapter);
+
+        tv_all_item_count = findViewById(R.id.tv_all_item_count);
+
+        btn_item_buy = findViewById(R.id.btn_item_buy);
+        btn_item_delete = findViewById(R.id.btn_item_delete);
 
         dbOpenHelper = new DBOpenHelper(this);
         dbOpenHelper.open();
@@ -113,6 +207,10 @@ public class CartActivity extends AppCompatActivity {
     @Override
     public void onResume() {
         super.onResume();
+
+        adapter.clearAllItems();
+
+        all_count = 0;
 
         GetData task = new GetData();
         task.execute(useremail);
@@ -207,8 +305,10 @@ public class CartActivity extends AppCompatActivity {
         protected void onPreExecute() {
             super.onPreExecute();
 
-            progressDialog = ProgressDialog.show(CartActivity.this,
-                    "로딩중입니다.", null, true, true);
+            progressDialog = new ProgressDialog(CartActivity.this, R.style.AlertDialogStyle);
+            progressDialog.setTitle("로딩중입니다.");
+            progressDialog.show();
+
         }
 
         @Override
@@ -222,7 +322,7 @@ public class CartActivity extends AppCompatActivity {
                 Toast.makeText(getApplicationContext(), "오류가 발생했습니다!", Toast.LENGTH_SHORT).show();
             } else {
 
-                if(result.contains("카트에 담은 것이 없습니다.")) {
+                if (result.contains("카트에 담은 것이 없습니다.")) {
 
                     rl_warn_container.setVisibility(View.VISIBLE);
 
@@ -299,15 +399,15 @@ public class CartActivity extends AppCompatActivity {
     private void showResult() {
         try {
             JSONObject jsonObject = new JSONObject(JSONString);
-            JSONArray jsonArray = jsonObject.getJSONArray(TAG_RESULTS);
+            cart = jsonObject.getJSONArray(TAG_RESULTS);
 
-            for (int i = 0; i < jsonArray.length(); i++) {
+            for (int i = 0; i < cart.length(); i++) {
 
-                JSONObject item = jsonArray.getJSONObject(i);
+                JSONObject item = cart.getJSONObject(i);
 
                 int item_no = Integer.parseInt(item.getString(TAG_ITEMNO));
                 String name = item.getString(TAG_NAME);
-                String price = item.getString(TAG_PRICE);
+                int price = Integer.parseInt(item.getString(TAG_PRICE));
                 int count = Integer.parseInt(item.getString(TAG_COUNT));
                 String date = item.getString(TAG_DATE);
                 String image = "";
@@ -318,21 +418,104 @@ public class CartActivity extends AppCompatActivity {
 
                 if (imcheck == false) {
                     img = StringToBitmap(image);
+
                 }
 
                 listCart = new ListCart(item_no, name, date, img, count, price);
 
+                items.add(listCart);
+                ArrayAdapter.add(items) ;
                 adapter.addItem(listCart);
 
             }
-
-            lv_cart_product.setAdapter(adapter);
 
         } catch (JSONException e) {
 
             Log.d(TAG, "showResult : ", e);
         }
 
+    }
+
+    private class DeleteData extends AsyncTask<String, Void, String> {
+
+        ProgressDialog progressDialog;
+        String errorString = null;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+
+            progressDialog = new ProgressDialog(CartActivity.this, R.style.AlertDialogStyle);
+            progressDialog.setTitle("삭제중입니다.");
+            progressDialog.show();
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+
+            progressDialog.dismiss();
+            Log.d(TAG, "response - " + result);
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+
+            String item_no = params[0];
+            String email = params[1];
+
+            String serverURL = "http://" + IP_ADDRESS + "/deleteCart.php";
+            String postParameters = "item_no=" + item_no + "&email=" + email;
+
+            try {
+
+                URL url = new URL(serverURL);
+                HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
+
+                httpURLConnection.setReadTimeout(5000);
+                httpURLConnection.setConnectTimeout(5000);
+                httpURLConnection.setRequestMethod("POST");
+                httpURLConnection.setDoInput(true);
+                httpURLConnection.connect();
+
+                OutputStream outputStream = httpURLConnection.getOutputStream();
+                outputStream.write(postParameters.getBytes("UTF-8"));
+                outputStream.flush();
+                outputStream.close();
+
+                int responseStatusCode = httpURLConnection.getResponseCode();
+                Log.d(TAG, "response code - " + responseStatusCode);
+
+                InputStream inputStream;
+                if (responseStatusCode == HttpURLConnection.HTTP_OK) {
+                    inputStream = httpURLConnection.getInputStream();
+                } else {
+                    inputStream = httpURLConnection.getErrorStream();
+                }
+
+                InputStreamReader inputStreamReader = new InputStreamReader(inputStream, "UTF-8");
+                BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+
+                StringBuilder sb = new StringBuilder();
+                String line;
+
+                while ((line = bufferedReader.readLine()) != null) {
+                    sb.append(line);
+                }
+
+                bufferedReader.close();
+
+                return sb.toString().trim();
+
+            } catch (Exception e) {
+
+                Log.d(TAG, "DeleteData: Error ", e);
+                errorString = e.toString();
+
+                return null;
+            }
+
+        }
     }
 
 }

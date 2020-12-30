@@ -162,6 +162,15 @@ public class ProductDetailActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 // InsertCartData
+                Date date = new Date();
+                date.getTime();
+                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+                String now = dateFormat.format(date);
+                String count = tv_count_view.getText().toString();
+
+                InsertData task = new InsertData();
+                task.execute("http://" + IP_ADDRESS + "/ewoman-php/insertCart.php", item_no, useremail, count, now);
             }
         });
 
@@ -170,7 +179,7 @@ public class ProductDetailActivity extends AppCompatActivity {
             public void onClick(View v) {
                 int count = Integer.parseInt(tv_count_view.getText().toString());
 
-                if(tv_buy_try.getText().toString().equals("예약하기")) {
+                if (tv_buy_try.getText().toString().equals("예약하기")) {
                     // 예약하기 화면으로 넘어가기
                 } else {
                     // 주문하기 화면으로 넘어가기
@@ -326,7 +335,11 @@ public class ProductDetailActivity extends AppCompatActivity {
                 JSONObject component = item.getJSONObject(i);
 
                 String category = component.getString(TAG_CATEGORY);
-                tv_category_name.setText(category);
+                if(category.equals("ecollege")) {
+                    tv_category_name.setText("e-College");
+                } else if(category.equals("eproduct")) {
+                    tv_category_name.setText("e-Product");
+                }
                 String name = component.getString(TAG_NAME);
                 tv_toolbar_title.setText(name);
                 tv_item_name.setText(name);
@@ -357,7 +370,7 @@ public class ProductDetailActivity extends AppCompatActivity {
                 }
                 if (!component.isNull(TAG_DELIV_PRICE)) {
                     deliv_price = Integer.parseInt(component.getString(TAG_DELIV_PRICE));
-                    if(deliv_price == 0) {
+                    if (deliv_price == 0) {
                         tv_item_deliv_price_is.setText("무료");
                     }
                 }
@@ -393,8 +406,9 @@ public class ProductDetailActivity extends AppCompatActivity {
         protected void onPreExecute() {
             super.onPreExecute();
 
-            progressDialog = ProgressDialog.show(ProductDetailActivity.this,
-                    "로딩중입니다.", null, true, true);
+            progressDialog = new ProgressDialog(ProductDetailActivity.this, R.style.AlertDialogStyle);
+            progressDialog.setTitle("로딩중입니다.");
+            progressDialog.show();
         }
 
         @Override
@@ -410,7 +424,7 @@ public class ProductDetailActivity extends AppCompatActivity {
 
             } else {
 
-                if(result.contains("상품이 존재하지 않습니다.")) {
+                if (result.contains("상품이 존재하지 않습니다.")) {
                     rl_warn_container.setVisibility(View.VISIBLE);
                 } else {
                     JSONString = result;
@@ -480,4 +494,114 @@ public class ProductDetailActivity extends AppCompatActivity {
         }
     }
 
+    class InsertData extends AsyncTask<String, Void, String> {
+
+        ProgressDialog progressDialog;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+
+            progressDialog = new ProgressDialog(ProductDetailActivity.this, R.style.AlertDialogStyle);
+            progressDialog.setTitle("상품 추가중입니다.");
+            progressDialog.show();
+
+        }
+
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+
+            Log.d(TAG, "POST response  - " + result);
+
+            if (result.contains("상품을 카트에 추가했습니다.")) {
+
+                Toast.makeText(getApplicationContext(), "추가 완료되었습니다.", Toast.LENGTH_SHORT).show();
+
+            } else {
+
+                if(result.contains("Integrity constraint violation: 1062 Duplicate entry")) {
+
+                    Toast.makeText(getApplicationContext(), "이미 장바구니에 존재하는 상품입니다!", Toast.LENGTH_SHORT).show();
+
+                } else {
+
+                    Toast.makeText(getApplicationContext(), "오류가 발생했습니다.", Toast.LENGTH_SHORT).show();
+
+                }
+            }
+
+            progressDialog.dismiss();
+
+
+        }
+
+
+        @Override
+        protected String doInBackground(String... params) {
+
+            String item_no = (String) params[1];
+            String email = (String) params[2];
+            String count = (String) params[3];
+            String date = (String) params[4];
+
+            String serverURL = (String) params[0];
+            String postParameters = "item_no=" + item_no + "&email=" + email + "&count=" + count + "&date=" + date;
+
+            try {
+
+                URL url = new URL(serverURL);
+                HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
+
+
+                httpURLConnection.setReadTimeout(10000);
+                httpURLConnection.setConnectTimeout(10000);
+                httpURLConnection.setRequestMethod("POST");
+                httpURLConnection.connect();
+
+
+                OutputStream outputStream = httpURLConnection.getOutputStream();
+                outputStream.write(postParameters.getBytes("UTF-8"));
+                outputStream.flush();
+                outputStream.close();
+
+
+                int responseStatusCode = httpURLConnection.getResponseCode();
+                Log.d(TAG, "POST response code - " + responseStatusCode);
+
+                InputStream inputStream;
+                if (responseStatusCode == HttpURLConnection.HTTP_OK) {
+                    inputStream = httpURLConnection.getInputStream();
+                } else {
+                    inputStream = httpURLConnection.getErrorStream();
+                }
+
+
+                InputStreamReader inputStreamReader = new InputStreamReader(inputStream, "UTF-8");
+                BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+
+                StringBuilder sb = new StringBuilder();
+                String line = null;
+
+                while ((line = bufferedReader.readLine()) != null) {
+                    sb.append(line);
+                }
+
+
+                bufferedReader.close();
+
+
+                return sb.toString();
+
+
+            } catch (Exception e) {
+
+                Log.d(TAG, "InsertData: Error ", e);
+
+                return new String("Error: " + e.getMessage());
+            }
+
+        }
+    }
 }

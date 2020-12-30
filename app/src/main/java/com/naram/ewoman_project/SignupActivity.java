@@ -218,8 +218,9 @@ public class SignupActivity extends AppCompatActivity implements GoogleApiClient
         protected void onPreExecute() {
             super.onPreExecute();
 
-            progressDialog = ProgressDialog.show(SignupActivity.this,
-                    "회원가입 중입니다.", null, true, true);
+            progressDialog = new ProgressDialog(SignupActivity.this, R.style.AlertDialogStyle);
+            progressDialog.setTitle("회원가입 중입니다.");
+            progressDialog.show();
 
         }
 
