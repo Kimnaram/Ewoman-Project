@@ -86,6 +86,8 @@ public class ProductDetailActivity extends AppCompatActivity {
 
     private String item_no = null;
     private int count = 0;
+    private int min_quantity = 1;
+    private int max_quantity = 10;
     private String useremail = null;
 
     @Override
@@ -149,14 +151,16 @@ public class ProductDetailActivity extends AppCompatActivity {
                 }
             });
 
-            tv_wishlist_try.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    // InsertWishData
-                }
-            });
-
         }
+
+        tv_wishlist_try.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // InsertWishData
+                InsertWishData wishTask = new InsertWishData();
+                wishTask.execute("http://" + IP_ADDRESS + "/ewoman-php/insertWish.php", item_no, useremail);
+            }
+        });
 
         tv_cart_try.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -169,20 +173,29 @@ public class ProductDetailActivity extends AppCompatActivity {
                 String now = dateFormat.format(date);
                 String count = tv_count_view.getText().toString();
 
-                InsertData task = new InsertData();
-                task.execute("http://" + IP_ADDRESS + "/ewoman-php/insertCart.php", item_no, useremail, count, now);
+                InsertCartData cartTask = new InsertCartData();
+                cartTask.execute("http://" + IP_ADDRESS + "/ewoman-php/insertCart.php", item_no, useremail, count, now);
             }
         });
 
         tv_buy_try.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                int price = Integer.parseInt(tv_item_price.getText().toString());
                 int count = Integer.parseInt(tv_count_view.getText().toString());
+                int deliv_price = Integer.parseInt(tv_item_deliv_price_is.getText().toString());
 
                 if (tv_buy_try.getText().toString().equals("예약하기")) {
                     // 예약하기 화면으로 넘어가기
                 } else {
                     // 주문하기 화면으로 넘어가기
+                    int allPrice = count * price + deliv_price;
+
+                    Intent intent = new Intent(getApplicationContext(), OrderActivity.class);
+                    intent.putExtra("prevPage", "DetailPage");
+                    intent.putExtra("item_no", item_no);
+                    intent.putExtra("price", Integer.toString(allPrice));
+
                 }
 
             }
@@ -190,11 +203,11 @@ public class ProductDetailActivity extends AppCompatActivity {
 
         count = Integer.parseInt(tv_count_view.getText().toString());
 
-        if (1 <= count && count < 10) {
+        if (min_quantity <= count && count < max_quantity) {
             btn_count_minus.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (count != 1) {
+                    if (count != min_quantity) {
                         count -= 1;
                         tv_count_view.setText(count + "");
                     }
@@ -379,9 +392,11 @@ public class ProductDetailActivity extends AppCompatActivity {
                 }
                 if (!component.isNull(TAG_MIN_QUANTITY)) {
                     minimum_quantity = Integer.parseInt(component.getString(TAG_MIN_QUANTITY));
+                    min_quantity = minimum_quantity;
                 }
                 if (!component.isNull(TAG_MAX_QUANTITY)) {
                     maximum_quantity = Integer.parseInt(component.getString(TAG_MAX_QUANTITY));
+                    max_quantity = maximum_quantity;
                 }
                 if (!component.isNull(TAG_WISHLIST)) {
                     wishlist = Integer.parseInt(component.getString(TAG_WISHLIST));
@@ -494,7 +509,7 @@ public class ProductDetailActivity extends AppCompatActivity {
         }
     }
 
-    class InsertData extends AsyncTask<String, Void, String> {
+    class InsertCartData extends AsyncTask<String, Void, String> {
 
         ProgressDialog progressDialog;
 
@@ -604,4 +619,198 @@ public class ProductDetailActivity extends AppCompatActivity {
 
         }
     }
+
+    class InsertWishData extends AsyncTask<String, Void, String> {
+
+        ProgressDialog progressDialog;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+
+            progressDialog = new ProgressDialog(ProductDetailActivity.this, R.style.AlertDialogStyle);
+            progressDialog.setTitle("Wishlist에 추가중입니다.");
+            progressDialog.show();
+
+        }
+
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+
+            Log.d(TAG, "POST response  - " + result);
+
+            if (result.contains("상품을 Wishlist에 추가했습니다.")) {
+
+                GetData task = new GetData();
+                task.execute(item_no);
+
+                Toast.makeText(getApplicationContext(), "추가 완료되었습니다.", Toast.LENGTH_SHORT).show();
+
+            } else {
+
+                if(result.contains("Integrity constraint violation: 1062 Duplicate entry")) {
+
+                    DeleteWishData wishTask = new DeleteWishData();
+                    wishTask.execute(item_no, useremail);
+
+                } else {
+
+                    Toast.makeText(getApplicationContext(), "오류가 발생했습니다.", Toast.LENGTH_SHORT).show();
+
+                }
+            }
+
+            progressDialog.dismiss();
+
+
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+
+            String item_no = (String) params[1];
+            String email = (String) params[2];
+
+            String serverURL = (String) params[0];
+            String postParameters = "item_no=" + item_no + "&email=" + email;
+
+            try {
+
+                URL url = new URL(serverURL);
+                HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
+
+
+                httpURLConnection.setReadTimeout(10000);
+                httpURLConnection.setConnectTimeout(10000);
+                httpURLConnection.setRequestMethod("POST");
+                httpURLConnection.connect();
+
+
+                OutputStream outputStream = httpURLConnection.getOutputStream();
+                outputStream.write(postParameters.getBytes("UTF-8"));
+                outputStream.flush();
+                outputStream.close();
+
+
+                int responseStatusCode = httpURLConnection.getResponseCode();
+                Log.d(TAG, "POST response code - " + responseStatusCode);
+
+                InputStream inputStream;
+                if (responseStatusCode == HttpURLConnection.HTTP_OK) {
+                    inputStream = httpURLConnection.getInputStream();
+                } else {
+                    inputStream = httpURLConnection.getErrorStream();
+                }
+
+
+                InputStreamReader inputStreamReader = new InputStreamReader(inputStream, "UTF-8");
+                BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+
+                StringBuilder sb = new StringBuilder();
+                String line = null;
+
+                while ((line = bufferedReader.readLine()) != null) {
+                    sb.append(line);
+                }
+
+
+                bufferedReader.close();
+
+
+                return sb.toString();
+
+
+            } catch (Exception e) {
+
+                Log.d(TAG, "InsertData: Error ", e);
+
+                return new String("Error: " + e.getMessage());
+            }
+
+        }
+    }
+
+    private class DeleteWishData extends AsyncTask<String, Void, String> {
+
+        ProgressDialog progressDialog;
+        String errorString = null;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+
+            progressDialog = ProgressDialog.show(ProductDetailActivity.this,
+                    "Wishlist에서 삭제중입니다.", null, true, true);
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+
+            progressDialog.dismiss();
+            Log.d(TAG, "response - " + result);
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+
+            String item_no = params[0];
+            String email = params[1];
+
+            String serverURL = "http://" + IP_ADDRESS + "/ewoman-php/deleteWish.php";
+            String postParameters = "item_no=" + item_no + "&email=" + email;
+
+            try {
+
+                URL url = new URL(serverURL);
+                HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
+
+                httpURLConnection.setReadTimeout(5000);
+                httpURLConnection.setConnectTimeout(5000);
+                httpURLConnection.setRequestMethod("POST");
+                httpURLConnection.setDoInput(true);
+                httpURLConnection.connect();
+
+                OutputStream outputStream = httpURLConnection.getOutputStream();
+                outputStream.write(postParameters.getBytes("UTF-8"));
+                outputStream.flush();
+                outputStream.close();
+
+                int responseStatusCode = httpURLConnection.getResponseCode();
+                Log.d(TAG, "response code - " + responseStatusCode);
+
+                InputStream inputStream;
+                if (responseStatusCode == HttpURLConnection.HTTP_OK) {
+                    inputStream = httpURLConnection.getInputStream();
+                } else {
+                    inputStream = httpURLConnection.getErrorStream();
+                }
+
+                InputStreamReader inputStreamReader = new InputStreamReader(inputStream, "UTF-8");
+                BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+
+                StringBuilder sb = new StringBuilder();
+                String line;
+
+                while ((line = bufferedReader.readLine()) != null) {
+                    sb.append(line);
+                }
+
+                bufferedReader.close();
+
+                return sb.toString().trim();
+
+            } catch (Exception e) {
+
+                Log.d(TAG, "DeleteLikeData: Error ", e);
+                errorString = e.toString();
+
+                return null;
+            }
+
+        }
+    }
+
 }

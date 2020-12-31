@@ -68,6 +68,7 @@ public class CartActivity extends AppCompatActivity {
 
     final ArrayList<ListCart> items = new ArrayList<ListCart>();
     final ArrayList<Integer> removeList = new ArrayList<Integer>();
+    final ArrayList<Integer> orderList = new ArrayList<Integer>();
     ArrayAdapter ArrayAdapter;
 
     private TextView tv_all_item_count;
@@ -176,7 +177,30 @@ public class CartActivity extends AppCompatActivity {
         btn_item_buy.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // 주문하기 버튼 클릭시
+
+                SparseBooleanArray checkedItems = lv_cart_product.getCheckedItemPositions();
+                int count = adapter.getCount();
+
+                for (int i = count - 1; i >= 0; i--) {
+                    if(checkedItems.get(i)) {
+                        int item_no = adapter.getItem(i).getItem_no();
+                        orderList.add(item_no);
+
+                        Log.d(TAG, "items : checkedItems[" + i + "] = " + checkedItems.get(i));
+
+                    }
+                }
+
+                Intent intent = new Intent(getApplicationContext(), OrderActivity.class);
+                intent.putExtra("prevPage", "cartPage");
+                intent.putExtra("size", Integer.toString(orderList.size()));
+                for(int i = 0; i < orderList.size(); i++) {
+
+                    intent.putExtra("orderList[" + i + "]", Integer.toString(orderList.get(i)));
+
+                }
+
+                startActivity(intent);
             }
         });
 
@@ -285,7 +309,8 @@ public class CartActivity extends AppCompatActivity {
                 mDialog.setMessage("로그아웃 중입니다.");
                 mDialog.show();
 
-                Intent logout_to_cart = new Intent(getApplicationContext(), CartActivity.class);
+                finish();
+                Intent logout_to_cart = new Intent(getApplicationContext(), MainActivity.class);
                 mDialog.dismiss();
 
                 startActivity(logout_to_cart);
@@ -455,7 +480,13 @@ public class CartActivity extends AppCompatActivity {
             super.onPostExecute(result);
 
             progressDialog.dismiss();
+
             Log.d(TAG, "response - " + result);
+
+            if(result.equals("삭제 성공")) {
+                Toast.makeText(getApplicationContext(), "카트에서 상품이 삭제되었습니다.", Toast.LENGTH_SHORT).show();
+            }
+
         }
 
         @Override
@@ -464,7 +495,7 @@ public class CartActivity extends AppCompatActivity {
             String item_no = params[0];
             String email = params[1];
 
-            String serverURL = "http://" + IP_ADDRESS + "/deleteCart.php";
+            String serverURL = "http://" + IP_ADDRESS + "/ewoman-php/deleteCart.php";
             String postParameters = "item_no=" + item_no + "&email=" + email;
 
             try {
