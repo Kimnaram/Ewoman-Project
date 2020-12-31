@@ -3,9 +3,7 @@ package com.naram.ewoman_project;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
-import android.app.AlertDialog;
 import android.app.ProgressDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -18,13 +16,9 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -41,35 +35,13 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 import static com.naram.ewoman_project.CartActivity.binaryStringToByteArray;
 
 public class ProductDetailActivity extends AppCompatActivity {
 
     private final static String TAG = "ProductDetailActivity";
-
-    private class Class {
-
-        private String class_name;
-        private int class_price;
-
-        public Class(String class_name, int class_price) {
-            this.class_name = class_name;
-            this.class_price = class_price;
-        }
-
-        public String getClass_name() {
-            return class_name;
-        }
-
-        public int getClass_price() {
-            return class_price;
-        }
-
-    }
 
     private static final String TAG_RESULTS = "result";
     private static final String TAG_CATEGORY = "category";
@@ -83,23 +55,14 @@ public class ProductDetailActivity extends AppCompatActivity {
     private static final String TAG_MIN_QUANTITY = "minimum_quantity";
     private static final String TAG_MAX_QUANTITY = "maximum_quantity";
     private static final String TAG_WISHLIST = "wishlist";
-    private static final String TAG_CLASSNAME = "class_name";
-    private static final String TAG_CLASSPRICE = "class_price";
     private static String IP_ADDRESS = "IP ADDRESS";
 
     private String JSONString;
-    private String JSONWISHString;
     private JSONArray item = null;
 
     private DBOpenHelper dbOpenHelper;
 
-    private ArrayAdapter<String> adapter;
-
-    private RelativeLayout rl_develop_btn_container;
-    private RelativeLayout rl_user_btn_container;
     private RelativeLayout rl_warn_container;
-
-    private LinearLayout ll_spinner_container;
 
     private TextView tv_toolbar_title;
     private TextView tv_category_home;
@@ -111,34 +74,21 @@ public class ProductDetailActivity extends AppCompatActivity {
     private TextView tv_item_detail;
     private TextView tv_item_deliv_method_is;
     private TextView tv_item_deliv_price_is;
-    private TextView tv_order_try;
+    private TextView tv_buy_try;
     private TextView tv_cart_try;
     private TextView tv_wishlist_try;
-    private TextView tv_update_try;
-    private TextView tv_delete_try;
 
     private Button btn_count_minus;
     private Button btn_count_plus;
-
     private TextView tv_count_view;
-
-    private Spinner spinner;
 
     private Bitmap img = null;
 
-    private List<Class> classList_order = new ArrayList<Class>();
-
-    private String useremail = null;
     private String item_no = null;
-    private String item_name = null;
-    private String class_name = null;
-
     private int count = 0;
-    private int class_price = 0;
     private int min_quantity = 1;
     private int max_quantity = 10;
-
-    private boolean Wishlist = false;
+    private String useremail = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -164,22 +114,14 @@ public class ProductDetailActivity extends AppCompatActivity {
 
         }
 
-        if(useremail.equals("develop@naver.com")) {
-
-            rl_user_btn_container.setVisibility(View.GONE);
-
-            rl_develop_btn_container.setVisibility(View.VISIBLE);
-
-        }
-
         Intent intent = getIntent();
         if (intent != null) {
             item_no = intent.getStringExtra("item_no");
 
             if (tv_category_name.getText().toString().equals("e-College")) {
-                tv_order_try.setText("예약하기");
+                tv_buy_try.setText("예약하기");
             } else {
-                tv_order_try.setText("구매하기");
+                tv_buy_try.setText("구매하기");
             }
 
             tv_category_name.setOnClickListener(new View.OnClickListener() {
@@ -211,61 +153,12 @@ public class ProductDetailActivity extends AppCompatActivity {
 
         }
 
-        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                String strClass = parent.getItemAtPosition(position).toString();
-                class_name = strClass.split("\\|")[0];
-                String cls_price = strClass.split("\\|")[1].replace(",", "");
-                Log.d(TAG, "class name : " + class_name + ", class_price : " + class_price);
-                class_price = Integer.parseInt(cls_price);
-                Log.d(TAG, "selected class : " + strClass);
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });
-
         tv_wishlist_try.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 // InsertWishData
-
-                if (useremail != null) {
-
-                    String wish_string = tv_wishlist_try.getText().toString();
-                    int wish_int = Integer.parseInt(wish_string);
-
-                    if (Wishlist == false) {
-                        // 아직 추천을 하지 않았다면
-
-                        InsertWishData task = new InsertWishData();
-                        task.execute("http://" + IP_ADDRESS + "/ewoman-php/insertWish.php", item_no, useremail);
-                        Wishlist = true;
-
-                        wish_int += 1;
-
-                        tv_wishlist_try.setText(Integer.toString(wish_int));
-
-                    } else if (Wishlist == true) {
-                        // 추천을 했다면
-
-                        DeleteWishData task = new DeleteWishData();
-                        task.execute(item_no, useremail);
-                        Wishlist = false;
-
-                        wish_int -= 1;
-
-                        tv_wishlist_try.setText(Integer.toString(wish_int));
-
-                    }
-                } else {
-
-                    Toast.makeText(getApplicationContext(), "로그인이 필요한 기능입니다.", Toast.LENGTH_SHORT).show();
-
-                }
+                InsertWishData wishTask = new InsertWishData();
+                wishTask.execute("http://" + IP_ADDRESS + "/ewoman-php/insertWish.php", item_no, useremail);
             }
         });
 
@@ -273,110 +166,37 @@ public class ProductDetailActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 // InsertCartData
+                Date date = new Date();
+                date.getTime();
+                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
-                if (useremail != null) {
+                String now = dateFormat.format(date);
+                String count = tv_count_view.getText().toString();
 
-                    Date date = new Date();
-                    date.getTime();
-                    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-
-                    String now = dateFormat.format(date);
-                    String count = tv_count_view.getText().toString();
-
-                    InsertCartData cartTask = new InsertCartData();
-                    cartTask.execute("http://" + IP_ADDRESS + "/ewoman-php/insertCart.php", item_no, useremail, count, now, class_name);
-
-                } else {
-
-                    Toast.makeText(getApplicationContext(), "로그인이 필요한 기능입니다.", Toast.LENGTH_SHORT).show();
-
-                }
+                InsertCartData cartTask = new InsertCartData();
+                cartTask.execute("http://" + IP_ADDRESS + "/ewoman-php/insertCart.php", item_no, useremail, count, now);
             }
         });
 
-        tv_order_try.setOnClickListener(new View.OnClickListener() {
+        tv_buy_try.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String tv_price = tv_item_price.getText().toString();
-                String after_price = tv_price.replaceAll("\\,","").split("원")[0];
-                Log.d(TAG, "price : " + after_price);
-                int price = 0;
-                if(class_price == 0) {
-                    price = Integer.parseInt(after_price);
-                } else {
-                    price = class_price;
-                }
+                int price = Integer.parseInt(tv_item_price.getText().toString());
                 int count = Integer.parseInt(tv_count_view.getText().toString());
-                String tv_deliv_price = tv_item_deliv_price_is.getText().toString();
-                int deliv_price = 0;
-                if(!tv_deliv_price.isEmpty()) {
-                    if (tv_item_deliv_price_is.getText().toString().equals("무료")) {
-                        deliv_price = 0;
-                    } else {
-                        deliv_price = Integer.parseInt(tv_item_deliv_price_is.getText().toString());
-                    }
-                }
+                int deliv_price = Integer.parseInt(tv_item_deliv_price_is.getText().toString());
 
-                if (tv_order_try.getText().toString().equals("예약하기")) {
+                if (tv_buy_try.getText().toString().equals("예약하기")) {
                     // 예약하기 화면으로 넘어가기
                 } else {
                     // 주문하기 화면으로 넘어가기
+                    int allPrice = count * price + deliv_price;
+
                     Intent intent = new Intent(getApplicationContext(), OrderActivity.class);
-
-                    intent.putExtra("prevPage", "cartPage");
-                    intent.putExtra("size", "1");
-                    intent.putExtra("itemNo[0]", item_no);
-                    intent.putExtra("className[0]", class_name);
-                    intent.putExtra("count[0]", Integer.toString(count));
-
-                    startActivity(intent);
+                    intent.putExtra("prevPage", "DetailPage");
+                    intent.putExtra("item_no", item_no);
+                    intent.putExtra("price", Integer.toString(allPrice));
 
                 }
-
-            }
-        });
-
-        tv_update_try.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                Intent intent = new Intent(getApplicationContext(), ItemUpdateActivity.class);
-                intent.putExtra("item_no", item_no);
-
-                startActivity(intent);
-
-            }
-        });
-
-        tv_delete_try.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                // 다이얼로그 바디
-                AlertDialog.Builder deleteBuilder = new AlertDialog.Builder(ProductDetailActivity.this, R.style.AlertDialogStyle);
-                // 메세지
-                deleteBuilder.setTitle("삭제하시겠습니까?");
-
-                deleteBuilder.setPositiveButton("예", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-
-                        DeleteData deleteTask = new DeleteData();
-                        deleteTask.execute(item_no, item_name);
-
-                        finish();
-
-                    }
-                });
-                // "아니오" 버튼을 누르면 실행되는 리스너
-                deleteBuilder.setNegativeButton("아니오", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        return; // 아무런 작업도 하지 않고 돌아간다
-                    }
-                });
-
-                deleteBuilder.show();
 
             }
         });
@@ -410,22 +230,11 @@ public class ProductDetailActivity extends AppCompatActivity {
 
         GetData task = new GetData();
         task.execute(item_no);
-
-        if(useremail != null) {
-
-            GetWishData wishTask = new GetWishData();
-            wishTask.execute(item_no, useremail);
-
-        }
     }
 
     public void initAllComponent() {
 
-        rl_develop_btn_container = findViewById(R.id.rl_develop_btn_container);
-        rl_user_btn_container = findViewById(R.id.rl_user_btn_container);
         rl_warn_container = findViewById(R.id.rl_warn_container);
-
-        ll_spinner_container = findViewById(R.id.ll_spinner_container);
 
         tv_toolbar_title = findViewById(R.id.tv_toolbar_title);
 
@@ -440,17 +249,13 @@ public class ProductDetailActivity extends AppCompatActivity {
         tv_item_deliv_method_is = findViewById(R.id.tv_item_deliv_method_is);
         tv_item_deliv_price_is = findViewById(R.id.tv_item_deliv_price_is);
 
-        tv_order_try = findViewById(R.id.tv_order_try);
+        tv_buy_try = findViewById(R.id.tv_buy_try);
         tv_cart_try = findViewById(R.id.tv_cart_try);
         tv_wishlist_try = findViewById(R.id.tv_wishlist_try);
-        tv_update_try = findViewById(R.id.tv_update_try);
-        tv_delete_try = findViewById(R.id.tv_delete_try);
 
         btn_count_minus = findViewById(R.id.btn_count_minus);
         btn_count_plus = findViewById(R.id.btn_count_plus);
         tv_count_view = findViewById(R.id.tv_count_view);
-
-        spinner = findViewById(R.id.sp_class_info);
 
         dbOpenHelper = new DBOpenHelper(this);
         dbOpenHelper.open();
@@ -538,8 +343,6 @@ public class ProductDetailActivity extends AppCompatActivity {
             JSONObject jsonObject = new JSONObject(JSONString);
             item = jsonObject.getJSONArray(TAG_RESULTS);
 
-            List<String> classList = new ArrayList<String>();
-
             for (int i = 0; i < item.length(); i++) {
 
                 JSONObject component = item.getJSONObject(i);
@@ -551,14 +354,13 @@ public class ProductDetailActivity extends AppCompatActivity {
                     tv_category_name.setText("e-Product");
                 }
                 String name = component.getString(TAG_NAME);
-                item_name = name;
                 tv_toolbar_title.setText(name);
                 tv_item_name.setText(name);
                 tv_category_item_name.setText(name);
                 int price = Integer.parseInt(component.getString(TAG_PRICE));
                 DecimalFormat format = new DecimalFormat("###,###");
                 String s_price = format.format(price);
-                tv_item_price.setText(s_price + "원");
+                tv_item_price.setText(s_price);
                 String image = component.getString(TAG_IMAGE);
                 img = StringToBitmap(image);
                 iv_item_image.setImageBitmap(img);
@@ -573,9 +375,6 @@ public class ProductDetailActivity extends AppCompatActivity {
                 int minimum_quantity;
                 int maximum_quantity;
                 int wishlist;
-
-                String class_name = null;
-                int class_price = 0;
 
                 if (!component.isNull(TAG_DELIV_METHOD)) {
                     deliv_method = component.getString(TAG_DELIV_METHOD);
@@ -601,35 +400,10 @@ public class ProductDetailActivity extends AppCompatActivity {
                 }
                 if (!component.isNull(TAG_WISHLIST)) {
                     wishlist = Integer.parseInt(component.getString(TAG_WISHLIST));
-
                     tv_wishlist_try.setText(Integer.toString(wishlist));
-                }
-                if (!component.isNull(TAG_CLASSNAME) && !component.isNull(TAG_CLASSPRICE)) {
-                    class_name = component.getString(TAG_CLASSNAME);
-                    class_price = Integer.parseInt(component.getString(TAG_CLASSPRICE));
-                    DecimalFormat decimalFormat = new DecimalFormat("###,###");
-                    String decimal_price = decimalFormat.format(class_price);
-                    String strClass = null;
-                    if(!decimal_price.equals("0")) {
-                        strClass = class_name + "|" + decimal_price;
-                    } else {
-                        strClass = class_name + "|" + "0";
-                    }
-                    Class classObject = new Class(class_name, class_price);
-
-                    classList_order.add(classObject);
-                    classList.add(strClass);
-
-                    ll_spinner_container.setVisibility(View.VISIBLE);
                 }
 
             }
-
-            adapter = new ArrayAdapter<String>(
-                    this, android.R.layout.simple_spinner_item, classList);
-
-            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-            spinner.setAdapter(adapter);
 
         } catch (JSONException e) {
 
@@ -735,89 +509,6 @@ public class ProductDetailActivity extends AppCompatActivity {
         }
     }
 
-    private class DeleteData extends AsyncTask<String, Void, String> {
-
-        ProgressDialog progressDialog;
-        String errorString = null;
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-
-            progressDialog = new ProgressDialog(ProductDetailActivity.this, R.style.AlertDialogStyle);
-            progressDialog.setTitle("삭제중입니다.");
-            progressDialog.show();
-        }
-
-        @Override
-        protected void onPostExecute(String result) {
-            super.onPostExecute(result);
-
-            progressDialog.dismiss();
-            Log.d(TAG, "response - " + result);
-
-        }
-
-        @Override
-        protected String doInBackground(String... params) {
-
-            String item_no = params[0];
-            String item_name = params[1];
-
-            String serverURL = "http://" + IP_ADDRESS + "/ewoman-php/deleteItem.php";
-            String postParameters = "item_no=" + item_no + "&item_name" + item_name;
-
-            try {
-
-                URL url = new URL(serverURL);
-                HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
-
-                httpURLConnection.setReadTimeout(5000);
-                httpURLConnection.setConnectTimeout(5000);
-                httpURLConnection.setRequestMethod("POST");
-                httpURLConnection.setDoInput(true);
-                httpURLConnection.connect();
-
-                OutputStream outputStream = httpURLConnection.getOutputStream();
-                outputStream.write(postParameters.getBytes("UTF-8"));
-                outputStream.flush();
-                outputStream.close();
-
-                int responseStatusCode = httpURLConnection.getResponseCode();
-                Log.d(TAG, "response code - " + responseStatusCode);
-
-                InputStream inputStream;
-                if (responseStatusCode == HttpURLConnection.HTTP_OK) {
-                    inputStream = httpURLConnection.getInputStream();
-                } else {
-                    inputStream = httpURLConnection.getErrorStream();
-                }
-
-                InputStreamReader inputStreamReader = new InputStreamReader(inputStream, "UTF-8");
-                BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
-
-                StringBuilder sb = new StringBuilder();
-                String line;
-
-                while ((line = bufferedReader.readLine()) != null) {
-                    sb.append(line);
-                }
-
-                bufferedReader.close();
-
-                return sb.toString().trim();
-
-            } catch (Exception e) {
-
-                Log.d(TAG, "DeleteData: Error ", e);
-                errorString = e.toString();
-
-                return null;
-            }
-
-        }
-    }
-
     class InsertCartData extends AsyncTask<String, Void, String> {
 
         ProgressDialog progressDialog;
@@ -869,10 +560,9 @@ public class ProductDetailActivity extends AppCompatActivity {
             String email = (String) params[2];
             String count = (String) params[3];
             String date = (String) params[4];
-            String class_name = (String) params[5];
 
             String serverURL = (String) params[0];
-            String postParameters = "item_no=" + item_no + "&email=" + email + "&count=" + count + "&date=" + date + "&class_name=" + class_name;
+            String postParameters = "item_no=" + item_no + "&email=" + email + "&count=" + count + "&date=" + date;
 
             try {
 
@@ -930,125 +620,6 @@ public class ProductDetailActivity extends AppCompatActivity {
         }
     }
 
-    private void showWishResult() {
-        try {
-            JSONObject jsonObject = new JSONObject(JSONWISHString);
-            JSONArray jsonArray = jsonObject.getJSONArray(TAG_RESULTS);
-
-            for (int i = 0; i < jsonArray.length(); i++) {
-
-                JSONObject item = jsonArray.getJSONObject(i);
-
-                String wishlist = item.getString(TAG_WISHLIST);
-                int my_wish = Integer.parseInt(wishlist);
-
-                if (my_wish > 0) {
-                    Wishlist = true;
-                } else if (my_wish <= 0) {
-                    Wishlist = false;
-                }
-
-            }
-
-        } catch (JSONException e) {
-
-            Log.d(TAG, "showLikeResult : ", e);
-        }
-
-    }
-
-    private class GetWishData extends AsyncTask<String, Void, String> {
-
-        ProgressDialog progressDialog;
-        String errorString = null;
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-
-            progressDialog = new ProgressDialog(ProductDetailActivity.this, R.style.AlertDialogStyle);
-            progressDialog.setTitle("로딩중입니다.");
-            progressDialog.show();
-
-        }
-
-        @Override
-        protected void onPostExecute(String result) {
-            super.onPostExecute(result);
-
-            progressDialog.dismiss();
-            Log.d(TAG, "response - " + result);
-
-            if (result == null) {
-                // 오류 시
-            } else {
-
-                JSONWISHString = result;
-                showWishResult();
-
-            }
-        }
-
-        @Override
-        protected String doInBackground(String... params) {
-
-            String item_no = params[0];
-            String email = params[1];
-
-            String serverURL = "http://" + IP_ADDRESS + "/ewoman-php/selectWish.php";
-            String postParameters = "item_no=" + item_no + "&email=" + email;
-
-            try {
-
-                URL url = new URL(serverURL);
-                HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
-
-                httpURLConnection.setReadTimeout(5000);
-                httpURLConnection.setConnectTimeout(5000);
-                httpURLConnection.setRequestMethod("POST");
-                httpURLConnection.setDoInput(true);
-                httpURLConnection.connect();
-
-                OutputStream outputStream = httpURLConnection.getOutputStream();
-                outputStream.write(postParameters.getBytes("UTF-8"));
-                outputStream.flush();
-                outputStream.close();
-
-                int responseStatusCode = httpURLConnection.getResponseCode();
-                Log.d(TAG, "response code - " + responseStatusCode);
-
-                InputStream inputStream;
-                if (responseStatusCode == HttpURLConnection.HTTP_OK) {
-                    inputStream = httpURLConnection.getInputStream();
-                } else {
-                    inputStream = httpURLConnection.getErrorStream();
-                }
-
-                InputStreamReader inputStreamReader = new InputStreamReader(inputStream, "UTF-8");
-                BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
-
-                StringBuilder sb = new StringBuilder();
-                String line;
-
-                while ((line = bufferedReader.readLine()) != null) {
-                    sb.append(line);
-                }
-
-                bufferedReader.close();
-
-                return sb.toString().trim();
-
-            } catch (Exception e) {
-
-                Log.d(TAG, "GetData: Error ", e);
-                errorString = e.toString();
-
-                return null;
-            }
-
-        }
-    }
-
     class InsertWishData extends AsyncTask<String, Void, String> {
 
         ProgressDialog progressDialog;
@@ -1072,12 +643,23 @@ public class ProductDetailActivity extends AppCompatActivity {
 
             if (result.contains("상품을 Wishlist에 추가했습니다.")) {
 
+                GetData task = new GetData();
+                task.execute(item_no);
+
                 Toast.makeText(getApplicationContext(), "추가 완료되었습니다.", Toast.LENGTH_SHORT).show();
 
             } else {
 
-                Toast.makeText(getApplicationContext(), "오류가 발생했습니다.", Toast.LENGTH_SHORT).show();
+                if(result.contains("Integrity constraint violation: 1062 Duplicate entry")) {
 
+                    DeleteWishData wishTask = new DeleteWishData();
+                    wishTask.execute(item_no, useremail);
+
+                } else {
+
+                    Toast.makeText(getApplicationContext(), "오류가 발생했습니다.", Toast.LENGTH_SHORT).show();
+
+                }
             }
 
             progressDialog.dismiss();

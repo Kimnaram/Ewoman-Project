@@ -50,8 +50,6 @@ public class CartActivity extends AppCompatActivity {
     private static final String TAG_IMAGE = "image";
     private static final String TAG_COUNT = "count";
     private static final String TAG_DATE = "date";
-    private static final String TAG_CLASSNAME = "class_name";
-    private static final String TAG_CLASSPRICE = "class_price";
     private static String IP_ADDRESS = "IP ADDRESS";
 
     private String JSONString;
@@ -61,17 +59,16 @@ public class CartActivity extends AppCompatActivity {
 
     private RelativeLayout rl_warn_container;
 
-    private Button btn_item_order;
+    private Button btn_item_buy;
     private Button btn_item_delete;
 
     private ListView lv_cart_product;
     private CartListAdapter adapter;
     private ListCart listCart;
-    private ListOrder listOrder;
 
     final ArrayList<ListCart> items = new ArrayList<ListCart>();
     final ArrayList<Integer> removeList = new ArrayList<Integer>();
-    final ArrayList<ListOrder> orderList = new ArrayList<ListOrder>();
+    final ArrayList<Integer> orderList = new ArrayList<Integer>();
     ArrayAdapter ArrayAdapter;
 
     private TextView tv_all_item_count;
@@ -81,8 +78,6 @@ public class CartActivity extends AppCompatActivity {
     private Bitmap img;
 
     private String useremail = null;
-
-    private int class_price = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -141,14 +136,13 @@ public class CartActivity extends AppCompatActivity {
 
                 SparseBooleanArray checkedItems = lv_cart_product.getCheckedItemPositions();
                 int count = adapter.getCount();
-                Log.d(TAG, "adapter count : " + count);
 
-                for (int i = 0; i < count; i++) {
+                for (int i = count - 1; i >= 0; i--) {
                     if(checkedItems.get(i)) {
                         int item_no = adapter.getItem(i).getItem_no();
                         removeList.add(item_no);
-                        Log.d(TAG, "item no : " + item_no);
-//                        adapter.clearItems(i);
+                        adapter.clearItems(i);
+                        Log.d(TAG, "items : checkedItems[" + i + "] = " + checkedItems.get(i));
                     }
                 }
 
@@ -159,23 +153,19 @@ public class CartActivity extends AppCompatActivity {
 
                 adapter.notifyDataSetChanged();
 
-                String items = "(";
-
                 for (int i = 0; i < removeList.size(); i++) {
+
+                    String items = "(";
 
                     if(i < removeList.size() - 1) {
 
                         items += removeList.get(i) + ",";
+
                     } else {
 
                         items += removeList.get(i) + ")";
                         DeleteData task = new DeleteData();
                         task.execute(items, useremail);
-
-                        adapter.clearAllItems();
-
-                        GetData getTask = new GetData();
-                        getTask.execute(useremail);
 
                     }
 
@@ -184,40 +174,33 @@ public class CartActivity extends AppCompatActivity {
             }
         });
 
-        btn_item_order.setOnClickListener(new View.OnClickListener() {
+        btn_item_buy.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
                 SparseBooleanArray checkedItems = lv_cart_product.getCheckedItemPositions();
                 int count = adapter.getCount();
 
-                if(count > 0) {
+                for (int i = count - 1; i >= 0; i--) {
+                    if(checkedItems.get(i)) {
+                        int item_no = adapter.getItem(i).getItem_no();
+                        orderList.add(item_no);
 
-                    for (int i = 0; i < count; i++) {
-                        if (checkedItems.get(i)) {
-                            int item_no = adapter.getItem(i).getItem_no();
-                            String class_name = adapter.getItem(i).getClass_name();
-                            int item_count = adapter.getItem(i).getCount();
-                            orderList.add(new ListOrder(item_no, class_name, item_count));
-
-                            Log.d(TAG, "items : checkedItems[" + i + "] = " + checkedItems.get(i));
-
-                        }
-                    }
-
-                    Intent intent = new Intent(getApplicationContext(), OrderActivity.class);
-                    intent.putExtra("prevPage", "cartPage");
-                    intent.putExtra("size", Integer.toString(orderList.size()));
-                    for (int i = 0; i < orderList.size(); i++) {
-
-                        intent.putExtra("itemNo[" + i + "]", Integer.toString(orderList.get(i).getItem_no()));
-                        intent.putExtra("className[" + i + "]", orderList.get(i).getClass_name());
-                        intent.putExtra("count[" + i + "]", Integer.toString(orderList.get(i).getCount()));
+                        Log.d(TAG, "items : checkedItems[" + i + "] = " + checkedItems.get(i));
 
                     }
-
-                    startActivity(intent);
                 }
+
+                Intent intent = new Intent(getApplicationContext(), OrderActivity.class);
+                intent.putExtra("prevPage", "cartPage");
+                intent.putExtra("size", Integer.toString(orderList.size()));
+                for(int i = 0; i < orderList.size(); i++) {
+
+                    intent.putExtra("orderList[" + i + "]", Integer.toString(orderList.get(i)));
+
+                }
+
+                startActivity(intent);
             }
         });
 
@@ -237,7 +220,7 @@ public class CartActivity extends AppCompatActivity {
 
         tv_all_item_count = findViewById(R.id.tv_all_item_count);
 
-        btn_item_order = findViewById(R.id.btn_item_order);
+        btn_item_buy = findViewById(R.id.btn_item_buy);
         btn_item_delete = findViewById(R.id.btn_item_delete);
 
         dbOpenHelper = new DBOpenHelper(this);
@@ -251,10 +234,6 @@ public class CartActivity extends AppCompatActivity {
 
         adapter.clearAllItems();
 
-        orderList.clear();
-
-        // 모든 선택 상태 초기화.
-        lv_cart_product.clearChoices();
         all_count = 0;
 
         GetData task = new GetData();
@@ -460,23 +439,17 @@ public class CartActivity extends AppCompatActivity {
                 boolean imcheck = item.isNull(TAG_IMAGE);
                 if (imcheck == false) {
                     image = item.getString(TAG_IMAGE);
+                }
+
+                if (imcheck == false) {
                     img = StringToBitmap(image);
-                }
-                String class_name = null;
-                int class_price = 0;
 
-                if (!item.isNull(TAG_CLASSNAME)) {
-                    class_name = item.getString(TAG_CLASSNAME);
                 }
 
-                if (!item.isNull(TAG_CLASSPRICE)) {
-                    class_price = Integer.parseInt(item.getString(TAG_CLASSPRICE));
-                }
-
-                listCart = new ListCart(item_no, name, date, img, count, price, class_name, class_price);
+                listCart = new ListCart(item_no, name, date, img, count, price);
 
                 items.add(listCart);
-                ArrayAdapter.add(items);
+                ArrayAdapter.add(items) ;
                 adapter.addItem(listCart);
 
             }
