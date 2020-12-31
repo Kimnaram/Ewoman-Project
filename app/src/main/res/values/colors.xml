@@ -13,4 +13,5 @@
     <color name="colorLightYellow">#E7E600</color>
     <color name="colorCocoa">#ADA59B</color>
     <color name="colorWarmBrown">#EFE8E4</color>
+    <color name="colorLightGrayWarning">#BF000000</color>
 </resources>

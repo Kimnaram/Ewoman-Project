@@ -271,8 +271,10 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         protected void onPreExecute() {
             super.onPreExecute();
 
-            progressDialog = ProgressDialog.show(LoginActivity.this,
-                    "로그인 중입니다.", null, true, true);
+            progressDialog = new ProgressDialog(LoginActivity.this, R.style.AlertDialogStyle);
+            progressDialog.setTitle("로그인 중입니다.");
+            progressDialog.show();
+
         }
 
         @Override

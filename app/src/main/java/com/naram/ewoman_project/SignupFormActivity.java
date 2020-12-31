@@ -230,8 +230,9 @@ public class SignupFormActivity extends AppCompatActivity {
         protected void onPreExecute() {
             super.onPreExecute();
 
-            progressDialog = ProgressDialog.show(SignupFormActivity.this,
-                    "회원가입 중입니다.", null, true, true);
+            progressDialog = new ProgressDialog(SignupFormActivity.this, R.style.AlertDialogStyle);
+            progressDialog.setTitle("회원가입 중입니다.");
+            progressDialog.show();
 
         }
 

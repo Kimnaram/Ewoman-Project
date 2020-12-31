@@ -9,12 +9,13 @@ public class ListCart {
     private Bitmap image;
     private String date;
     private int count;
-    private String price;
+    private int price;
 
-    public ListCart(int item_no, String name, String date, Bitmap image, int count, String price) {
+    public ListCart(int item_no, String name, String date, Bitmap image, int count, int price) {
         this.item_no = item_no;
         this.name = name;
         this.date = date;
+        this.image = image;
         this.count = count;
         this.price = price;
     }
@@ -59,11 +60,11 @@ public class ListCart {
         this.count = count;
     }
 
-    public String getPrice() {
+    public int getPrice() {
         return price;
     }
 
-    public void setPrice(String price) {
+    public void setPrice(int price) {
         this.price = price;
     }
 
