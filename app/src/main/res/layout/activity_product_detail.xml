@@ -334,7 +334,7 @@
                 </LinearLayout>
 
                 <RelativeLayout
-                    android:id="@+id/rl_btn_container"
+                    android:id="@+id/rl_user_btn_container"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/rl_count_btn_container"
