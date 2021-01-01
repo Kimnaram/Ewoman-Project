@@ -15,7 +15,7 @@
 	$count = $_POST['count'];
 	$date = $_POST['date'];
 	
-        	if(empty($item_no)) {
+	if(empty($item_no)) {
 		$errMSG = "상품 번호 부재";
 	} else if(empty($email)){
 		$errMSG = "사용자 이메일 부재";
@@ -27,8 +27,10 @@
 
 	if(!isset($errMSG))	{
 		try {
-			$stmt = $con->prepare('INSERT INTO cart(item_no, email, count, date) VALUES(&item_no, :email, &count, :date)');
+			$stmt = $con->prepare('INSERT INTO cart(item_no, email, count, date) VALUES(:item_no, :email, :count, :date)');
+			$stmt->bindParam(':item_no', $item_no);
 			$stmt->bindParam(':email', $email);
+			$stmt->bindParam(':count', $count);
 			$stmt->bindParam(':date', $date);
 
 			if($stmt->execute()) {
