@@ -5,39 +5,37 @@ ini_set('display_errors',1);
 include('dbcon.php');
 
 //POST 값을 읽어온다.
-$email=isset($_POST['email']) ? $_POST['email'] : '';
+$postId=isset($_POST['postId']) ? $_POST['postId'] : '';
+$uid=isset($_POST['uid']) ? $_POST['uid'] : '';
 $android = strpos($_SERVER['HTTP_USER_AGENT'], "Android");
 
-if ($email != ""){
+if ($postId != ""){
 
-  $sql="select C.item_no, name, price, image, count, date from item I, cart C where I.item_no = C.item_no AND email='$email'";
+  $sql="select count(*) from recommend_review where postId=$postId and uid='$uid'";
   $stmt = $con->prepare($sql);
   $stmt->execute();
 
   if ($stmt->rowCount() == 0){
 
         echo "";
-        echo $email;
-        echo "이 카트에 담은 것이 없습니다.";
+        echo $postId;
+        echo ", ";
+        echo $uid;
+        echo "는 찾을 수 없습니다.";
+
   }
-        else{
+	else{
 
-               $result = array();
+   		$result = array();
 
-               while($row=$stmt->fetch(PDO::FETCH_ASSOC)){
+        while($row=$stmt->fetch(PDO::FETCH_ASSOC)){
 
-                 extract($row);
+        	extract($row);
 
-                 array_push($result,
-			 array("item_no"=>$row["item_no"],
-			 "name"=>$row["name"],
-			 "price"=>$row["price"],
-			 "image"=>$row["image"],
-			 "count"=>$row["count"],
-			 "date"=>$row["date"]
-                 ));
+            array_push($result,
+                array("count(*)"=>$row["count(*)"]
+            ));
         }
-
 
         if (!$android) {
           $json = json_encode(array("result"=>$result), JSON_UNESCAPED_UNICODE);
@@ -51,9 +49,8 @@ if ($email != ""){
     }
 }
 else {
-    echo "Cart : ";
+    echo "Reivew : ";
 }
-
 ?>
 
 
@@ -69,7 +66,8 @@ if (!$android){
    <body>
 
       <form action="<?php $_PHP_SELF ?>" method="POST">
-         EMAIL : <input type = "text" name = "email" />
+         Post ID : <input type = "text" name = "postId" />
+         UID : <input type = "text" name = "uid" />
          <input type = "submit" />
       </form>
 
@@ -77,5 +75,6 @@ if (!$android){
 </html>
 <?php
 }
+
 
 ?>

@@ -5,37 +5,40 @@ ini_set('display_errors',1);
 include('dbcon.php');
 
 //POST 값을 읽어온다.
+$item_no=isset($_POST['item_no']) ? $_POST['item_no'] : '';
 $email=isset($_POST['email']) ? $_POST['email'] : '';
 $android = strpos($_SERVER['HTTP_USER_AGENT'], "Android");
 
-if ($email != ""){
 
-  $sql="select C.item_no, name, price, image, count, date from item I, cart C where I.item_no = C.item_no AND email='$email'";
+if ($item_no != "" && $email != ""){
+
+  $sql="delete from cart where item_no in ($item_no) and email='$email'";
   $stmt = $con->prepare($sql);
   $stmt->execute();
 
-  if ($stmt->rowCount() == 0){
+  $selectsql="select * from cart where item_no=$item_no and email='$email'";
+  $stmt2 = $con->prepare($selectsql);
+  $stmt2->execute();
 
-        echo "";
-        echo $email;
-        echo "이 카트에 담은 것이 없습니다.";
+  if ($stmt2->rowCount() == 0) {
+
+        $result = "삭제 성공";
+        echo $result;
   }
-        else{
+  else{
 
-               $result = array();
+        $result = array();
 
-               while($row=$stmt->fetch(PDO::FETCH_ASSOC)){
+        while($row=$stmt->fetch(PDO::FETCH_ASSOC)){
 
-                 extract($row);
+        	extract($row);
 
-                 array_push($result,
-			 array("item_no"=>$row["item_no"],
-			 "name"=>$row["name"],
-			 "price"=>$row["price"],
-			 "image"=>$row["image"],
-			 "count"=>$row["count"],
-			 "date"=>$row["date"]
-                 ));
+                array_push($result,
+                   array("item_no"=>$row["item_no"],
+                   "email"=>$row["email"],
+                   "count"=>$row["name"],
+                   "date"=>$row["uid"]
+               ));
         }
 
 
@@ -69,6 +72,7 @@ if (!$android){
    <body>
 
       <form action="<?php $_PHP_SELF ?>" method="POST">
+         ITEM_NO : <input type = "text" name = "item_no" />
          EMAIL : <input type = "text" name = "email" />
          <input type = "submit" />
       </form>
@@ -77,5 +81,6 @@ if (!$android){
 </html>
 <?php
 }
+
 
 ?>

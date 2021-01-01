@@ -5,12 +5,12 @@ ini_set('display_errors',1);
 include('dbcon.php');
 
 //POST 값을 읽어온다.
-$email=isset($_POST['email']) ? $_POST['email'] : '';
+$item_no=isset($_POST['item_no']) ? $_POST['item_no'] : '';
 $android = strpos($_SERVER['HTTP_USER_AGENT'], "Android");
 
 if ($item_no != ""){
 
-  $sql="select I.item_no, I.name, I.image, I.price, I.inform, I.deliv_method, I.deliv_price, I.deliv_inform, I.minimum_quantity, I.maximum_quantity, count(email) as wishlist from item I left join wishlist W on I.item_no = W.item_no where category='$category' group by I.item_no";
+  $sql="select I.item_no, I.category, I.name, I.image, I.price, I.inform, I.deliv_method, I.deliv_price, I.deliv_inform, I.minimum_quantity, I.maximum_quantity, count(email) as wishlist from item I left join wishlist W on I.item_no = W.item_no where I.item_no=$item_no group by I.item_no";
   $stmt = $con->prepare($sql);
   $stmt->execute();
 
