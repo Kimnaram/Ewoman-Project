@@ -3,7 +3,9 @@ package com.naram.ewoman_project;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -81,6 +83,8 @@ public class ProductDetailActivity extends AppCompatActivity {
     private TextView tv_buy_try;
     private TextView tv_cart_try;
     private TextView tv_wishlist_try;
+    private TextView tv_update_try;
+    private TextView tv_delete_try;
 
     private Button btn_count_minus;
     private Button btn_count_plus;
@@ -123,7 +127,7 @@ public class ProductDetailActivity extends AppCompatActivity {
 
             rl_user_btn_container.setVisibility(View.GONE);
 
-            rl_develop_btn_container.setVisibility(View.VISIBLE  );
+            rl_develop_btn_container.setVisibility(View.VISIBLE);
 
         }
 
@@ -255,6 +259,51 @@ public class ProductDetailActivity extends AppCompatActivity {
             }
         });
 
+        tv_update_try.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Intent intent = new Intent(getApplicationContext(), ItemUpdateActivity.class);
+                intent.putExtra("item_no", item_no);
+
+                startActivity(intent);
+
+            }
+        });
+
+        tv_delete_try.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                // 다이얼로그 바디
+                AlertDialog.Builder deleteBuilder = new AlertDialog.Builder(ProductDetailActivity.this, R.style.AlertDialogStyle);
+                // 메세지
+                deleteBuilder.setTitle("삭제하시겠습니까?");
+
+                deleteBuilder.setPositiveButton("예", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                        DeleteData deleteTask = new DeleteData();
+                        deleteTask.execute(item_no);
+
+                        finish();
+
+                    }
+                });
+                // "아니오" 버튼을 누르면 실행되는 리스너
+                deleteBuilder.setNegativeButton("아니오", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        return; // 아무런 작업도 하지 않고 돌아간다
+                    }
+                });
+
+                deleteBuilder.show();
+
+            }
+        });
+
         count = Integer.parseInt(tv_count_view.getText().toString());
 
         if (min_quantity <= count && count < max_quantity) {
@@ -316,6 +365,8 @@ public class ProductDetailActivity extends AppCompatActivity {
         tv_buy_try = findViewById(R.id.tv_buy_try);
         tv_cart_try = findViewById(R.id.tv_cart_try);
         tv_wishlist_try = findViewById(R.id.tv_wishlist_try);
+        tv_update_try = findViewById(R.id.tv_update_try);
+        tv_delete_try = findViewById(R.id.tv_delete_try);
 
         btn_count_minus = findViewById(R.id.btn_count_minus);
         btn_count_plus = findViewById(R.id.btn_count_plus);
@@ -566,6 +617,86 @@ public class ProductDetailActivity extends AppCompatActivity {
             } catch (Exception e) {
 
                 Log.d(TAG, "SelectData: Error ", e);
+                errorString = e.toString();
+
+                return null;
+            }
+
+        }
+    }
+
+    private class DeleteData extends AsyncTask<String, Void, String> {
+
+        ProgressDialog progressDialog;
+        String errorString = null;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+
+            progressDialog = ProgressDialog.show(ProductDetailActivity.this,
+                    "삭제중입니다.", null, true, true);
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+
+            progressDialog.dismiss();
+            Log.d(TAG, "response - " + result);
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+
+            String item_no = params[0];
+
+            String serverURL = "http://" + IP_ADDRESS + "/ewoman-php/deleteItem.php";
+            String postParameters = "item_no=" + item_no;
+
+            try {
+
+                URL url = new URL(serverURL);
+                HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
+
+                httpURLConnection.setReadTimeout(5000);
+                httpURLConnection.setConnectTimeout(5000);
+                httpURLConnection.setRequestMethod("POST");
+                httpURLConnection.setDoInput(true);
+                httpURLConnection.connect();
+
+                OutputStream outputStream = httpURLConnection.getOutputStream();
+                outputStream.write(postParameters.getBytes("UTF-8"));
+                outputStream.flush();
+                outputStream.close();
+
+                int responseStatusCode = httpURLConnection.getResponseCode();
+                Log.d(TAG, "response code - " + responseStatusCode);
+
+                InputStream inputStream;
+                if (responseStatusCode == HttpURLConnection.HTTP_OK) {
+                    inputStream = httpURLConnection.getInputStream();
+                } else {
+                    inputStream = httpURLConnection.getErrorStream();
+                }
+
+                InputStreamReader inputStreamReader = new InputStreamReader(inputStream, "UTF-8");
+                BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+
+                StringBuilder sb = new StringBuilder();
+                String line;
+
+                while ((line = bufferedReader.readLine()) != null) {
+                    sb.append(line);
+                }
+
+                bufferedReader.close();
+
+                return sb.toString().trim();
+
+            } catch (Exception e) {
+
+                Log.d(TAG, "DeleteData: Error ", e);
                 errorString = e.toString();
 
                 return null;

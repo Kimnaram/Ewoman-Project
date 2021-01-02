@@ -12,7 +12,8 @@
         android:roundIcon="@mipmap/ic_launcher_ewoman_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".OrderActivity"></activity>
+        <activity android:name=".ItemUpdateActivity"></activity>
+        <activity android:name=".OrderActivity" />
         <activity
             android:name=".ItemAddActivity"
             android:windowSoftInputMode="stateAlwaysHidden" />

@@ -2,35 +2,13 @@ package com.naram.ewoman_project;
 
 import android.content.ContentValues;
 import android.content.Context;
-import android.database.AbstractWindowedCursor;
 import android.database.Cursor;
-import android.database.CursorWindow;
 import android.database.SQLException;
-import android.database.sqlite.SQLiteBlobTooBigException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.database.sqlite.SQLiteStatement;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.provider.ContactsContract;
-import android.util.Log;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.view.ViewPropertyAnimatorListener;
-
-import com.google.android.gms.auth.api.signin.internal.Storage;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.UploadTask;
-
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 
 public class DBOpenHelper {
 
