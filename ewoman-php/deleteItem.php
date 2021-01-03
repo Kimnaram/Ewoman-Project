@@ -6,17 +6,16 @@ include('dbcon.php');
 
 //POST 값을 읽어온다.
 $item_no=isset($_POST['item_no']) ? $_POST['item_no'] : '';
-$email=isset($_POST['email']) ? $_POST['email'] : '';
 $android = strpos($_SERVER['HTTP_USER_AGENT'], "Android");
 
 
-if ($item_no != "" && $email != ""){
+if ($item_no != "") {
 
-  $sql="delete from cart where item_no in ($item_no) and email='$email'";
+  $sql="delete from item where item_no=$item_no";
   $stmt = $con->prepare($sql);
   $stmt->execute();
 
-  $selectsql="select * from cart where item_no in ($item_no) and email='$email'";
+  $selectsql="select * from item where item_no=$item_no";
   $stmt2 = $con->prepare($selectsql);
   $stmt2->execute();
 
@@ -34,10 +33,7 @@ if ($item_no != "" && $email != ""){
         	extract($row);
 
                 array_push($result,
-                   array("item_no"=>$row["item_no"],
-                   "email"=>$row["email"],
-                   "count"=>$row["name"],
-                   "date"=>$row["date"]
+                   array("item_no"=>$row["item_no"]
                ));
         }
 
@@ -54,12 +50,10 @@ if ($item_no != "" && $email != ""){
     }
 }
 else {
-    echo "Cart : ";
+    echo "Item : ";
 }
 
 ?>
-
-
 
 <?php
 
@@ -73,7 +67,6 @@ if (!$android){
 
       <form action="<?php $_PHP_SELF ?>" method="POST">
          ITEM_NO : <input type = "text" name = "item_no" />
-         EMAIL : <input type = "text" name = "email" />
          <input type = "submit" />
       </form>
 
