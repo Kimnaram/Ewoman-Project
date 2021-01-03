@@ -25,7 +25,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ItemVi
     public ItemViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         // LayoutInflater를 이용하여 전 단계에서 만들었던 item.xml을 inflate 시킵니다.
         // return 인자는 ViewHolder 입니다.
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.post_item, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.review_item, parent, false);
         return new ItemViewHolder(view);
     }
 
@@ -44,6 +44,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ItemVi
     public void addItem(ListPost listPost) {
         // 외부에서 item을 추가시킬 함수입니다.
         listPostArrayList.add(listPost);
+
         notifyDataSetChanged();
     }
 
@@ -53,7 +54,9 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ItemVi
 
     public void clearAllItem() {
 
-        listPostArrayList.clear();
+        for(int i = 0; i < listPostArrayList.size(); i++)
+            listPostArrayList.remove(i);
+
         notifyDataSetChanged();
     }
 
@@ -121,11 +124,11 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ItemVi
     {
         listPostArrayList = list;
     }
-
+    
     public void filter(String search) {
-
-
-
+        
+        
+        
     }
 
 }
