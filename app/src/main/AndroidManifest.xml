@@ -21,10 +21,10 @@
         <activity
             android:name=".ReviewUpdateActivity"
             android:windowSoftInputMode="stateAlwaysHidden" />
-        <activity android:name=".ReviewDetailActivity" />
-        <activity android:name=".ReviewCreateActivity" />
+        <activity android:name=".PostDetailActivity" />
+        <activity android:name=".PostCreateActivity" />
         <activity
-            android:name=".ReviewListActivity"
+            android:name=".PostListActivity"
             android:windowSoftInputMode="stateAlwaysHidden" />
         <activity android:name=".ContactActivity" />
         <activity

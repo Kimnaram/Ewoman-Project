@@ -1,6 +1,8 @@
 <resources>
     <string name="app_name">ewoman</string>
 
+    <string name="app_detail">상호 : 이우먼 | 대표 이사 : 정슬기 | 사업자 등록번호 : 362-01-01618 | 통신판매업 신고번호 : 2020-서울강남-03327 | 소재지 : 서울특별시 강남구 역삼로 165, 608호 | suntteut@gmail.com | FAX : 02-3440-7574 | 개인정보보호 관리 책임자 : 정슬기</string>
+
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

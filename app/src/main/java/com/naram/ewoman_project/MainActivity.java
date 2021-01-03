@@ -168,10 +168,7 @@ public class MainActivity extends AppCompatActivity {
                 } else if (id == R.id.item_e_product) {
                     startActivity(new Intent(getApplicationContext(), eProductActivity.class));
                 } else if (id == R.id.item_e_review) {
-                    Intent main_to_review = new Intent(getApplicationContext(), ReviewListActivity.class);
-                    main_to_review.putExtra("username", username);
-
-                    startActivity(main_to_review);
+                    startActivity(new Intent(getApplicationContext(), PostListActivity.class));
                 } else if (id == R.id.item_contact) {
                     startActivity(new Intent(getApplicationContext(), ContactActivity.class));
                 } else if (id == R.id.item_add) {

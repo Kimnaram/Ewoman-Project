@@ -47,7 +47,7 @@
                     android:layout_marginTop="50dp"
                     android:fontFamily="@font/nanumbarungothicbold"
                     android:text="Customer Service"
-                    android:textSize="22dp" />
+                    android:textSize="22.5dp" />
 
                 <TextView
                     android:id="@+id/tv_contact_email"
@@ -75,7 +75,7 @@
                     android:layout_marginBottom="10dp"
                     android:fontFamily="@font/nanumbarungothicbold"
                     android:text="Offline Store"
-                    android:textSize="22dp" />
+                    android:textSize="22.5dp" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -110,7 +110,7 @@
                     android:layout_marginBottom="10dp"
                     android:fontFamily="@font/nanumbarungothicbold"
                     android:text="Contact"
-                    android:textSize="22dp" />
+                    android:textSize="22.5dp" />
 
                 <TextView
                     android:layout_width="wrap_content"

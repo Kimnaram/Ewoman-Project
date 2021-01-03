@@ -3,21 +3,21 @@ package com.naram.ewoman_project;
 import android.graphics.drawable.Drawable;
 import android.media.Image;
 
-public class ListReview {
+public class ListPost {
 
     private int _id;
     private String title;
     private String name;
     private int like;
 
-    public ListReview() {
+    public ListPost() {
         _id = 0;
         title = "";
         name = "";
         like = 0;
     }
 
-    public ListReview(int _id, String title, String name, int like) {
+    public ListPost(int _id, String title, String name, int like) {
         this._id = _id;
         this.title = title;
         this.name = name;

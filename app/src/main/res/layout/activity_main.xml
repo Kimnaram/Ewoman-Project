@@ -4,10 +4,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/colorWhite"
     tools:context=".MainActivity">
 
-    <androidx.drawerlayout.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
+    <androidx.drawerlayout.widget.DrawerLayout
         android:id="@+id/drawerLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -72,8 +72,18 @@
                                 android:fontFamily="@font/nanumbarungothicbold"
                                 android:text="e - flagship store project"
                                 android:textColor="@color/colorWhite"
+                                android:layout_marginBottom="3dp"
+                                android:textSize="32dp" />
+
+                            <TextView
+                                android:id="@+id/tv_main_title_detail"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:fontFamily="@font/nanumbarungothicbold"
+                                android:text="리즈로 되돌리는 색다른 관리, e우먼. 나를 브랜드로 만들어줍니다."
+                                android:textColor="@color/colorWhite"
                                 android:textStyle="bold"
-                                android:textSize="26dp" />
+                                android:textSize="13dp" />
 
                             <RelativeLayout
                                 android:id="@+id/rl_ewoman_main_btn_container"
@@ -85,11 +95,12 @@
                                 <Button
                                     android:id="@+id/btn_to_ecollege"
                                     android:layout_width="120dp"
-                                    android:layout_height="60dp"
+                                    android:layout_height="55dp"
                                     android:layout_centerVertical="true"
                                     android:layout_margin="20dp"
                                     android:background="@drawable/btn_style_border_line"
-                                    android:fontFamily="@font/nanumbarungothicbold"
+                                    android:fontFamily="@font/nanumbarungothic"
+                                    android:textStyle="bold"
                                     android:text="College"
                                     android:textColor="@color/colorWhite"
                                     android:textSize="17dp" />
@@ -97,12 +108,13 @@
                                 <Button
                                     android:id="@+id/btn_to_ourstry"
                                     android:layout_width="120dp"
-                                    android:layout_height="60dp"
+                                    android:layout_height="55dp"
                                     android:layout_centerVertical="true"
                                     android:layout_margin="20dp"
                                     android:layout_toRightOf="@+id/btn_to_ecollege"
                                     android:background="@drawable/btn_style_border_line"
-                                    android:fontFamily="@font/nanumbarungothicbold"
+                                    android:fontFamily="@font/nanumbarungothic"
+                                    android:textStyle="bold"
                                     android:text="Our Story"
                                     android:textColor="@color/colorWhite"
                                     android:textSize="17dp" />
@@ -128,7 +140,7 @@
                             android:fontFamily="@font/nanumbarungothicbold"
                             android:text="ewoman college"
                             android:textColor="@color/colorGray"
-                            android:textSize="23dp" />
+                            android:textSize="24dp" />
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -141,9 +153,9 @@
 
                         <ImageView
                             android:layout_width="match_parent"
-                            android:layout_height="150dp"
+                            android:layout_height="180dp"
                             android:scaleType="centerCrop"
-                            android:src="@drawable/prd_front_look_theraphy" />
+                            android:src="@drawable/prd_front_look" />
 
                         <TextView
                             android:layout_width="match_parent"
@@ -181,7 +193,47 @@
 
                         <ImageView
                             android:layout_width="match_parent"
-                            android:layout_height="150dp"
+                            android:layout_height="180dp"
+                            android:scaleType="centerCrop"
+                            android:src="@drawable/prd_explore" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="5dp"
+                            android:layout_marginTop="10dp"
+                            android:fontFamily="@font/nanumbarungothicbold"
+                            android:text="Future Therapy"
+                            android:textColor="@color/colorGray"
+                            android:textSize="23dp" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="5dp"
+                            android:layout_marginTop="5dp"
+                            android:fontFamily="@font/nanumbarungothic"
+                            android:text="미래의 꿈을 끌어 당기는 오늘의 베이비스텝, 한 장의 노트"
+                            android:textColor="@color/colorGray"
+                            android:textSize="14dp" />
+
+                        <Button
+                            android:id="@+id/btn_to_futureth"
+                            android:layout_width="100dp"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="left"
+                            android:layout_marginLeft="5dp"
+                            android:layout_marginTop="10dp"
+                            android:layout_marginBottom="40dp"
+                            android:background="@drawable/btn_style_border_line_white_background"
+                            android:fontFamily="@font/nanumbarungothic"
+                            android:text="Go shop"
+                            android:textColor="@color/colorGray"
+                            android:textSize="13dp" />
+
+                        <ImageView
+                            android:layout_width="match_parent"
+                            android:layout_height="180dp"
                             android:scaleType="centerCrop"
                             android:src="@drawable/prd_book_theraphy" />
 
@@ -232,7 +284,7 @@
                         android:paddingRight="5dp"
                         android:paddingBottom="20dp">
 
-                        <LinearLayout
+                        <org.apmem.tools.layouts.FlowLayout
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
@@ -245,7 +297,6 @@
                                 android:layout_height="25dp"
                                 android:layout_marginRight="5dp"
                                 android:background="@null"
-                                android:padding="2dp"
                                 android:src="@drawable/main_instagram" />
 
                             <ImageButton
@@ -254,116 +305,46 @@
                                 android:layout_height="25dp"
                                 android:background="@null"
                                 android:padding="2dp"
+                                android:layout_marginRight="5dp"
                                 android:src="@drawable/main_facebook" />
 
-                        </LinearLayout>
+                            <ImageButton
+                                android:id="@+id/ib_vimeo"
+                                android:layout_width="25dp"
+                                android:layout_height="25dp"
+                                android:background="@null"
+                                android:padding="2dp"
+                                android:layout_marginRight="5dp"
+                                android:src="@drawable/main_vimeo" />
 
-                        <org.apmem.tools.layouts.FlowLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="horizontal">
+                            <ImageButton
+                                android:id="@+id/ib_kakao"
+                                android:layout_width="25dp"
+                                android:layout_height="25dp"
+                                android:background="@null"
+                                android:padding="2dp"
+                                android:layout_marginRight="5dp"
+                                android:src="@drawable/main_kakao" />
 
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_margin="5dp"
-                                android:fontFamily="@font/nanumbarungothic"
-                                android:text="이우먼"
-                                android:textColor="@color/colorWhite"
-                                android:textSize="14dp" />
-
-                            <View
-                                android:layout_width="2dp"
-                                android:layout_height="18dp"
-                                android:layout_margin="5dp"
-                                android:background="@color/colorWhite" />
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_margin="5dp"
-                                android:fontFamily="@font/nanumbarungothic"
-                                android:text="대표 정슬기"
-                                android:textColor="@color/colorWhite"
-                                android:textSize="14dp" />
-
-                            <View
-                                android:layout_width="2dp"
-                                android:layout_height="18dp"
-                                android:layout_margin="5dp"
-                                android:background="@color/colorWhite" />
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_margin="5dp"
-                                android:fontFamily="@font/nanumbarungothic"
-                                android:text="사업자 등록번호 : 362-01-01618"
-                                android:textColor="@color/colorWhite"
-                                android:textSize="14dp" />
-
-                            <View
-                                android:layout_width="2dp"
-                                android:layout_height="18dp"
-                                android:layout_margin="5dp"
-                                android:background="@color/colorWhite" />
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_margin="5dp"
-                                android:fontFamily="@font/nanumbarungothic"
-                                android:text="통신판매업 신고번호 : 2020-서울강남-03327"
-                                android:textColor="@color/colorWhite"
-                                android:textSize="14dp" />
-
-                            <View
-                                android:layout_width="2dp"
-                                android:layout_height="18dp"
-                                android:layout_margin="5dp"
-                                android:background="@color/colorWhite" />
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_margin="5dp"
-                                android:fontFamily="@font/nanumbarungothic"
-                                android:text="서울특별시 강남구 역삼로 165, 608호"
-                                android:textColor="@color/colorWhite"
-                                android:textSize="14dp" />
-
-                            <View
-                                android:layout_width="2dp"
-                                android:layout_height="18dp"
-                                android:layout_margin="5dp"
-                                android:background="@color/colorWhite"
-                                android:textColor="@color/colorWhite" />
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_margin="5dp"
-                                android:fontFamily="@font/nanumbarungothic"
-                                android:text="suntteut@gmail.com"
-                                android:textColor="@color/colorWhite"
-                                android:textSize="14dp" />
-
-                            <View
-                                android:layout_width="2dp"
-                                android:layout_height="18dp"
-                                android:layout_margin="5dp"
-                                android:background="@color/colorWhite" />
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_margin="5dp"
-                                android:fontFamily="@font/nanumbarungothic"
-                                android:text="FAX : 02-3440-7574"
-                                android:textColor="@color/colorWhite"
-                                android:textSize="14dp" />
+                            <ImageButton
+                                android:id="@+id/ib_youtube"
+                                android:layout_width="25dp"
+                                android:layout_height="25dp"
+                                android:background="@null"
+                                android:padding="2dp"
+                                android:src="@drawable/main_youtube" />
 
                         </org.apmem.tools.layouts.FlowLayout>
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="5dp"
+                            android:fontFamily="@font/nanumbarungothic"
+                            android:text="@string/app_detail"
+                            android:textColor="@color/colorWhite"
+                            android:inputType="textMultiLine"
+                            android:textSize="14dp" />
 
                     </LinearLayout>
 

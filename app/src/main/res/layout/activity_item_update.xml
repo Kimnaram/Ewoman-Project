@@ -168,7 +168,8 @@
                     android:id="@+id/iv_image_data"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:scaleType="centerCrop" />
+                    android:scaleType="fitCenter"
+                    android:background="@null"/>
 
                 <ImageButton
                     android:id="@+id/ib_image_remove"

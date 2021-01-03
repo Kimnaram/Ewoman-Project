@@ -239,9 +239,16 @@ public class ProductDetailActivity extends AppCompatActivity {
         tv_buy_try.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                int price = Integer.parseInt(tv_item_price.getText().toString());
+                String tv_price = tv_item_price.getText().toString();
+                String after_price = tv_price.replaceAll("\\,","");
+                Log.d(TAG, "price : " + after_price);
+                int price = Integer.parseInt(after_price);
                 int count = Integer.parseInt(tv_count_view.getText().toString());
-                int deliv_price = Integer.parseInt(tv_item_deliv_price_is.getText().toString());
+                String tv_deliv_price = tv_item_deliv_price_is.getText().toString();
+                int deliv_price = 0;
+                if(!tv_deliv_price.isEmpty()) {
+                    deliv_price = Integer.parseInt(tv_item_deliv_price_is.getText().toString());
+                }
 
                 if (tv_buy_try.getText().toString().equals("예약하기")) {
                     // 예약하기 화면으로 넘어가기
@@ -253,6 +260,8 @@ public class ProductDetailActivity extends AppCompatActivity {
                     intent.putExtra("prevPage", "DetailPage");
                     intent.putExtra("item_no", item_no);
                     intent.putExtra("price", Integer.toString(allPrice));
+
+                    startActivity(intent);
 
                 }
 
@@ -475,7 +484,7 @@ public class ProductDetailActivity extends AppCompatActivity {
                 int price = Integer.parseInt(component.getString(TAG_PRICE));
                 DecimalFormat format = new DecimalFormat("###,###");
                 String s_price = format.format(price);
-                tv_item_price.setText(s_price);
+                tv_item_price.setText(s_price + "원");
                 String image = component.getString(TAG_IMAGE);
                 img = StringToBitmap(image);
                 iv_item_image.setImageBitmap(img);

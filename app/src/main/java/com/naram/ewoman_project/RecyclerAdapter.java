@@ -14,7 +14,7 @@ import java.util.ArrayList;
 public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ItemViewHolder> {
 
     // adapter에 들어갈 list 입니다.
-    private ArrayList<ListReview> listReviewArrayList = new ArrayList<>(); // 커스텀 리스너 인터페이스
+    private ArrayList<ListPost> listPostArrayList = new ArrayList<>(); // 커스텀 리스너 인터페이스
 
     // 리스너 객체 참조를 저장하는 변수
     private OnItemClickListener mListener = null;
@@ -32,30 +32,30 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ItemVi
     @Override
     public void onBindViewHolder(@NonNull ItemViewHolder holder, int position) {
         // Item을 하나, 하나 보여주는(bind 되는) 함수입니다.
-        holder.onBind(listReviewArrayList.get(position));
+        holder.onBind(listPostArrayList.get(position));
     }
 
     @Override
     public int getItemCount() {
         // RecyclerView의 총 개수 입니다.
-        return listReviewArrayList.size();
+        return listPostArrayList.size();
     }
 
-    public void addItem(ListReview listReview) {
+    public void addItem(ListPost listPost) {
         // 외부에서 item을 추가시킬 함수입니다.
-        listReviewArrayList.add(listReview);
+        listPostArrayList.add(listPost);
 
         notifyDataSetChanged();
     }
 
-    public ListReview getItem(int position) {
-        return listReviewArrayList.get(position) ;
+    public ListPost getItem(int position) {
+        return listPostArrayList.get(position) ;
     }
 
     public void clearAllItem() {
 
-        for(int i = 0; i < listReviewArrayList.size(); i++)
-            listReviewArrayList.remove(i);
+        for(int i = 0; i < listPostArrayList.size(); i++)
+            listPostArrayList.remove(i);
 
         notifyDataSetChanged();
     }
@@ -92,9 +92,9 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ItemVi
 
         }
 
-        void onBind(ListReview listReview) {
-            tv_item_title.setText(listReview.getTitle());
-            tv_item_userid.setText(listReview.getName());
+        void onBind(ListPost listPost) {
+            tv_item_title.setText(listPost.getTitle());
+            tv_item_userid.setText(listPost.getName());
         }
 
     }
@@ -120,9 +120,15 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ItemVi
     }
 
     //
-    public void TextAdapter(ArrayList<ListReview> list)
+    public void TextAdapter(ArrayList<ListPost> list)
     {
-        listReviewArrayList = list;
+        listPostArrayList = list;
+    }
+    
+    public void filter(String search) {
+        
+        
+        
     }
 
 }

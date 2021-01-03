@@ -101,8 +101,8 @@ public class ListViewAdapter extends BaseAdapter {
             displayItemList.addAll(listViewItemList);
         } else {
             for(ListItem item : listViewItemList) {
-                if(item.getName().toLowerCase().contains(search)
-                        || item.getName().toUpperCase().contains(search)) {
+                if(item.getName().toUpperCase().contains(search.toUpperCase())
+                        || item.getName().toLowerCase().contains(search.toLowerCase())) {
                     displayItemList.add(item);
                 }
             }
