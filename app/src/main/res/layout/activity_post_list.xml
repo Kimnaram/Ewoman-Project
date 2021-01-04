@@ -52,7 +52,7 @@
         android:id="@+id/ib_write_review"
         android:layout_width="60dp"
         android:layout_height="60dp"
-        android:src="@drawable/rev_write"
+        android:src="@drawable/rev_write_temp"
         android:scaleType="centerCrop"
         android:background="@null"
         android:layout_alignParentBottom="true"
