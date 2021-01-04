@@ -21,6 +21,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 
@@ -29,7 +30,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
+import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
@@ -41,11 +44,11 @@ public class PostListActivity extends AppCompatActivity {
     private static final String TAG_ID = "post_no";
     private static final String TAG_NAME = "name";
     private static final String TAG_TITLE = "title";
-    private static final String TAG_LIKE = "count(*)";
+    private static final String TAG_LIKE = "post_like";
     private static String IP_ADDRESS = "IP ADDRESS";
 
     private String JSONString;
-    private JSONArray reviews = null;
+    private JSONArray posts = null;
 
     // Review list
     private RecyclerView rv_review_container;
@@ -140,7 +143,7 @@ public class PostListActivity extends AppCompatActivity {
                 if(useremail != null) {
                     startActivity(new Intent(getApplicationContext(), PostCreateActivity.class));
                 } else {
-
+                    Toast.makeText(getApplicationContext(), "로그인이 필요한 기능입니다.", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -165,7 +168,8 @@ public class PostListActivity extends AppCompatActivity {
     protected void onResume() {
 
         adapter.clearAllItem();
-        GetData("http://" + IP_ADDRESS + "/ewoman-php/selectAllPost.php");
+        GetData task = new GetData();
+        task.execute();
         adapter.notifyDataSetChanged();
 
         super.onResume();
@@ -196,15 +200,13 @@ public class PostListActivity extends AppCompatActivity {
 
         ib_write_review = findViewById(R.id.ib_write_review);
 
-        firebaseAuth = FirebaseAuth.getInstance();
-
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        if (firebaseAuth.getCurrentUser() == null) {
+        if (useremail == null) {
             getMenuInflater().inflate(R.menu.toolbar_bl_menu, menu);
-        } else if (firebaseAuth.getCurrentUser() != null) {
+        } else if (useremail != null) {
             getMenuInflater().inflate(R.menu.toolbar_al_menu, menu);
         }
 
@@ -230,7 +232,8 @@ public class PostListActivity extends AppCompatActivity {
                 return true;
             case R.id.menu_logout:
 
-                FirebaseAuth.getInstance().signOut();
+                useremail = null;
+                dbOpenHelper.deleteAllColumns();
 
                 final ProgressDialog mDialog = new ProgressDialog(PostListActivity.this);
                 mDialog.setMessage("로그아웃 중입니다.");
@@ -239,6 +242,7 @@ public class PostListActivity extends AppCompatActivity {
                 Intent logout_to_revlist = new Intent(getApplicationContext(), PostListActivity.class);
                 mDialog.dismiss();
 
+                finish();
                 startActivity(logout_to_revlist);
                 return true;
             case R.id.menu_cart:
@@ -250,56 +254,91 @@ public class PostListActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public void GetData(String url) {
-        class GetDataJSON extends AsyncTask<String, Void, String> {
+    private class GetData extends AsyncTask<String, Void, String> {
 
-            ProgressDialog progressDialog;
+        ProgressDialog progressDialog;
 
-            @Override
-            protected void onPreExecute() {
-                super.onPreExecute();
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
 
-                progressDialog = ProgressDialog.show(PostListActivity.this,
-                        "로딩중입니다.", null, true, true);
+            progressDialog = new ProgressDialog(PostListActivity.this, R.style.AlertDialogStyle);
+            progressDialog.setTitle("로딩중입니다.");
+            progressDialog.show();
 
-            }
+        }
 
-            @Override
-            protected String doInBackground(String... params) {
+        @Override
+        protected String doInBackground(String... params) {
 
-                String uri = params[0];
+            String serverURL = "http://" + IP_ADDRESS + "/ewoman-php/selectAllPost.php";
 
-                BufferedReader bufferedReader = null;
-                try {
-                    URL url = new URL(uri);
-                    HttpURLConnection con = (HttpURLConnection) url.openConnection();
-                    StringBuilder sb = new StringBuilder();
+            try {
 
-                    bufferedReader = new BufferedReader(new InputStreamReader(con.getInputStream()));
+                URL url = new URL(serverURL);
+                HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
 
-                    String json;
-                    while ((json = bufferedReader.readLine()) != null) {
-                        sb.append(json + "\n");
-                    }
+                httpURLConnection.setReadTimeout(5000);
+                httpURLConnection.setConnectTimeout(5000);
+                httpURLConnection.setRequestMethod("POST");
+                httpURLConnection.setDoInput(true);
+                httpURLConnection.connect();
 
-                    return sb.toString().trim();
+                OutputStream outputStream = httpURLConnection.getOutputStream();
+                outputStream.flush();
+                outputStream.close();
 
-                } catch (Exception e) {
-                    return null;
+                int responseStatusCode = httpURLConnection.getResponseCode();
+                Log.d(TAG, "response code - " + responseStatusCode);
+
+                InputStream inputStream;
+                if (responseStatusCode == HttpURLConnection.HTTP_OK) {
+                    inputStream = httpURLConnection.getInputStream();
+                } else {
+                    inputStream = httpURLConnection.getErrorStream();
                 }
 
+                InputStreamReader inputStreamReader = new InputStreamReader(inputStream, "UTF-8");
+                BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+
+                StringBuilder sb = new StringBuilder();
+                String line;
+
+                while ((line = bufferedReader.readLine()) != null) {
+                    sb.append(line);
+                }
+
+                bufferedReader.close();
+
+                return sb.toString().trim();
+
+            } catch (Exception e) {
+                return null;
             }
 
-            @Override
-            protected void onPostExecute(String result) {
+        }
 
-                progressDialog.dismiss();
+        @Override
+        protected void onPostExecute(String result) {
 
-                JSONString = result;
+            progressDialog.dismiss();
 
-                Log.d(TAG, "response - " + result);
-                showList();
+            Log.d(TAG, "response - " + result);
 
+            if (result == null) {
+                Toast.makeText(getApplicationContext(), "오류가 발생했습니다!", Toast.LENGTH_SHORT).show();
+            } else {
+
+                if(result.contains("리뷰가 없습니다.")) {
+
+                    // 리뷰 없음을 보여주기
+
+                } else {
+
+                    JSONString = result;
+                    showList();
+
+                }
             }
         }
     }
@@ -307,10 +346,10 @@ public class PostListActivity extends AppCompatActivity {
     protected void showList() {
         try {
             JSONObject jsonObj = new JSONObject(JSONString);
-            reviews = jsonObj.getJSONArray(TAG_RESULTS);
+            posts = jsonObj.getJSONArray(TAG_RESULTS);
 
-            for (int i = 0; i < reviews.length(); i++) {
-                JSONObject c = reviews.getJSONObject(i);
+            for (int i = 0; i < posts.length(); i++) {
+                JSONObject c = posts.getJSONObject(i);
                 String id = c.getString(TAG_ID);
                 int post_no = Integer.parseInt(id);
                 String name = c.getString(TAG_NAME);
