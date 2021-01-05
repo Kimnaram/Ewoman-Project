@@ -18,9 +18,12 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -37,13 +40,35 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import static com.naram.ewoman_project.CartActivity.binaryStringToByteArray;
 
 public class ProductDetailActivity extends AppCompatActivity {
 
     private final static String TAG = "ProductDetailActivity";
+
+    private class Class {
+
+        private String class_name;
+        private int class_price;
+
+        public Class(String class_name, int class_price) {
+            this.class_name = class_name;
+            this.class_price = class_price;
+        }
+
+        public String getClass_name() {
+            return class_name;
+        }
+
+        public int getClass_price() {
+            return class_price;
+        }
+
+    }
 
     private static final String TAG_RESULTS = "result";
     private static final String TAG_CATEGORY = "category";
@@ -57,6 +82,8 @@ public class ProductDetailActivity extends AppCompatActivity {
     private static final String TAG_MIN_QUANTITY = "minimum_quantity";
     private static final String TAG_MAX_QUANTITY = "maximum_quantity";
     private static final String TAG_WISHLIST = "wishlist";
+    private static final String TAG_CLASSNAME = "class_name";
+    private static final String TAG_CLASSPRICE = "class_price";
     private static String IP_ADDRESS = "IP ADDRESS";
 
     private String JSONString;
@@ -65,10 +92,13 @@ public class ProductDetailActivity extends AppCompatActivity {
 
     private DBOpenHelper dbOpenHelper;
 
+    private ArrayAdapter<String> adapter;
+
     private RelativeLayout rl_develop_btn_container;
     private RelativeLayout rl_user_btn_container;
-
     private RelativeLayout rl_warn_container;
+
+    private LinearLayout ll_spinner_container;
 
     private TextView tv_toolbar_title;
     private TextView tv_category_home;
@@ -88,11 +118,18 @@ public class ProductDetailActivity extends AppCompatActivity {
 
     private Button btn_count_minus;
     private Button btn_count_plus;
+
     private TextView tv_count_view;
+
+    private Spinner spinner;
 
     private Bitmap img = null;
 
+    private List<Class> classList_order = new ArrayList<Class>();
+    private List<String> classList = new ArrayList<String>();
+
     private String item_no = null;
+    private String item_name = null;
     private int count = 0;
     private int min_quantity = 1;
     private int max_quantity = 10;
@@ -294,7 +331,7 @@ public class ProductDetailActivity extends AppCompatActivity {
                     public void onClick(DialogInterface dialog, int which) {
 
                         DeleteData deleteTask = new DeleteData();
-                        deleteTask.execute(item_no);
+                        deleteTask.execute(item_no, item_name);
 
                         finish();
 
@@ -355,8 +392,9 @@ public class ProductDetailActivity extends AppCompatActivity {
 
         rl_develop_btn_container = findViewById(R.id.rl_develop_btn_container);
         rl_user_btn_container = findViewById(R.id.rl_user_btn_container);
-
         rl_warn_container = findViewById(R.id.rl_warn_container);
+
+        ll_spinner_container = findViewById(R.id.ll_spinner_container);
 
         tv_toolbar_title = findViewById(R.id.tv_toolbar_title);
 
@@ -380,6 +418,8 @@ public class ProductDetailActivity extends AppCompatActivity {
         btn_count_minus = findViewById(R.id.btn_count_minus);
         btn_count_plus = findViewById(R.id.btn_count_plus);
         tv_count_view = findViewById(R.id.tv_count_view);
+
+        spinner = findViewById(R.id.sp_class_info);
 
         dbOpenHelper = new DBOpenHelper(this);
         dbOpenHelper.open();
@@ -478,6 +518,7 @@ public class ProductDetailActivity extends AppCompatActivity {
                     tv_category_name.setText("e-Product");
                 }
                 String name = component.getString(TAG_NAME);
+                item_name = name;
                 tv_toolbar_title.setText(name);
                 tv_item_name.setText(name);
                 tv_category_item_name.setText(name);
@@ -499,6 +540,8 @@ public class ProductDetailActivity extends AppCompatActivity {
                 int minimum_quantity;
                 int maximum_quantity;
                 int wishlist;
+                String class_name = null;
+                int class_price;
 
                 if (!component.isNull(TAG_DELIV_METHOD)) {
                     deliv_method = component.getString(TAG_DELIV_METHOD);
@@ -527,8 +570,32 @@ public class ProductDetailActivity extends AppCompatActivity {
 
                     tv_wishlist_try.setText(Integer.toString(wishlist));
                 }
+                if (!component.isNull(TAG_CLASSNAME) && !component.isNull(TAG_CLASSPRICE)) {
+                    class_name = component.getString(TAG_CLASSNAME);
+                    class_price = Integer.parseInt(component.getString(TAG_CLASSPRICE));
+                    DecimalFormat decimalFormat = new DecimalFormat("###,###");
+                    String decimal_price = decimalFormat.format(class_price);
+                    String strClass = null;
+                    if(!decimal_price.equals("0")) {
+                        strClass = class_name + "    " + decimal_price;
+                    } else {
+                        strClass = class_name;
+                    }
+                    Class classObject = new Class(class_name, class_price);
+
+                    classList_order.add(classObject);
+                    classList.add(strClass);
+
+                    ll_spinner_container.setVisibility(View.VISIBLE);
+                }
 
             }
+
+            adapter = new ArrayAdapter<String>(
+                    this, android.R.layout.simple_spinner_item, classList);
+
+            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            spinner.setAdapter(adapter);
 
         } catch (JSONException e) {
 
@@ -643,8 +710,9 @@ public class ProductDetailActivity extends AppCompatActivity {
         protected void onPreExecute() {
             super.onPreExecute();
 
-            progressDialog = ProgressDialog.show(ProductDetailActivity.this,
-                    "삭제중입니다.", null, true, true);
+            progressDialog = new ProgressDialog(ProductDetailActivity.this, R.style.AlertDialogStyle);
+            progressDialog.setTitle("삭제중입니다.");
+            progressDialog.show();
         }
 
         @Override
@@ -659,9 +727,10 @@ public class ProductDetailActivity extends AppCompatActivity {
         protected String doInBackground(String... params) {
 
             String item_no = params[0];
+            String item_name = params[1];
 
             String serverURL = "http://" + IP_ADDRESS + "/ewoman-php/deleteItem.php";
-            String postParameters = "item_no=" + item_no;
+            String postParameters = "item_no=" + item_no + "&item_name" + item_name;
 
             try {
 
