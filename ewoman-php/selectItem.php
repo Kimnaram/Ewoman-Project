@@ -10,7 +10,9 @@ $android = strpos($_SERVER['HTTP_USER_AGENT'], "Android");
 
 if ($item_no != ""){
 
-  $sql="select I.item_no, I.category, I.name, I.image, I.price, I.inform, I.deliv_method, I.deliv_price, I.deliv_inform, I.minimum_quantity, I.maximum_quantity, count(email) as wishlist from item I left join wishlist W on I.item_no = W.item_no where I.item_no=$item_no group by I.item_no";
+  $sql = "select I.item_no, I.category, I.name, I.image, I.price, I.inform, I.deliv_method, I.deliv_price, I.deliv_inform, I.minimum_quantity, I.maximum_quantity, count(email) as wishlist, C.name as class_name, C.price as class_price
+from item I left join wishlist W on I.item_no = W.item_no left join class C on I.name = C.item_name 
+where I.item_no=$item_no group by I.item_no, C.name, C.price";
   $stmt = $con->prepare($sql);
   $stmt->execute();
 
@@ -39,7 +41,9 @@ if ($item_no != ""){
                                       "deliv_inform"=>$row["deliv_inform"],
                                       "minumum_quantity"=>$row["minimum_quantity"],
                                       "maximum_quantity"=>$row["maximum_quantity"],
-                                      "wishlist"=>$row["wishlist"]
+				      "wishlist"=>$row["wishlist"],
+				      "class_name"=>$row["class_name"],
+				      "class_price"=>$row["class_price"]
                 ));
         }
 

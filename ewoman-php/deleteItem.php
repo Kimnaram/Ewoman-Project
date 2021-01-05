@@ -15,6 +15,10 @@ if ($item_no != "") {
   $stmt = $con->prepare($sql);
   $stmt->execute();
 
+  $csql = "delete from class using class join item on class.item_name = item.name where item.name = '$item_name';";
+  $cstmt = $con->prepare($csql);
+  $cstmt->execute();
+
   $selectsql="select * from item where item_no=$item_no";
   $stmt2 = $con->prepare($selectsql);
   $stmt2->execute();
@@ -66,7 +70,8 @@ if (!$android){
    <body>
 
       <form action="<?php $_PHP_SELF ?>" method="POST">
-         ITEM_NO : <input type = "text" name = "item_no" />
+	 ITEM_NO : <input type = "text" name = "item_no" />
+	 ITEM_NAME : <input type = "text" name = "item_name" />
          <input type = "submit" />
       </form>
 
