@@ -28,4 +28,16 @@
         <item name="android:textSize">18dp</item>
     </style>
 
+    <style name="SpinnerDividerStyle" parent="android:style/Widget.ListView.DropDown">
+        <item name="android:divider">@color/colorGray</item> <!-- divider 색 -->
+        <item name="android:dividerHeight">0.5dp</item> <!-- divider 높이 -->
+    </style>
+
+    <style name="SpinnerTheme" parent="AppTheme">
+        <item name="android:dropDownListViewStyle">@style/SpinnerDividerStyle</item>
+        <item name="android:textColor">@color/colorGray</item>
+        <item name="android:fontFamily">@font/nanumbarungothicbold</item>
+        <item name="android:textSize">16dp</item>
+    </style>
+
 </resources>

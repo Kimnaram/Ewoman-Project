@@ -132,13 +132,11 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
             public boolean onTouch(View v, MotionEvent event) {
                 switch (event.getAction()) {
                     case MotionEvent.ACTION_DOWN :
-                        tv_login_try.setBackground(getResources().getDrawable(R.color.colorCocoa));
-                        tv_login_try.setTextColor(getResources().getColor(R.color.colorWhite));
+                        tv_login_try.setBackground(getResources().getDrawable(R.drawable.btn_style_border_line_cocoa_background));
                         return false;
 
                     case MotionEvent.ACTION_UP :
-                        tv_login_try.setBackground(getResources().getDrawable(R.drawable.btn_style_border_line));
-                        tv_login_try.setTextColor(getResources().getColor(R.color.colorGray));
+                        tv_login_try.setBackground(getResources().getDrawable(R.drawable.btn_style_border_line_white_background));
                         return false;
                 }
                 return false;

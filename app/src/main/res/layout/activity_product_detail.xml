@@ -155,7 +155,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_below="@id/iv_item_image"
-                        android:layout_marginBottom="15dp"
+                        android:layout_marginBottom="5dp"
                         android:fontFamily="@font/nanumbarungothicbold"
                         android:text="상품 이름"
                         android:textColor="@color/colorLightBlack"
@@ -223,11 +223,38 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_below="@+id/tv_item_deliv_method"
-                        android:layout_marginBottom="17dp"
+                        android:layout_marginBottom="8dp"
                         android:layout_toRightOf="@+id/tv_item_deliv_price"
                         android:fontFamily="@font/nanumbarungothic"
                         android:textColor="@color/colorLightBlack"
                         android:textSize="16.5dp" />
+
+                    <LinearLayout
+                        android:id="@+id/ll_spinner_container"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:layout_marginBottom="17dp"
+                        android:visibility="gone"
+                        android:layout_below="@id/tv_item_deliv_price_is">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="5dp"
+                            android:fontFamily="@font/nanumbarungothicbold"
+                            android:text="Class  *"
+                            android:textColor="@color/colorLightBlack"
+                            android:textSize="16.5dp" />
+                        
+                        <Spinner
+                            android:id="@+id/sp_class_info"
+                            android:layout_width="250dp"
+                            android:layout_height="36dp"
+                            android:background="@drawable/btn_style_border_line_white_background"
+                            android:theme="@style/SpinnerTheme"/>
+
+                    </LinearLayout>
 
                     <!--                <TextView-->
                     <!--                    android:id="@+id/tv_option_1"-->

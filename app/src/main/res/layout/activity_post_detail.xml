@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".PostDetailActivity">
+
+    <!--상단 툴바-->
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:minHeight="?attr/actionBarSize">
+
+        <TextView
+            android:id="@+id/tv_toolbar_title"
+            android:layout_width="wrap_content"
+            android:layout_height="35dp"
+            android:layout_marginTop="15dp"
+            android:layout_marginRight="10dp"
+            android:fontFamily="@font/nanumbarungothic"
+            android:text="e Review"
+            android:textSize="23dp"
+            android:textStyle="bold"></TextView>
+
+    </androidx.appcompat.widget.Toolbar>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="10dp"
+        android:layout_margin="5dp">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/tv_review_title_info"
+                android:layout_width="wrap_content"
+                android:layout_height="30dp"
+                android:fontFamily="@font/nanumbarungothicbold"
+                android:text="제목"
+                android:textColor="@color/colorCocoa"
+                android:gravity="center_vertical"
+                android:padding="5dp"
+                android:layout_marginRight="20dp"
+                android:textSize="17dp" />
+
+            <TextView
+                android:id="@+id/tv_review_title"
+                android:layout_width="wrap_content"
+                android:layout_height="30dp"
+                android:fontFamily="@font/nanumbarungothicbold"
+                android:text="TITLE"
+                android:textColor="@color/colorCocoa"
+                android:gravity="center_vertical"
+                android:padding="5dp"
+                android:textSize="17dp"
+                android:layout_toRightOf="@+id/tv_review_title_info"/>
+
+            <TextView
+                android:id="@+id/tv_review_user_info"
+                android:layout_width="wrap_content"
+                android:layout_height="30dp"
+                android:fontFamily="@font/nanumbarungothicbold"
+                android:text="작성자"
+                android:textColor="@color/colorCocoa"
+                android:gravity="center_vertical"
+                android:padding="5dp"
+                android:layout_marginRight="5dp"
+                android:textSize="17dp"
+                android:layout_below="@+id/tv_review_title_info"/>
+
+            <TextView
+                android:id="@+id/tv_review_user"
+                android:layout_width="wrap_content"
+                android:layout_height="30dp"
+                android:fontFamily="@font/nanumbarungothicbold"
+                android:text="USER NAME"
+                android:textColor="@color/colorCocoa"
+                android:gravity="center_vertical"
+                android:padding="5dp"
+                android:textSize="17dp"
+                android:layout_toRightOf="@+id/tv_review_user_info"
+                android:layout_below="@id/tv_review_title"/>
+
+            <ImageView
+                android:id="@+id/iv_review_image"
+                android:layout_width="300dp"
+                android:layout_height="300dp"
+                android:text="리뷰 사진"
+                android:gravity="center_vertical"
+                android:scaleType="centerCrop"
+                android:layout_below="@+id/tv_review_user_info"
+                android:layout_centerHorizontal="true"
+                android:layout_marginBottom="10dp"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/btn_style_border_line_white_background"/>
+
+            <TextView
+                android:id="@+id/tv_review_content"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="100dp"
+                android:fontFamily="@font/nanumbarungothic"
+                android:text="CONTENT"
+                android:textColor="@color/colorGray"
+                android:background="@drawable/btn_style_border_line_white_background"
+                android:gravity="left|start"
+                android:padding="5dp"
+                android:textSize="17dp"
+                android:layout_marginBottom="10dp"
+                android:layout_below="@+id/iv_review_image"/>
+
+            <Button
+                android:id="@+id/btn_review_update"
+                android:layout_width="90dp"
+                android:layout_height="40dp"
+                android:gravity="center"
+                android:text="수정"
+                android:fontFamily="@font/nanumbarungothic"
+                android:background="@drawable/btn_style_border_line_white_background"
+                android:textColor="@color/colorGray"
+                android:textSize="18dp"
+                android:layout_below="@id/tv_review_content"
+                android:layout_toLeftOf="@+id/btn_review_delete"
+                android:layout_marginRight="10dp"
+                android:visibility="visible" />
+
+            <Button
+                android:id="@+id/btn_review_delete"
+                android:layout_width="90dp"
+                android:layout_height="40dp"
+                android:gravity="center"
+                android:text="삭제"
+                android:fontFamily="@font/nanumbarungothic"
+                android:background="@drawable/btn_style_common"
+                android:backgroundTint="@color/colorCocoa"
+                android:textColor="@color/colorWhite"
+                android:textSize="18dp"
+                android:layout_below="@id/tv_review_content"
+                android:layout_alignParentRight="true"
+                android:visibility="gone" />
+
+
+        </RelativeLayout>
+
+    </ScrollView>
+
+</LinearLayout>

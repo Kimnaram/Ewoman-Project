@@ -29,19 +29,13 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import org.apache.http.HttpResponse;
-import org.apache.http.NameValuePair;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
@@ -52,28 +46,32 @@ import java.util.List;
 
 public class ItemAddActivity extends AppCompatActivity {
 
+    private static final String TAG = "ItemAddActivity";
+    private static final int REQUEST_CODE = 1001;
+
     private class Class {
 
         private String item_name;
-        private String item_price;
+        private String class_name;
+        private String class_price;
 
-        public Class(String item_name, String item_price) {
+        public Class(String item_name, String class_name, String class_price) {
             this.item_name = item_name;
-            this.item_price = item_price;
+            this.class_name = class_name;
+            this.class_price = class_price;
         }
 
-        public String getItem_name() {
-            return item_name;
+        public String getClass_name() {
+            return class_name;
         }
 
-        public String getItem_price() {
-            return item_price;
+        public String getClass_price() {
+            return class_price;
         }
+
+        public String getItem_Name() { return item_name; }
 
     }
-
-    private static final String TAG = "ItemAddActivity";
-    private static final int REQUEST_CODE = 1001;
 
     private static String IP_ADDRESS = "IP ADDRESS";
 
@@ -117,7 +115,7 @@ public class ItemAddActivity extends AppCompatActivity {
     private Bitmap img;
 
     private List<EditText> allClass = new ArrayList<EditText>();
-    private List<Class> listClass = new ArrayList<Class>();
+    private List<Class> classList = new ArrayList<Class>();
 
     private JSONObject jsonObject = new JSONObject();
 
@@ -145,10 +143,10 @@ public class ItemAddActivity extends AppCompatActivity {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
                 switch (checkedId) {
-                    case R.id.rb_category_ecollege :
+                    case R.id.rb_category_ecollege:
                         itemCategory = "ecollege";
                         break;
-                    case R.id.rb_category_eproduct :
+                    case R.id.rb_category_eproduct:
                         itemCategory = "eproduct";
                         break;
                     default:
@@ -216,15 +214,15 @@ public class ItemAddActivity extends AppCompatActivity {
 
                     }
 
-                    if(itemDeliveryPrice.isEmpty()) {
+                    if (itemDeliveryPrice.isEmpty()) {
                         itemDeliveryPrice = "null";
                     }
 
-                    if(itemMaximumQuantity.isEmpty()) {
+                    if (itemMaximumQuantity.isEmpty()) {
                         itemMaximumQuantity = "null";
                     }
 
-                    if(itemMinimumQuantity.isEmpty()) {
+                    if (itemMinimumQuantity.isEmpty()) {
                         itemMinimumQuantity = "null";
                     }
 
@@ -358,15 +356,15 @@ public class ItemAddActivity extends AppCompatActivity {
         return sb.toString();
     }
 
-    private Bitmap resize(Bitmap bm){
-        Configuration config=getResources().getConfiguration();
-        if(config.smallestScreenWidthDp>=800)
+    private Bitmap resize(Bitmap bm) {
+        Configuration config = getResources().getConfiguration();
+        if (config.smallestScreenWidthDp >= 800)
             bm = Bitmap.createScaledBitmap(bm, 500, 400, true);
-        else if(config.smallestScreenWidthDp>=600)
+        else if (config.smallestScreenWidthDp >= 600)
             bm = Bitmap.createScaledBitmap(bm, 400, 300, true);
-        else if(config.smallestScreenWidthDp>=400)
+        else if (config.smallestScreenWidthDp >= 400)
             bm = Bitmap.createScaledBitmap(bm, 300, 200, true);
-        else if(config.smallestScreenWidthDp>=360)
+        else if (config.smallestScreenWidthDp >= 360)
             bm = Bitmap.createScaledBitmap(bm, 200, 150, true);
         else
             bm = Bitmap.createScaledBitmap(bm, 160, 96, true);
@@ -382,9 +380,9 @@ public class ItemAddActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        if(username == null) {
+        if (username == null) {
             getMenuInflater().inflate(R.menu.toolbar_bl_menu, menu);
-        } else if(username != null) {
+        } else if (username != null) {
             getMenuInflater().inflate(R.menu.toolbar_al_menu, menu);
         }
 
@@ -393,19 +391,18 @@ public class ItemAddActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId())
-        {
-            case R.id.menu_login :
+        switch (item.getItemId()) {
+            case R.id.menu_login:
                 Intent main_to_login = new Intent(getApplicationContext(), LoginActivity.class);
 
                 startActivity(main_to_login);
                 return true;
-            case R.id.menu_signup :
+            case R.id.menu_signup:
                 Intent main_to_signup = new Intent(getApplicationContext(), SignupActivity.class);
 
                 startActivity(main_to_signup);
                 return true;
-            case R.id.menu_logout :
+            case R.id.menu_logout:
 
                 username = null;
                 useremail = null;
@@ -421,7 +418,7 @@ public class ItemAddActivity extends AppCompatActivity {
                 finish();
                 startActivity(logout_to_main);
                 return true;
-            case R.id.menu_cart :
+            case R.id.menu_cart:
                 startActivity(new Intent(getApplicationContext(), CartActivity.class));
 
                 return true;
@@ -449,40 +446,17 @@ public class ItemAddActivity extends AppCompatActivity {
 
             Log.d(TAG, "POST response  - " + result);
 
-            if(result.contains("새로운 상품을 추가했습니다.")) {
+            if (result.contains("새로운 상품을 추가했습니다.")) {
 
-                Toast.makeText(getApplicationContext(), "추가 완료되었습니다.", Toast.LENGTH_SHORT).show();
+                String[] classes = new String[allClass.size()];
 
-                String [] classes = new String[allClass.size()];
-
-                for(int i = 0; i < allClass.size(); i++){
+                for (int i = 0; i < allClass.size(); i++) {
 
                     classes[i] = allClass.get(i).getText().toString();
                     String name = classes[i].split("/")[0];
                     String price = classes[i].split("/")[1];
-                    Class classObject = new Class(name, price);
-                    listClass.add(classObject);
-
-                    try {
-                        JSONArray jArray = new JSONArray();
-                        for (int j = 0; j < listClass.size(); j++) {
-                            JSONObject sObject = new JSONObject();//배열 내에 들어갈 json
-                            sObject.put("itemName", listClass.get(j).getItem_name());
-                            sObject.put("itemPrice", listClass.get(j).getItem_price());
-                            jArray.put(sObject);
-                        }
-                        if(i >= allClass.size() - 1) {
-
-                            jsonObject.put("class", jArray);
-                            postData(jsonObject);
-
-                        }
-
-                        System.out.println(jsonObject.toString());
-
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
+                    Class classObject = new Class(itemName, name, price);
+                    classList.add(classObject);
 
                     et_name_data.setText(null);
                     et_price_data.setText(null);
@@ -495,6 +469,30 @@ public class ItemAddActivity extends AppCompatActivity {
                     et_minimum_quantity_data.setText(null);
                     et_maximum_quantity_data.setText(null);
 
+                }
+
+                try {
+                    JSONArray jArray = new JSONArray();
+                    for (int j = 0; j < classList.size(); j++) {
+                        JSONObject sObject = new JSONObject();//배열 내에 들어갈 json
+                        sObject.put("itemName", classList.get(j).getItem_Name());
+                        sObject.put("className", classList.get(j).getClass_name());
+                        sObject.put("classPrice", classList.get(j).getClass_price());
+                        jArray.put(sObject);
+
+                        if (j >= classList.size() - 1) {
+
+                            jsonObject.put("class", jArray);
+
+                            System.out.println(jsonObject.toString());
+                            InsertClassData task = new InsertClassData();
+                            task.execute("http://" + IP_ADDRESS + "/ewoman-php/insertClass.php", jsonObject.toString());
+
+                        }
+                    }
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
                 }
 
             } else {
@@ -511,22 +509,114 @@ public class ItemAddActivity extends AppCompatActivity {
         @Override
         protected String doInBackground(String... params) {
 
-            String category = (String)params[1];
-            String name = (String)params[2];
-            String price = (String)params[3];
-            String image = (String)params[4];
-            String inform = (String)params[5];
-            String delivery_method = (String)params[6];
-            String delivery_price = (String)params[7];
-            String delivery_inform = (String)params[8];
-            String minimum_quantity = (String)params[9];
-            String maximum_quantity = (String)params[10];
+            String category = (String) params[1];
+            String name = (String) params[2];
+            String price = (String) params[3];
+            String image = (String) params[4];
+            String inform = (String) params[5];
+            String delivery_method = (String) params[6];
+            String delivery_price = (String) params[7];
+            String delivery_inform = (String) params[8];
+            String minimum_quantity = (String) params[9];
+            String maximum_quantity = (String) params[10];
 
-            String serverURL = (String)params[0];
+            String serverURL = (String) params[0];
             String postParameters = "category=" + category + "&name=" + name + "&price=" + price
                     + "&image=" + image + "&inform=" + inform + "&deliv_method=" + delivery_method
                     + "&deliv_price=" + delivery_price + "&deliv_inform=" + delivery_inform
                     + "&minimum_quantity=" + minimum_quantity + "&maximum_quantity=" + maximum_quantity;
+
+            try {
+
+                URL url = new URL(serverURL);
+                HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
+
+
+                httpURLConnection.setReadTimeout(10000);
+                httpURLConnection.setConnectTimeout(10000);
+                httpURLConnection.setRequestMethod("POST");
+                httpURLConnection.connect();
+
+
+                OutputStream outputStream = httpURLConnection.getOutputStream();
+                outputStream.write(postParameters.getBytes("UTF-8"));
+                outputStream.flush();
+                outputStream.close();
+
+
+                int responseStatusCode = httpURLConnection.getResponseCode();
+                Log.d(TAG, "POST response code - " + responseStatusCode);
+
+                InputStream inputStream;
+                if (responseStatusCode == HttpURLConnection.HTTP_OK) {
+                    inputStream = httpURLConnection.getInputStream();
+                } else {
+                    inputStream = httpURLConnection.getErrorStream();
+                }
+
+
+                InputStreamReader inputStreamReader = new InputStreamReader(inputStream, "UTF-8");
+                BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+
+                StringBuilder sb = new StringBuilder();
+                String line = null;
+
+                while ((line = bufferedReader.readLine()) != null) {
+                    sb.append(line);
+                }
+
+
+                bufferedReader.close();
+
+
+                return sb.toString();
+
+
+            } catch (Exception e) {
+
+                Log.d(TAG, "InsertData: Error ", e);
+
+                return new String("Error: " + e.getMessage());
+            }
+
+        }
+    }
+
+    class InsertClassData extends AsyncTask<String, Void, String> {
+        ProgressDialog progressDialog;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+
+        }
+
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+
+            if (result.contains("클래스 정보를 추가했습니다.")) {
+
+                Toast.makeText(getApplicationContext(), "추가 완료되었습니다.", Toast.LENGTH_SHORT).show();
+
+            } else {
+
+                Toast.makeText(getApplicationContext(), "오류가 발생했습니다.", Toast.LENGTH_SHORT).show();
+
+            }
+
+            Log.d(TAG, "POST response  - " + result);
+        }
+
+
+        @Override
+        protected String doInBackground(String... params) {
+
+            String json = (String)params[1];
+
+            String serverURL = (String)params[0];
+            String postParameters = "class=" + json;
 
             try {
 
@@ -557,7 +647,6 @@ public class ItemAddActivity extends AppCompatActivity {
                     inputStream = httpURLConnection.getErrorStream();
                 }
 
-
                 InputStreamReader inputStreamReader = new InputStreamReader(inputStream, "UTF-8");
                 BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
 
@@ -582,28 +671,6 @@ public class ItemAddActivity extends AppCompatActivity {
                 return new String("Error: " + e.getMessage());
             }
 
-        }
-    }
-
-    public void postData(JSONObject json) throws JSONException {
-        HttpClient httpclient = new DefaultHttpClient();
-
-        try {
-            HttpPost httppost = new HttpPost("http://" + IP_ADDRESS + "/ewoman-php/test2.php");
-
-            List<NameValuePair> nvp = new ArrayList<NameValuePair>(2);
-            nvp.add(new BasicNameValuePair("json", json.toString()));
-            //httppost.setHeader("Content-type", "application/json");
-            httppost.setEntity(new UrlEncodedFormEntity(nvp));
-            HttpResponse response = httpclient.execute(httppost);
-
-            if(response != null) {
-                InputStream is = response.getEntity().getContent();
-                //input stream is response that can be shown back on android
-            }
-
-        }catch (Exception e) {
-            e.printStackTrace();
         }
     }
 
