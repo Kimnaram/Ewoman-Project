@@ -302,7 +302,9 @@ public class ItemAddActivity extends AppCompatActivity {
         et_data.setBackground(getResources().getDrawable(R.drawable.btn_style_border_line_white_background));
         et_data.setHint(arg);
         et_data.setTextColor(getResources().getColor(R.color.colorGray));
-        et_data.setTypeface(Typeface.create("nanumbarungothicbold", Typeface.NORMAL));
+        Typeface typeface = Typeface.createFromAsset(getAssets(), "fonts/nanumbarungothicbold.ttf");
+        et_data.setTypeface(typeface, Typeface.NORMAL);
+        et_data.setInputType(EditText.AUTOFILL_TYPE_TEXT);
         et_data.setPadding(5, 0, 0, 0);
         param1.setMargins(0, 0, 0, 20);
         et_data.setLayoutParams(param1);

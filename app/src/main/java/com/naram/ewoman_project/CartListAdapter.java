@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -66,26 +67,13 @@ public class CartListAdapter extends BaseAdapter {
         // 아이템 내 각 위젯에 데이터 반영
         iv_item_image.setImageBitmap(displayItem.getImage());
         tv_item_name.setText(displayItem.getName());
-        if (displayItem.getClass_name() != null) {
+        if(displayItem.getClass_name() != null) {
             tv_class_name.setText(displayItem.getClass_name());
         }
-
-        if (tv_class_name.getText().toString().equals("")) {
-            tv_class_name.setVisibility(View.GONE);
-        } else {
-            tv_class_name.setVisibility(View.VISIBLE);
-        }
-
         DecimalFormat decimalFormat = new DecimalFormat("###,###");
-        if (displayItem.getClass_price() > 0) {
-            String price = decimalFormat.format(displayItem.getClass_price());
-            tv_item_price.setText(price + "\\");
-        } else {
-            String price = decimalFormat.format(displayItem.getPrice());
-            tv_item_price.setText(price + "\\");
-        }
-
-        tv_item_count.setText(displayItem.getCount() + "개");
+        String price = decimalFormat.format(displayItem.getPrice());
+        tv_item_price.setText(price + "\\");
+        tv_item_count.setText(Integer.toString(displayItem.getCount()));
         tv_item_date.setText(displayItem.getDate());
 
 
