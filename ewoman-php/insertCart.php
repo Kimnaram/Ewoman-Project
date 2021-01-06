@@ -14,7 +14,8 @@
 	$email = $_POST['email'];
 	$count = $_POST['count'];
 	$date = $_POST['date'];
-	
+	$class_name = $_POST['class_name'];
+
 	if(empty($item_no)) {
 		$errMSG = "상품 번호 부재";
 	} else if(empty($email)){
@@ -27,11 +28,12 @@
 
 	if(!isset($errMSG))	{
 		try {
-			$stmt = $con->prepare('INSERT INTO cart(item_no, email, count, date) VALUES(:item_no, :email, :count, :date)');
+			$stmt = $con->prepare('INSERT INTO cart(item_no, email, count, date, class_name) VALUES(:item_no, :email, :count, :date, :class_name)');
 			$stmt->bindParam(':item_no', $item_no);
 			$stmt->bindParam(':email', $email);
 			$stmt->bindParam(':count', $count);
 			$stmt->bindParam(':date', $date);
+			$stmt->bindParam(':class_name', $class_name);
 
 			if($stmt->execute()) {
 				$successMSG = "상품을 카트에 추가했습니다.";
@@ -64,7 +66,8 @@
                 ITEM_NO : <input type = "text" name = "item_no" />
                 EMAIL : <input type = "text" name = "email" />
                 COUNT : <input type = "text" name = "count" />
-                DATE : <input type = "text" name = "date" />
+		DATE : <input type = "text" name = "date" />
+		CLASS_NAME : <input type = "text" name = "class_name" />
                 <input type = "submit" name = "submit" />
             </form>
 
