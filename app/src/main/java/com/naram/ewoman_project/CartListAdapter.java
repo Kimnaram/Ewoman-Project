@@ -54,6 +54,7 @@ public class CartListAdapter extends BaseAdapter {
         ImageView iv_item_image = (ImageView) convertView.findViewById(R.id.iv_item_image);
 
         TextView tv_item_name = (TextView) convertView.findViewById(R.id.tv_item_name);
+        TextView tv_class_name = (TextView) convertView.findViewById(R.id.tv_class_name);
         TextView tv_item_price = (TextView) convertView.findViewById(R.id.tv_item_price);
         TextView tv_item_count = (TextView) convertView.findViewById(R.id.tv_item_count);
         TextView tv_item_date = (TextView) convertView.findViewById(R.id.tv_item_date);
@@ -66,6 +67,9 @@ public class CartListAdapter extends BaseAdapter {
         // 아이템 내 각 위젯에 데이터 반영
         iv_item_image.setImageBitmap(displayItem.getImage());
         tv_item_name.setText(displayItem.getName());
+        if(displayItem.getClass_name() != null) {
+            tv_class_name.setText(displayItem.getClass_name());
+        }
         DecimalFormat decimalFormat = new DecimalFormat("###,###");
         String price = decimalFormat.format(displayItem.getPrice());
         tv_item_price.setText(price + "\\");

@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="horizontal"
     android:layout_width="match_parent"
-    android:layout_height="130dp"
+    android:layout_height="145dp"
     android:descendantFocusability="blocksDescendants">>
 
     <CheckBox
@@ -21,7 +21,7 @@
     <ImageView
         android:id="@+id/iv_item_image"
         android:layout_width="100dp"
-        android:layout_height="110dp"
+        android:layout_height="130dp"
         android:layout_centerVertical="true"
         android:layout_toRightOf="@+id/cb_item_select"
         android:scaleType="centerCrop" />
@@ -38,11 +38,23 @@
         android:textColor="@color/colorGray"
         android:textSize="20dp" />
 
+    <TextView
+        android:id="@+id/tv_class_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="5dp"
+        android:layout_below="@id/tv_item_name"
+        android:layout_toRightOf="@id/iv_item_image"
+        android:fontFamily="@font/nanumbarungothic"
+        android:textColor="@color/colorGray"
+        android:textSize="15dp" />
+
     <LinearLayout
         android:id="@+id/ll_product_info_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/tv_item_name"
+        android:layout_below="@+id/tv_class_name"
         android:layout_marginLeft="10dp"
         android:layout_marginTop="15dp"
         android:layout_toRightOf="@+id/iv_item_image"

@@ -50,6 +50,8 @@ public class CartActivity extends AppCompatActivity {
     private static final String TAG_IMAGE = "image";
     private static final String TAG_COUNT = "count";
     private static final String TAG_DATE = "date";
+    private static final String TAG_CLASSNAME = "class_name";
+    private static final String TAG_CLASSPRICE = "class_price";
     private static String IP_ADDRESS = "IP ADDRESS";
 
     private String JSONString;
@@ -439,14 +441,20 @@ public class CartActivity extends AppCompatActivity {
                 boolean imcheck = item.isNull(TAG_IMAGE);
                 if (imcheck == false) {
                     image = item.getString(TAG_IMAGE);
-                }
-
-                if (imcheck == false) {
                     img = StringToBitmap(image);
+                }
+                String class_name = null;
+                int class_price = 0;
 
+                if (!item.isNull(TAG_CLASSNAME)) {
+                    class_name = item.getString(TAG_CLASSNAME);
                 }
 
-                listCart = new ListCart(item_no, name, date, img, count, price);
+                if (!item.isNull(TAG_CLASSPRICE)) {
+                    class_price = Integer.parseInt(item.getString(TAG_CLASSPRICE));
+                }
+
+                listCart = new ListCart(item_no, name, date, img, count, price, class_name);
 
                 items.add(listCart);
                 ArrayAdapter.add(items) ;

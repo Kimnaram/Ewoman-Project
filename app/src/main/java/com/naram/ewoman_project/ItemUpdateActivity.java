@@ -8,10 +8,12 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -46,6 +48,32 @@ public class ItemUpdateActivity extends AppCompatActivity {
     private static final String TAG = "ItemUpdateActivity";
     private static final int REQUEST_CODE = 1001;
 
+    private class Class {
+
+        private String item_name;
+        private String class_name;
+        private String class_price;
+
+        public Class(String item_name, String class_name, String class_price) {
+            this.item_name = item_name;
+            this.class_name = class_name;
+            this.class_price = class_price;
+        }
+
+        public String getClass_name() {
+            return class_name;
+        }
+
+        public String getClass_price() {
+            return class_price;
+        }
+
+        public String getItem_Name() {
+            return item_name;
+        }
+
+    }
+
     private static final String TAG_RESULTS = "result";
     private static final String TAG_CATEGORY = "category";
     private static final String TAG_NAME = "name";
@@ -57,7 +85,9 @@ public class ItemUpdateActivity extends AppCompatActivity {
     private static final String TAG_DELIV_INFORM = "deliv_inform";
     private static final String TAG_MIN_QUANTITY = "minimum_quantity";
     private static final String TAG_MAX_QUANTITY = "maximum_quantity";
-    private static String IP_ADDRESS = "IP ADDRESS";
+    private static final String TAG_CLASSNAME = "class_name";
+    private static final String TAG_CLASSPRICE = "class_price";
+    private static String IP_ADDRESS = "IP ADDESS";
 
     private String JSONString;
     private String JSONWISHString;
@@ -106,6 +136,7 @@ public class ItemUpdateActivity extends AppCompatActivity {
     private Bitmap img;
 
     private List<EditText> allClass = new ArrayList<EditText>();
+    private List<Class> classList = new ArrayList<Class>();
 
     private JSONObject jsonObject = new JSONObject();
 
@@ -132,7 +163,7 @@ public class ItemUpdateActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
 
-        if(intent != null) {
+        if (intent != null) {
             item_no = intent.getStringExtra("item_no");
         }
 
@@ -169,15 +200,15 @@ public class ItemUpdateActivity extends AppCompatActivity {
 
                     }
 
-                    if(itemDeliveryPrice.isEmpty()) {
+                    if (itemDeliveryPrice.isEmpty()) {
                         itemDeliveryPrice = "null";
                     }
 
-                    if(itemMaximumQuantity.isEmpty()) {
+                    if (itemMaximumQuantity.isEmpty()) {
                         itemMaximumQuantity = "null";
                     }
 
-                    if(itemMinimumQuantity.isEmpty()) {
+                    if (itemMinimumQuantity.isEmpty()) {
                         itemMinimumQuantity = "null";
                     }
 
@@ -186,6 +217,15 @@ public class ItemUpdateActivity extends AppCompatActivity {
                 UpdateData task = new UpdateData();
                 task.execute(item_no, itemCategory, itemName, itemPrice, itemImage, itemInform, itemDeliveryMethod,
                         itemDeliveryPrice, itemDeliveryInform, itemMinimumQuantity, itemMaximumQuantity);
+
+            }
+        });
+
+        ib_item_plus.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                addEditTextsetHint("클래스의 이름과 가격을 /로 구분해주세요.");
 
             }
         });
@@ -201,7 +241,7 @@ public class ItemUpdateActivity extends AppCompatActivity {
         rl_image_container = findViewById(R.id.rl_image_container);
 
         rg_category = findViewById(R.id.rg_category);
-        
+
         rb_category_ecollege = findViewById(R.id.rb_category_ecollege);
         rb_category_eproduct = findViewById(R.id.rb_category_eproduct);
 
@@ -253,15 +293,15 @@ public class ItemUpdateActivity extends AppCompatActivity {
         }
     }
 
-    private Bitmap resize(Bitmap bm){
-        Configuration config=getResources().getConfiguration();
-        if(config.smallestScreenWidthDp>=800)
+    private Bitmap resize(Bitmap bm) {
+        Configuration config = getResources().getConfiguration();
+        if (config.smallestScreenWidthDp >= 800)
             bm = Bitmap.createScaledBitmap(bm, 500, 400, true);
-        else if(config.smallestScreenWidthDp>=600)
+        else if (config.smallestScreenWidthDp >= 600)
             bm = Bitmap.createScaledBitmap(bm, 400, 300, true);
-        else if(config.smallestScreenWidthDp>=400)
+        else if (config.smallestScreenWidthDp >= 400)
             bm = Bitmap.createScaledBitmap(bm, 300, 200, true);
-        else if(config.smallestScreenWidthDp>=360)
+        else if (config.smallestScreenWidthDp >= 360)
             bm = Bitmap.createScaledBitmap(bm, 200, 150, true);
         else
             bm = Bitmap.createScaledBitmap(bm, 160, 96, true);
@@ -302,6 +342,48 @@ public class ItemUpdateActivity extends AppCompatActivity {
         }
     }
 
+    public void addEditTextsetHint(String arg) {
+
+        LinearLayout.LayoutParams param1 = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT);
+
+        final EditText et_data = new EditText(this);
+        et_data.setBackground(getResources().getDrawable(R.drawable.btn_style_border_line_white_background));
+        et_data.setHint(arg);
+        et_data.setTextColor(getResources().getColor(R.color.colorGray));
+        Typeface typeface = Typeface.createFromAsset(getAssets(), "fonts/nanumbarungothicbold.ttf");
+        et_data.setTypeface(typeface, Typeface.NORMAL);
+        et_data.setPadding(5, 0, 0, 0);
+        et_data.setInputType(EditText.AUTOFILL_TYPE_TEXT);
+        param1.setMargins(0, 0, 0, 20);
+        et_data.setLayoutParams(param1);
+
+        allClass.add(et_data);
+        ll_class_container.addView(et_data);
+
+    }
+
+    public void addEditText(String arg) {
+
+        LinearLayout.LayoutParams param1 = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT);
+
+        final EditText et_data = new EditText(this);
+        et_data.setBackground(getResources().getDrawable(R.drawable.btn_style_border_line_white_background));
+        et_data.setText(arg);
+        et_data.setTextColor(getResources().getColor(R.color.colorGray));
+        Typeface typeface = Typeface.createFromAsset(getAssets(), "fonts/nanumbarungothicbold.ttf");
+        et_data.setTypeface(typeface, Typeface.NORMAL);
+        et_data.setInputType(EditText.AUTOFILL_TYPE_TEXT);
+        et_data.setPadding(5, 0, 0, 0);
+        param1.setMargins(0, 0, 0, 20);
+        et_data.setLayoutParams(param1);
+
+        allClass.add(et_data);
+        ll_class_container.addView(et_data);
+
+    }
+
     private void showResult() {
         try {
             JSONObject jsonObject = new JSONObject(JSONString);
@@ -313,9 +395,9 @@ public class ItemUpdateActivity extends AppCompatActivity {
 
                 String category = component.getString(TAG_CATEGORY);
                 itemCategory = category;
-                if(category.equals("ecollege")) {
+                if (category.equals("ecollege")) {
                     rb_category_ecollege.setChecked(true);
-                } else if(category.equals("eproduct")) {
+                } else if (category.equals("eproduct")) {
                     rb_category_eproduct.setChecked(true);
                 }
                 String name = component.getString(TAG_NAME);
@@ -334,11 +416,12 @@ public class ItemUpdateActivity extends AppCompatActivity {
                 String deliv_inform = null;
                 String minimum_quantity = null;
                 String maximum_quantity = null;
+                String class_name = null;
+                String class_price = null;
 
                 if (!component.isNull(TAG_DELIV_METHOD)) {
                     deliv_method = component.getString(TAG_DELIV_METHOD);
                     et_delivery_method_data.setText(deliv_method);
-
                 }
                 if (!component.isNull(TAG_DELIV_PRICE)) {
                     deliv_price = component.getString(TAG_DELIV_PRICE);
@@ -355,6 +438,15 @@ public class ItemUpdateActivity extends AppCompatActivity {
                 if (!component.isNull(TAG_MAX_QUANTITY)) {
                     maximum_quantity = component.getString(TAG_MAX_QUANTITY);
                     et_maximum_quantity_data.setText(maximum_quantity);
+                }
+                if (!component.isNull(TAG_CLASSNAME) && !component.isNull(TAG_CLASSPRICE)) {
+                    class_name = component.getString(TAG_CLASSNAME);
+                    class_price = component.getString(TAG_CLASSPRICE);
+                    String strClass = null;
+                    strClass = class_name + "/" + class_price;
+
+                    addEditText(strClass);
+
                 }
 
             }
@@ -446,7 +538,7 @@ public class ItemUpdateActivity extends AppCompatActivity {
                 Toast.makeText(getApplicationContext(), "오류가 발생했습니다!", Toast.LENGTH_SHORT).show();
             } else {
 
-                if(result.contains("결과가 없습니다.")) {
+                if (result.contains("결과가 없습니다.")) {
 
                 } else {
 
@@ -478,16 +570,51 @@ public class ItemUpdateActivity extends AppCompatActivity {
 
             progressDialog.dismiss();
 
-            if (result.contains("상품 추가 에러")) {
+            if (result.contains("상품 수정 에러")) {
+
+                Toast.makeText(getApplicationContext(), "오류가 발생했습니다.", Toast.LENGTH_SHORT).show();
 
             } else if (result.contains("상품의 내용을 수정했습니다.")) {
-                Toast.makeText(getApplicationContext(), "상품의 내용이 성공적으로 수정되었습니다!", Toast.LENGTH_SHORT).show();
 
-                Intent intent = new Intent(getApplicationContext(), ProductDetailActivity.class);
-                intent.putExtra("item_no", item_no);
+                String[] classes = new String[allClass.size()];
 
-                finish();
-                startActivity(intent);
+                for (int i = 0; i < allClass.size(); i++) {
+
+                    if (!allClass.get(i).getText().toString().isEmpty()) {
+
+                        classes[i] = allClass.get(i).getText().toString();
+                        String name = classes[i].split("/")[0];
+                        String price = classes[i].split("/")[1];
+                        Class classObject = new Class(itemName, name, price);
+                        classList.add(classObject);
+
+                    }
+
+                }
+
+                try {
+                    JSONArray jArray = new JSONArray();
+                    for (int j = 0; j < classList.size(); j++) {
+                        JSONObject sObject = new JSONObject();//배열 내에 들어갈 json
+                        sObject.put("itemName", classList.get(j).getItem_Name());
+                        sObject.put("className", classList.get(j).getClass_name());
+                        sObject.put("classPrice", classList.get(j).getClass_price());
+                        jArray.put(sObject);
+
+                        if (j >= classList.size() - 1) {
+
+                            jsonObject.put("class", jArray);
+
+                            System.out.println(jsonObject.toString());
+                            UpdateClassData task = new UpdateClassData();
+                            task.execute("http://" + IP_ADDRESS + "/ewoman-php/updateClass.php", jsonObject.toString());
+
+                        }
+                    }
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
             }
 
             Log.d(TAG, "POST response  - " + result);
@@ -497,17 +624,17 @@ public class ItemUpdateActivity extends AppCompatActivity {
         @Override
         protected String doInBackground(String... params) {
 
-            String item_no = (String)params[0];
-            String category = (String)params[1];
-            String name = (String)params[2];
-            String price = (String)params[3];
-            String image = (String)params[4];
-            String inform = (String)params[5];
-            String delivery_method = (String)params[6];
-            String delivery_price = (String)params[7];
-            String delivery_inform = (String)params[8];
-            String minimum_quantity = (String)params[9];
-            String maximum_quantity = (String)params[10];
+            String item_no = (String) params[0];
+            String category = (String) params[1];
+            String name = (String) params[2];
+            String price = (String) params[3];
+            String image = (String) params[4];
+            String inform = (String) params[5];
+            String delivery_method = (String) params[6];
+            String delivery_price = (String) params[7];
+            String delivery_inform = (String) params[8];
+            String minimum_quantity = (String) params[9];
+            String maximum_quantity = (String) params[10];
 
             String serverURL = "http://" + IP_ADDRESS + "/ewoman-php/updateItem.php";
             String postParameters = "item_no=" + item_no + "&category=" + category + "&name=" + name + "&price=" + price
@@ -537,10 +664,9 @@ public class ItemUpdateActivity extends AppCompatActivity {
                 Log.d(TAG, "POST response code - " + responseStatusCode);
 
                 InputStream inputStream;
-                if(responseStatusCode == HttpURLConnection.HTTP_OK) {
+                if (responseStatusCode == HttpURLConnection.HTTP_OK) {
                     inputStream = httpURLConnection.getInputStream();
-                }
-                else{
+                } else {
                     inputStream = httpURLConnection.getErrorStream();
                 }
 
@@ -551,7 +677,7 @@ public class ItemUpdateActivity extends AppCompatActivity {
                 StringBuilder sb = new StringBuilder();
                 String line = null;
 
-                while((line = bufferedReader.readLine()) != null){
+                while ((line = bufferedReader.readLine()) != null) {
                     sb.append(line);
                 }
 
@@ -565,6 +691,103 @@ public class ItemUpdateActivity extends AppCompatActivity {
             } catch (Exception e) {
 
                 Log.d(TAG, "UpdateData: Error ", e);
+
+                return new String("Error: " + e.getMessage());
+            }
+
+        }
+    }
+
+    class UpdateClassData extends AsyncTask<String, Void, String> {
+        ProgressDialog progressDialog;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+
+        }
+
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+
+            if (result.contains("클래스 정보를 수정했습니다.")) {
+
+                Toast.makeText(getApplicationContext(), "상품의 내용이 성공적으로 수정되었습니다!", Toast.LENGTH_SHORT).show();
+
+                Intent intent = new Intent(getApplicationContext(), ProductDetailActivity.class);
+                intent.putExtra("item_no", item_no);
+
+                finish();
+                startActivity(intent);
+
+            } else {
+
+                Toast.makeText(getApplicationContext(), "오류가 발생했습니다.", Toast.LENGTH_SHORT).show();
+
+            }
+
+            Log.d(TAG, "POST response  - " + result);
+        }
+
+
+        @Override
+        protected String doInBackground(String... params) {
+
+            String json = (String) params[1];
+
+            String serverURL = (String) params[0];
+            String postParameters = "class=" + json;
+
+            try {
+
+                URL url = new URL(serverURL);
+                HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
+
+
+                httpURLConnection.setReadTimeout(10000);
+                httpURLConnection.setConnectTimeout(10000);
+                httpURLConnection.setRequestMethod("POST");
+                httpURLConnection.connect();
+
+
+                OutputStream outputStream = httpURLConnection.getOutputStream();
+                outputStream.write(postParameters.getBytes("UTF-8"));
+                outputStream.flush();
+                outputStream.close();
+
+
+                int responseStatusCode = httpURLConnection.getResponseCode();
+                Log.d(TAG, "POST response code - " + responseStatusCode);
+
+                InputStream inputStream;
+                if (responseStatusCode == HttpURLConnection.HTTP_OK) {
+                    inputStream = httpURLConnection.getInputStream();
+                } else {
+                    inputStream = httpURLConnection.getErrorStream();
+                }
+
+                InputStreamReader inputStreamReader = new InputStreamReader(inputStream, "UTF-8");
+                BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+
+                StringBuilder sb = new StringBuilder();
+                String line = null;
+
+                while ((line = bufferedReader.readLine()) != null) {
+                    sb.append(line);
+                }
+
+
+                bufferedReader.close();
+
+
+                return sb.toString();
+
+
+            } catch (Exception e) {
+
+                Log.d(TAG, "InsertData: Error ", e);
 
                 return new String("Error: " + e.getMessage());
             }

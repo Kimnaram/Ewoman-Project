@@ -10,6 +10,7 @@ public class ListCart {
     private String date;
     private int count;
     private int price;
+    private String class_name;
 
     public ListCart(int item_no, String name, String date, Bitmap image, int count, int price) {
         this.item_no = item_no;
@@ -18,6 +19,16 @@ public class ListCart {
         this.image = image;
         this.count = count;
         this.price = price;
+    }
+
+    public ListCart(int item_no, String name, String date, Bitmap image, int count, int price, String class_name) {
+        this.item_no = item_no;
+        this.name = name;
+        this.date = date;
+        this.image = image;
+        this.count = count;
+        this.price = price;
+        this.class_name = class_name;
     }
 
     public int getItem_no() {
@@ -66,6 +77,14 @@ public class ListCart {
 
     public void setPrice(int price) {
         this.price = price;
+    }
+
+    public String getClass_name() {
+        return class_name;
+    }
+
+    public void setClass_name(String class_name) {
+        this.class_name = class_name;
     }
 
 }
