@@ -61,7 +61,7 @@ public class CartActivity extends AppCompatActivity {
 
     private RelativeLayout rl_warn_container;
 
-    private Button btn_item_buy;
+    private Button btn_item_order;
     private Button btn_item_delete;
 
     private ListView lv_cart_product;
@@ -80,6 +80,8 @@ public class CartActivity extends AppCompatActivity {
     private Bitmap img;
 
     private String useremail = null;
+
+    private int class_price = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -176,7 +178,7 @@ public class CartActivity extends AppCompatActivity {
             }
         });
 
-        btn_item_buy.setOnClickListener(new View.OnClickListener() {
+        btn_item_order.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
@@ -222,7 +224,7 @@ public class CartActivity extends AppCompatActivity {
 
         tv_all_item_count = findViewById(R.id.tv_all_item_count);
 
-        btn_item_buy = findViewById(R.id.btn_item_buy);
+        btn_item_order = findViewById(R.id.btn_item_order);
         btn_item_delete = findViewById(R.id.btn_item_delete);
 
         dbOpenHelper = new DBOpenHelper(this);
@@ -444,7 +446,6 @@ public class CartActivity extends AppCompatActivity {
                     img = StringToBitmap(image);
                 }
                 String class_name = null;
-                int class_price = 0;
 
                 if (!item.isNull(TAG_CLASSNAME)) {
                     class_name = item.getString(TAG_CLASSNAME);
@@ -454,7 +455,7 @@ public class CartActivity extends AppCompatActivity {
                     class_price = Integer.parseInt(item.getString(TAG_CLASSPRICE));
                 }
 
-                listCart = new ListCart(item_no, name, date, img, count, price, class_name);
+                listCart = new ListCart(item_no, name, date, img, count, class_price, class_name);
 
                 items.add(listCart);
                 ArrayAdapter.add(items) ;

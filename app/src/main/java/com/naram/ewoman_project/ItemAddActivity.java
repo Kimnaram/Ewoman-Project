@@ -54,11 +54,13 @@ public class ItemAddActivity extends AppCompatActivity {
         private String item_name;
         private String class_name;
         private String class_price;
+        private String class_priority;
 
-        public Class(String item_name, String class_name, String class_price) {
+        public Class(String item_name, String class_name, String class_price, String class_priority) {
             this.item_name = item_name;
             this.class_name = class_name;
             this.class_price = class_price;
+            this.class_priority = class_priority;
         }
 
         public String getClass_name() {
@@ -70,6 +72,8 @@ public class ItemAddActivity extends AppCompatActivity {
         }
 
         public String getItem_Name() { return item_name; }
+
+        public String getClass_priority() { return class_priority; }
 
     }
 
@@ -183,7 +187,7 @@ public class ItemAddActivity extends AppCompatActivity {
 
                     allClass.add(et_class_data);
 
-                    addEditText("클래스의 이름과 가격을 /로 구분해주세요.");
+                    addEditText("클래스의 이름과 가격, 우선순위를 /로 구분해주세요.");
 
                 }
 
@@ -225,6 +229,10 @@ public class ItemAddActivity extends AppCompatActivity {
                     if (itemMinimumQuantity.isEmpty()) {
                         itemMinimumQuantity = "null";
                     }
+
+
+
+                    Log.d(TAG, "");
 
                     InsertData task = new InsertData();
                     task.execute("http://" + IP_ADDRESS + "/ewoman-php/insertItem.php", itemCategory, itemName, itemPrice, itemImage, itemInform,
@@ -305,7 +313,7 @@ public class ItemAddActivity extends AppCompatActivity {
         Typeface typeface = Typeface.createFromAsset(getAssets(), "fonts/nanumbarungothicbold.ttf");
         et_data.setTypeface(typeface, Typeface.NORMAL);
         et_data.setInputType(EditText.AUTOFILL_TYPE_TEXT);
-        et_data.setPadding(5, 0, 0, 0);
+        et_data.setPadding(10, 0, 0, 0);
         param1.setMargins(0, 0, 0, 20);
         et_data.setLayoutParams(param1);
 
@@ -457,7 +465,8 @@ public class ItemAddActivity extends AppCompatActivity {
                     classes[i] = allClass.get(i).getText().toString();
                     String name = classes[i].split("/")[0];
                     String price = classes[i].split("/")[1];
-                    Class classObject = new Class(itemName, name, price);
+                    String priority = classes[i].split("/")[2];
+                    Class classObject = new Class(itemName, name, price, priority);
                     classList.add(classObject);
 
                     et_name_data.setText(null);
@@ -480,6 +489,7 @@ public class ItemAddActivity extends AppCompatActivity {
                         sObject.put("itemName", classList.get(j).getItem_Name());
                         sObject.put("className", classList.get(j).getClass_name());
                         sObject.put("classPrice", classList.get(j).getClass_price());
+                        sObject.put("classPriority", classList.get(j).getClass_priority());
                         jArray.put(sObject);
 
                         if (j >= classList.size() - 1) {

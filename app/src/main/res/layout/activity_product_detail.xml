@@ -371,7 +371,7 @@
                     android:layout_marginBottom="20dp">
 
                     <TextView
-                        android:id="@+id/tv_buy_try"
+                        android:id="@+id/tv_order_try"
                         android:layout_width="110dp"
                         android:layout_height="47.5dp"
                         android:layout_marginRight="10dp"
@@ -379,6 +379,7 @@
                         android:backgroundTint="@color/colorCocoa"
                         android:fontFamily="@font/nanumbarungothic"
                         android:gravity="center"
+                        android:text="주문하기"
                         android:textColor="@color/colorWhite"
                         android:textSize="18dp" />
 
@@ -387,7 +388,7 @@
                         android:layout_width="110dp"
                         android:layout_height="47.5dp"
                         android:layout_marginRight="10dp"
-                        android:layout_toRightOf="@+id/tv_buy_try"
+                        android:layout_toRightOf="@+id/tv_order_try"
                         android:background="@drawable/btn_style_border_line_white_background"
                         android:fontFamily="@font/nanumbarungothic"
                         android:gravity="center"
