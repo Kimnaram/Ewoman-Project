@@ -10,7 +10,7 @@ $android = strpos($_SERVER['HTTP_USER_AGENT'], "Android");
 
 if ($email != ""){
 
-  $sql="select C.item_no, name, price, image, count, date from item I, cart C where I.item_no = C.item_no AND email='$email'";
+  $sql = "select C.item_no, I.name, I.price, image, count, date, C.class_name, CL.price as class_price from item I, cart C left join class CL on C.class_name = CL.name where I.item_no = C.item_no and email='$email'";
   $stmt = $con->prepare($sql);
   $stmt->execute();
 
@@ -34,7 +34,9 @@ if ($email != ""){
 			 "price"=>$row["price"],
 			 "image"=>$row["image"],
 			 "count"=>$row["count"],
-			 "date"=>$row["date"]
+			 "date"=>$row["date"],
+			 "class_name"=>$row["class_name"],
+			 "class_price"=>$row["class_price"]
                  ));
         }
 

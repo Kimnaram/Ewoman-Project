@@ -32,16 +32,18 @@
 			$price = $value['classPrice'];
 
 			try{
-				$stmt = $con->prepare('INSERT INTO class(item_name, name, price) VALUES(:item_name, :name, :price)');
+				$stmt = $con->prepare('UPDATE class SET name=:name, price=:price where item_name=:item_name');
 				$stmt->bindParam(':item_name', $item_name);
 				$stmt->bindParam(':name', $name);
 				$stmt->bindParam(':price', $price);
 
+				#print_r($stmt);
+
 				if($stmt->execute()) {
-		    			$successMSG = "클래스 정보를 추가했습니다.";
+		    			$successMSG = "클래스 정보를 수정했습니다.";
 				}
 				else {
-		    			$errMSG = "클래스 추가 에러";
+		    			$errMSG = "클래스 수정 에러";
 				}
 			} catch(PDOException $e) {
 				die("Database error: " . $e->getMessage());
@@ -49,23 +51,6 @@
 
 		}
 
-            #try{
-                #$stmt = $con->prepare('INSERT INTO wishlist(item_no, email) VALUES(:item_no, :email)');
-		#$stmt->bindParam(':item_no', $item_no);
-		#$stmt->bindParam(':email', $email);
-
-                #if($stmt->execute())
-                #{
-                #    $successMSG = "상품을 Wishlist에 추가했습니다.";
-                #}
-                #else
-                #{
-                #    $errMSG = "위시 리스트 추가 에러";
-                #}
-
-            #} catch(PDOException $e) {
-            #    die("Database error: " . $e->getMessage());
-            #}
         }
 
     }
