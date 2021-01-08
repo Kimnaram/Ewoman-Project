@@ -225,7 +225,7 @@ public class ItemUpdateActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                addEditTextsetHint("클래스의 이름과 가격을 /로 구분해주세요.");
+                addEditTextsetHint("클래스의 이름과 가격, 우선순위를 /로 구분해주세요.");
 
             }
         });

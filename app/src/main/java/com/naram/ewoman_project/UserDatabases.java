@@ -3,7 +3,7 @@ package com.naram.ewoman_project;
 import android.provider.BaseColumns;
 
 
-public final class Databases {
+public final class UserDatabases {
 
     /* Inner class that defines the table contents */
     public static final class UserDB implements BaseColumns {

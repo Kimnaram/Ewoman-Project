@@ -34,12 +34,12 @@ public class DBOpenHelper {
 
         @Override
         public void onCreate(SQLiteDatabase db) {
-            db.execSQL(Databases.UserDB.SQL_CREATE_TABLE);
+            db.execSQL(UserDatabases.UserDB.SQL_CREATE_TABLE);
         }
 
         @Override
         public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-            db.execSQL(Databases.UserDB.SQL_DROP_TABLE);
+            db.execSQL(UserDatabases.UserDB.SQL_DROP_TABLE);
             onCreate(db);
         }
 
@@ -64,7 +64,7 @@ public class DBOpenHelper {
     }
 
     public void drop() {
-        mDB.execSQL("DROP TABLE IF EXISTS " + Databases.UserDB.TABLE_NAME + ";");
+        mDB.execSQL("DROP TABLE IF EXISTS " + UserDatabases.UserDB.TABLE_NAME + ";");
     }
 
     public void close() {
@@ -75,46 +75,46 @@ public class DBOpenHelper {
         SQLiteDatabase db = mDBHelper.getReadableDatabase();
 
         ContentValues values = new ContentValues();
-        values.put(Databases.UserDB.EMAIL, email);
-        values.put(Databases.UserDB.NAME, name);
+        values.put(UserDatabases.UserDB.EMAIL, email);
+        values.put(UserDatabases.UserDB.NAME, name);
 
-        return mDB.insert(Databases.UserDB.TABLE_NAME, null, values);
+        return mDB.insert(UserDatabases.UserDB.TABLE_NAME, null, values);
     }
 
 //    public Cursor selectColumns() {
-//        return mDB.query(Databases.UserDB.TABLE_NAME, null, null, null, null, null, null);
+//        return mDB.query(UserDatabases.UserDB.TABLE_NAME, null, null, null, null, null, null);
 //    }
 
     public boolean updateColumn(long id, String email, String name, @Nullable Drawable image) {
         ContentValues values = new ContentValues();
-        values.put(Databases.UserDB.EMAIL, email);
-        values.put(Databases.UserDB.NAME, name);
+        values.put(UserDatabases.UserDB.EMAIL, email);
+        values.put(UserDatabases.UserDB.NAME, name);
 
-        return mDB.update(Databases.UserDB.TABLE_NAME, values, "_id=" + id, null) > 0;
+        return mDB.update(UserDatabases.UserDB.TABLE_NAME, values, "_id=" + id, null) > 0;
     }
 
     public void deleteAllColumns() {
-        mDB.delete(Databases.UserDB.TABLE_NAME, null, null);
+        mDB.delete(UserDatabases.UserDB.TABLE_NAME, null, null);
     }
 
     // Delete Column
     public boolean deleteColumn(long id) {
-        return mDB.delete(Databases.UserDB.TABLE_NAME, "_id=" + id, null) > 0;
+        return mDB.delete(UserDatabases.UserDB.TABLE_NAME, "_id=" + id, null) > 0;
     }
 
     // sort by column
     public Cursor sortColumn(String sort) {
-        Cursor c = mDB.rawQuery("SELECT _id, email, name FROM " + Databases.UserDB.TABLE_NAME + " ORDER BY " + sort + " DESC;", null);
+        Cursor c = mDB.rawQuery("SELECT _id, email, name FROM " + UserDatabases.UserDB.TABLE_NAME + " ORDER BY " + sort + " DESC;", null);
         return c;
     }
 
     public Cursor selectColumns() {
-        Cursor c = mDB.rawQuery("SELECT email, name FROM " + Databases.UserDB.TABLE_NAME, null);
+        Cursor c = mDB.rawQuery("SELECT email, name FROM " + UserDatabases.UserDB.TABLE_NAME, null);
         return c;
     }
 
     public Cursor selectColumn(long id) {
-        Cursor c = mDB.rawQuery("SELECT * FROM " + Databases.UserDB.TABLE_NAME + " WHERE _id=" + id + ";", null);
+        Cursor c = mDB.rawQuery("SELECT * FROM " + UserDatabases.UserDB.TABLE_NAME + " WHERE _id=" + id + ";", null);
         return c;
     }
 

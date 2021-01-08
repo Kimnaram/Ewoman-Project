@@ -347,7 +347,7 @@
                     android:layout_height="wrap_content"
                     android:background="@drawable/btn_style_border_line_white_background"
                     android:paddingLeft="5dp"
-                    android:hint="클래스의 이름과 가격을 /로 구분해주세요."
+                    android:hint="클래스의 이름과 가격, 우선순위를 /로 구분해주세요."
                     android:fontFamily="@font/nanumbarungothicbold"
                     android:textColor="@color/colorGray"
                     android:textSize="18dp"
