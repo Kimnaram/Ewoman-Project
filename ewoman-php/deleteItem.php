@@ -11,13 +11,13 @@ $android = strpos($_SERVER['HTTP_USER_AGENT'], "Android");
 
 if ($item_no != "") {
 
-  $sql="delete from item where item_no=$item_no";
-  $stmt = $con->prepare($sql);
-  $stmt->execute();
-
   $csql = "delete from class using class join item on class.item_name = item.name where item.name = '$item_name';";
   $cstmt = $con->prepare($csql);
   $cstmt->execute();
+
+  $sql="delete from item where item_no=$item_no";
+  $stmt = $con->prepare($sql);
+  $stmt->execute();
 
   $selectsql="select * from item where item_no=$item_no";
   $stmt2 = $con->prepare($selectsql);

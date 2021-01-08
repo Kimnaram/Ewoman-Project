@@ -12,7 +12,7 @@ if ($item_no != ""){
 
   $sql = "select I.item_no, I.category, I.name, I.image, I.price, I.inform, I.deliv_method, I.deliv_price, I.deliv_inform, I.minimum_quantity, I.maximum_quantity, count(email) as wishlist, C.name as class_name, C.price as class_price
 from item I left join wishlist W on I.item_no = W.item_no left join class C on I.name = C.item_name 
-where I.item_no=$item_no group by I.item_no, C.name, C.price";
+where I.item_no=$item_no group by I.item_no, C.name, C.price order by C.priority";
   $stmt = $con->prepare($sql);
   $stmt->execute();
 
