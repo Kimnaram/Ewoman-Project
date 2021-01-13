@@ -67,10 +67,11 @@ public class CartActivity extends AppCompatActivity {
     private ListView lv_cart_product;
     private CartListAdapter adapter;
     private ListCart listCart;
+    private ListOrder listOrder;
 
     final ArrayList<ListCart> items = new ArrayList<ListCart>();
     final ArrayList<Integer> removeList = new ArrayList<Integer>();
-    final ArrayList<Integer> orderList = new ArrayList<Integer>();
+    final ArrayList<ListOrder> orderList = new ArrayList<ListOrder>();
     ArrayAdapter ArrayAdapter;
 
     private TextView tv_all_item_count;
@@ -188,7 +189,9 @@ public class CartActivity extends AppCompatActivity {
                 for (int i = count - 1; i >= 0; i--) {
                     if(checkedItems.get(i)) {
                         int item_no = adapter.getItem(i).getItem_no();
-                        orderList.add(item_no);
+                        String class_name = adapter.getItem(i).getClass_name();
+                        int item_count = adapter.getItem(i).getCount();
+                        orderList.add(new ListOrder(item_no, class_name, item_count));
 
                         Log.d(TAG, "items : checkedItems[" + i + "] = " + checkedItems.get(i));
 
@@ -200,7 +203,9 @@ public class CartActivity extends AppCompatActivity {
                 intent.putExtra("size", Integer.toString(orderList.size()));
                 for(int i = 0; i < orderList.size(); i++) {
 
-                    intent.putExtra("orderList[" + i + "]", Integer.toString(orderList.get(i)));
+                    intent.putExtra("itemNo[" + i + "]", Integer.toString(orderList.get(i).getItem_no()));
+                    intent.putExtra("className[" + i + "]", orderList.get(i).getClass_name());
+                    intent.putExtra("count[" + i + "]", Integer.toString(orderList.get(i).getCount()));
 
                 }
 

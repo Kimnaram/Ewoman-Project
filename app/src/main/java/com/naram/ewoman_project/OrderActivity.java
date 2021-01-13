@@ -13,8 +13,11 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ListView;
 import android.widget.Toast;
+
+import org.json.JSONArray;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -28,13 +31,29 @@ public class OrderActivity extends AppCompatActivity {
 
     private static final String TAG = "OrderActivity";
 
+    private static final String TAG_RESULTS = "result";
+    private static final String TAG_ITEMNO = "item_no";
+    private static final String TAG_NAME = "name";
+    private static final String TAG_PRICE = "price";
+    private static final String TAG_IMAGE = "image";
+    private static final String TAG_COUNT = "count";
+    private static final String TAG_DELIVPRICE = "deliv_price";
+    private static final String TAG_CLASSNAME = "class_name";
+    private static final String TAG_CLASSPRICE = "class_price";
+    private static String IP_ADDRESS = "IP ADDRESS";
+
+    private String JSONString;
+    private JSONArray order = null;
+
     private DBOpenHelper dbOpenHelper;
 
     private ListView lv_order_product;
 
-    private ArrayList<Integer> orderList = new ArrayList<Integer>();
+    private ListOrder listOrder;
+    private ArrayList<ListOrder> orderList = new ArrayList<ListOrder>();
 
 
+    private String itemno_sql;
     private String useremail;
 
     @Override
@@ -58,10 +77,12 @@ public class OrderActivity extends AppCompatActivity {
             int size = Integer.parseInt(intent.getStringExtra("size"));
             for (int i = 0; i < size; i++) {
 
-                String item_no = intent.getStringExtra("orderList[" + i + "]");
+                int item_no = Integer.parseInt(intent.getStringExtra("itemNo[" + i + "]"));
+                String class_name = intent.getStringExtra("className[" + i + "]");
+                int count = Integer.parseInt(intent.getStringExtra("count[" + i + "]"));
 
-                orderList.add(Integer.parseInt(item_no));
-                Log.d(TAG, "orderList add : " + item_no);
+                orderList.add(new ListOrder(item_no, class_name, count));
+                Log.d(TAG, "orderList add : " + item_no + ", " + class_name + ", " + count);
 
             }
         } else if (prevPage.equals("DetailPage")) {
@@ -71,6 +92,22 @@ public class OrderActivity extends AppCompatActivity {
 
             Log.d(TAG, "allPrice : " + allPrice);
 
+        }
+
+        String itemNo_list = "(";
+        String className_list = "(";
+
+        for(int i = 0; i < orderList.size(); i++) {
+            if(i < orderList.size() - 1) {
+                itemNo_list += orderList.get(i).getItem_no() + ",";
+                className_list += orderList.get(i).getClass_name() + ",";
+            } else {
+                itemNo_list += orderList.get(i).getItem_no() + ")";
+                className_list += orderList.get(i).getClass_name() + ")";
+
+
+                Log.d(TAG, "itemNo_list : " + itemNo_list + "\nclassName_list : " + className_list);
+            }
         }
 
         initAllComponent();
@@ -140,6 +177,105 @@ public class OrderActivity extends AppCompatActivity {
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private class GetData extends AsyncTask<String, Void, String> {
+
+        ProgressDialog progressDialog;
+        String errorString = null;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+
+            progressDialog = new ProgressDialog(OrderActivity.this, R.style.AlertDialogStyle);
+            progressDialog.setTitle("로딩중입니다.");
+            progressDialog.show();
+
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+
+            progressDialog.dismiss();
+            Log.d(TAG, "response - " + result);
+
+            if (result == null) {
+                Toast.makeText(getApplicationContext(), "오류가 발생했습니다!", Toast.LENGTH_SHORT).show();
+            } else {
+
+                if (result.contains("주문한 상품이 존재하지 않습니다.")) {
+
+                    Toast.makeText(getApplicationContext(), "오류가 발생했습니다!", Toast.LENGTH_SHORT).show();
+
+                } else {
+
+                    JSONString = result;
+//                    showResult();
+
+                }
+            }
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+
+            String item_no = params[0];
+            String class_name = params[0];
+
+            String serverURL = "http://" + IP_ADDRESS + "/ewoman-php/selectOrder.php";
+            String postParameters = "item_no=" + item_no + "&class_name=" + class_name;
+
+            try {
+
+                URL url = new URL(serverURL);
+                HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
+
+                httpURLConnection.setReadTimeout(5000);
+                httpURLConnection.setConnectTimeout(5000);
+                httpURLConnection.setRequestMethod("POST");
+                httpURLConnection.setDoInput(true);
+                httpURLConnection.connect();
+
+                OutputStream outputStream = httpURLConnection.getOutputStream();
+                outputStream.write(postParameters.getBytes("UTF-8"));
+                outputStream.flush();
+                outputStream.close();
+
+                int responseStatusCode = httpURLConnection.getResponseCode();
+                Log.d(TAG, "response code - " + responseStatusCode);
+
+                InputStream inputStream;
+                if (responseStatusCode == HttpURLConnection.HTTP_OK) {
+                    inputStream = httpURLConnection.getInputStream();
+                } else {
+                    inputStream = httpURLConnection.getErrorStream();
+                }
+
+                InputStreamReader inputStreamReader = new InputStreamReader(inputStream, "UTF-8");
+                BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+
+                StringBuilder sb = new StringBuilder();
+                String line;
+
+                while ((line = bufferedReader.readLine()) != null) {
+                    sb.append(line);
+                }
+
+                bufferedReader.close();
+
+                return sb.toString().trim();
+
+            } catch (Exception e) {
+
+                Log.d(TAG, "SelectData: Error ", e);
+                errorString = e.toString();
+
+                return null;
+            }
+
+        }
     }
 
     class InsertOrderData extends AsyncTask<String, Void, String> {
