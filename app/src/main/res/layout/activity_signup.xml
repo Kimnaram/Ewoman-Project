@@ -21,8 +21,7 @@
             android:layout_marginRight="10dp"
             android:gravity="center_vertical"
             android:text="JOIN"
-            android:fontFamily="@font/nanumbarungothic"
-            android:textStyle="bold"
+            android:fontFamily="@font/nanumbarungothicbold"
             android:textSize="23dp">
         </TextView>
 

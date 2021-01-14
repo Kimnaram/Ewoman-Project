@@ -27,7 +27,7 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:fontFamily="@font/nanumsquare"
+                    android:fontFamily="@font/nanumbarungothicbold"
                     android:gravity="center"
                     android:text="ewoman"
                     android:textSize="25dp"></TextView>
