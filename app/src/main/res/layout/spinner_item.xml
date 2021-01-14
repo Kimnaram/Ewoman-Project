@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TextView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:ellipsize="marquee"
+    android:gravity="center_vertical"
+    android:id="@+id/spinner_title"
+    android:layout_gravity="center"
+    android:layout_height="30dp"
+    android:layout_width="match_parent"
+    android:paddingLeft="5dp"
+    android:singleLine="true"
+    android:textColor="@color/colorLightGray"
+    android:textSize="15dp"
+    android:fontFamily="@font/nanumbarungothic" />

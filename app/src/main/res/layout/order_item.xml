@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="5dp">
+
+        <ImageView
+            android:id="@+id/iv_item_image"
+            android:layout_width="110dp"
+            android:layout_height="65dp"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@+id/cb_item_select"
+            android:scaleType="centerCrop" />
+
+        <LinearLayout
+            android:id="@+id/ll_item_info_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_toRightOf="@+id/iv_item_image"
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="5dp"
+            android:gravity="center_vertical">
+
+            <TextView
+                android:id="@+id/tv_item_name"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1.5"
+                android:layout_toRightOf="@+id/iv_item_image"
+                android:fontFamily="@font/nanumbarungothicbold"
+                android:text="상품 이름"
+                android:textColor="@color/colorLightGray"
+                android:textSize="17dp" />
+
+            <TextView
+                android:id="@+id/tv_item_price"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:layout_toRightOf="@id/tv_item_name"
+                android:fontFamily="@font/nanumbarungothicbold"
+                android:gravity="right|center_vertical"
+                android:text="상품 가격"
+                android:textColor="@color/colorGray"
+                android:textSize="17dp" />
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/tv_class_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/ll_item_info_container"
+            android:text="클래스 이름"
+            android:layout_marginLeft="5dp"
+            android:layout_marginTop="5dp"
+            android:layout_toRightOf="@id/iv_item_image"
+            android:fontFamily="@font/nanumbarungothic"
+            android:textColor="@color/colorGray"
+            android:textSize="15dp" />
+
+        <TextView
+            android:id="@+id/tv_item_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/ll_item_info_container"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="5dp"
+            android:layout_toRightOf="@id/tv_class_name"
+            android:fontFamily="@font/nanumbarungothic"
+            android:text="수량"
+            android:textColor="@color/colorGray"
+            android:textSize="15dp" />
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorCocoa"
+        android:orientation="horizontal"
+        android:padding="5dp"
+        android:gravity="center_vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/nanumbarungothic"
+            android:text="배송비"
+            android:textSize="16.5dp"
+            android:textColor="@color/colorWhite" />
+
+        <TextView
+            android:id="@+id/tv_item_deliv_price"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/nanumbarungothicbold"
+            android:textSize="16.5dp"
+            android:gravity="right"
+            android:textColor="@color/colorWhite" />
+
+    </LinearLayout>
+
+</LinearLayout>

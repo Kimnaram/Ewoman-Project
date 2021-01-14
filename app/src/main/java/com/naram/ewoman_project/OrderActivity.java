@@ -6,25 +6,46 @@ import androidx.appcompat.widget.Toolbar;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
+import android.webkit.JavascriptInterface;
+import android.webkit.WebChromeClient;
+import android.webkit.WebSettings;
+import android.webkit.WebView;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 public class OrderActivity extends AppCompatActivity {
@@ -43,18 +64,44 @@ public class OrderActivity extends AppCompatActivity {
     private static String IP_ADDRESS = "IP ADDRESS";
 
     private String JSONString;
-    private JSONArray order = null;
+    private JSONArray orders = null;
 
     private DBOpenHelper dbOpenHelper;
 
+    private OrderListAdapter adapter;
     private ListView lv_order_product;
-
     private ListOrder listOrder;
+
     private ArrayList<ListOrder> orderList = new ArrayList<ListOrder>();
 
+    private TextView tv_item_price;
+    private TextView tv_item_deliv_price;
+    private TextView tv_item_all_price;
 
-    private String itemno_sql;
+    private EditText et_order_name;
+    private EditText et_order_phone;
+    private EditText et_order_zipcode;
+    private EditText et_order_address1;
+    private EditText et_order_address2;
+
+    private Button btn_order_zipcode;
+
+    private Spinner sp_order_deliv_message;
+
+    private WebView daum_webView;
+
+    private Handler handler;
+
+    private String[] messageArray = null;
+    private String selected_spinner = null;
+
     private String useremail;
+
+    private int itemPrice = 0;
+    private int delivPrice = 0;
+    private int allPrice = 0;
+
+    private Bitmap img;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -100,13 +147,15 @@ public class OrderActivity extends AppCompatActivity {
         for(int i = 0; i < orderList.size(); i++) {
             if(i < orderList.size() - 1) {
                 itemNo_list += orderList.get(i).getItem_no() + ",";
-                className_list += orderList.get(i).getClass_name() + ",";
+                className_list += "\'" + orderList.get(i).getClass_name() + "\'" + ",";
             } else {
                 itemNo_list += orderList.get(i).getItem_no() + ")";
-                className_list += orderList.get(i).getClass_name() + ")";
-
+                className_list += "\'" + orderList.get(i).getClass_name() + "\'" + ")";
 
                 Log.d(TAG, "itemNo_list : " + itemNo_list + "\nclassName_list : " + className_list);
+
+                GetData task = new GetData();
+                task.execute(itemNo_list, className_list);
             }
         }
 
@@ -121,13 +170,215 @@ public class OrderActivity extends AppCompatActivity {
 
         }
 
+        sp_order_deliv_message = findViewById(R.id.sp_order_deliv_message);
+        messageArray = getResources().getStringArray(R.array.delivery_message);
+        selected_spinner = messageArray[0];
+        final ArrayAdapter<CharSequence> spinnerLargerAdapter =
+                ArrayAdapter.createFromResource(this, R.array.delivery_message, R.layout.spinner_item);
+        sp_order_deliv_message.setAdapter(spinnerLargerAdapter);
+        sp_order_deliv_message.setSelection(0);
+        
+        et_order_phone.addTextChangedListener(new TextWatcher() {
+
+            private int _beforeLenght = 0;
+            private int _afterLenght = 0;
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                _beforeLenght = s.length();
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (s.length() <= 0) {
+                    Log.d("addTextChangedListener", "onTextChanged: Intput text is wrong (Type : Length)");
+                    return;
+                }
+
+                char inputChar = s.charAt(s.length() - 1);
+                if (inputChar != '-' && (inputChar < '0' || inputChar > '9')) {
+                    et_order_phone.getText().delete(s.length() - 1, s.length());
+                    Log.d("addTextChangedListener", "onTextChanged: Intput text is wrong (Type : Number)");
+                    return;
+                }
+
+                _afterLenght = s.length();
+
+                // 삭제 중
+                if (_beforeLenght > _afterLenght) {
+                    // 삭제 중에 마지막에 -는 자동으로 지우기
+                    if (s.toString().endsWith("-")) {
+                        et_order_phone.setText(s.toString().substring(0, s.length() - 1));
+                    }
+                }
+                // 입력 중
+                else if (_beforeLenght < _afterLenght) {
+                    if (_afterLenght == 4 && s.toString().indexOf("-") < 0) {
+                        et_order_phone.setText(s.toString().subSequence(0, 3) + "-" + s.toString().substring(3, s.length()));
+                    } else if (_afterLenght == 9) {
+                        et_order_phone.setText(s.toString().subSequence(0, 8) + "-" + s.toString().substring(8, s.length()));
+                    } else if (_afterLenght == 14) {
+                        et_order_phone.setText(s.toString().subSequence(0, 13) + "-" + s.toString().substring(13, s.length()));
+                    }
+                }
+                et_order_phone.setSelection(et_order_phone.length());
+
+//                if(s.length() == 18) {
+//                    et_order_phone.setBackground(
+//                            ContextCompat.getDrawable(OrderActivity.this, R.drawable.btn_active));
+//                }
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                // 생략
+            }
+        });
+
+        btn_order_zipcode.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // WebView 초기화
+                init_webView();
+
+                daum_webView.setVisibility(View.VISIBLE);
+
+                // 핸들러를 통한 JavaScript 이벤트 반응
+                handler = new Handler();
+            }
+        });
+
     }
 
     public void initAllComponent() {
 
+        lv_order_product = findViewById(R.id.lv_order_product);
+
+        adapter = new OrderListAdapter();
+
+        lv_order_product.setAdapter(adapter);
+
+        tv_item_price = findViewById(R.id.tv_item_price);
+        tv_item_deliv_price = findViewById(R.id.tv_item_deliv_price);
+        tv_item_all_price = findViewById(R.id.tv_item_all_price);
+
+        et_order_name = findViewById(R.id.et_order_name);
+        et_order_phone = findViewById(R.id.et_order_phone);
+        et_order_zipcode = findViewById(R.id.et_order_zipcode);
+        et_order_address1 = findViewById(R.id.et_order_address1);
+        et_order_address2 = findViewById(R.id.et_order_address2);
+
+        btn_order_zipcode = findViewById(R.id.btn_order_zipcode);
+
+        sp_order_deliv_message = findViewById(R.id.sp_order_deliv_message);
+
         dbOpenHelper = new DBOpenHelper(this);
         dbOpenHelper.open();
 
+    }
+
+    public void init_webView() {
+
+        // WebView 설정
+        daum_webView = (WebView) findViewById(R.id.webView_address);
+
+        WebSettings settings = daum_webView.getSettings();
+        settings.setJavaScriptEnabled(true);
+        settings.setJavaScriptCanOpenWindowsAutomatically(true);
+        settings.setSupportMultipleWindows(true);
+
+        // JavaScript 허용
+        daum_webView.getSettings().setJavaScriptEnabled(true);
+        // JavaScript의 window.open 허용
+        daum_webView.getSettings().setJavaScriptCanOpenWindowsAutomatically(true);
+        // JavaScript이벤트에 대응할 함수를 정의 한 클래스를 붙여줌
+        daum_webView.addJavascriptInterface(new AndroidBridge(), "TestApp");
+        // web client 를 chrome 으로 설정
+        daum_webView.setWebChromeClient(new WebChromeClient());
+        // webview url load. php 파일 주소
+        daum_webView.loadUrl("http://" + IP_ADDRESS + "/ewoman-php/daum_address.php");
+
+    }
+
+    private class AndroidBridge {
+
+        @JavascriptInterface
+
+        public void setAddress(final String arg1, final String arg2, final String arg3) {
+
+            handler.post(new Runnable() {
+
+                @Override
+
+                public void run() {
+
+                    et_order_zipcode.setText(String.format("(%s)", arg1));
+                    et_order_address1.setText(String.format("%s %s", arg2, arg3));
+
+                    // WebView를 초기화 하지않으면 재사용할 수 없음
+
+                    init_webView();
+
+                }
+
+            });
+
+        }
+
+    }
+
+    public static byte[] binaryStringToByteArray(String s) {
+        int count = s.length() / 8;
+        byte[] b = new byte[count];
+        for (int i = 1; i < count; ++i) {
+            String t = s.substring((i - 1) * 8, i * 8);
+            b[i - 1] = binaryStringToByte(t);
+        }
+        return b;
+    }
+
+    public static byte binaryStringToByte(String s) {
+        byte ret = 0, total = 0;
+        for (int i = 0; i < 8; ++i) {
+            ret = (s.charAt(7 - i) == '1') ? (byte) (1 << i) : 0;
+            total = (byte) (ret | total);
+        }
+        return total;
+    }
+
+    public static Bitmap StringToBitmap(String ImageString) {
+        try {
+            byte[] bytes = binaryStringToByteArray(ImageString);
+            ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
+            Bitmap bitmap = BitmapFactory.decodeStream(bais);
+            return bitmap;
+        } catch (Exception e) {
+            e.getMessage();
+            return null;
+        }
+    }
+
+    public static void setListViewHeightBasedOnChildren(ListView listView) {
+        ListAdapter listAdapter = listView.getAdapter();
+        if (listAdapter == null) {
+            // pre-condition
+            return;
+        }
+
+        int totalHeight = 0;
+        int desiredWidth = View.MeasureSpec.makeMeasureSpec(listView.getWidth(), View.MeasureSpec.AT_MOST);
+
+        for (int i = 0; i < listAdapter.getCount(); i++) {
+            View listItem = listAdapter.getView(i, null, listView);
+            listItem.measure(desiredWidth, View.MeasureSpec.UNSPECIFIED);
+            totalHeight += listItem.getMeasuredHeight();
+        }
+
+        ViewGroup.LayoutParams params = listView.getLayoutParams();
+        params.height = totalHeight + (listView.getDividerHeight() * (listAdapter.getCount() - 1));
+        listView.setLayoutParams(params);
+        listView.requestLayout();
     }
 
     @Override
@@ -168,15 +419,85 @@ public class OrderActivity extends AppCompatActivity {
                 mDialog.show();
 
                 finish();
-                Intent logout_to_cart = new Intent(getApplicationContext(), MainActivity.class);
+                Intent logout_to_order = new Intent(getApplicationContext(), MainActivity.class);
                 mDialog.dismiss();
 
-                startActivity(logout_to_cart);
+                startActivity(logout_to_order);
                 return true;
             case R.id.menu_cart:
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void showResult() {
+        try {
+
+            JSONObject jsonObj = new JSONObject(JSONString);
+            orders = jsonObj.getJSONArray(TAG_RESULTS);
+
+            for (int i = 0; i < orders.length(); i++) {
+                JSONObject order = orders.getJSONObject(i);
+                int item_no = Integer.parseInt(order.getString(TAG_ITEMNO));
+                String image = order.getString(TAG_IMAGE);
+                img = StringToBitmap(image);
+                String name = order.getString(TAG_NAME);
+                int price = Integer.parseInt(order.getString(TAG_PRICE));
+
+                String class_name = null;
+                int class_price = 0;
+                int count = 1;
+                int deliv_price = 0;
+
+                if (!order.isNull(TAG_CLASSNAME)) {
+                    class_name = order.getString(TAG_CLASSNAME);
+                }
+
+                if (!order.isNull(TAG_CLASSPRICE)) {
+                    class_price = Integer.parseInt(order.getString(TAG_CLASSPRICE));
+                }
+
+                if (!order.isNull(TAG_DELIVPRICE)) {
+                    deliv_price = Integer.parseInt(order.getString(TAG_DELIVPRICE));
+                }
+
+                if(class_price != 0) {
+                    itemPrice += class_price;
+                } else {
+                    itemPrice += price;
+                }
+
+                if(class_price != 0 && class_price >= 50000) {
+                    allPrice += class_price * count;
+                    delivPrice = 0;
+                } else if (class_price != 0 && class_price < 50000) {
+                    allPrice += class_price * count + deliv_price;
+                    delivPrice = deliv_price;
+                } else if (price != 0 && price >= 50000) {
+                    allPrice += price * count;
+                    delivPrice = 0;
+                } else if (price != 0 && price < 50000) {
+                    allPrice += price * count + deliv_price;
+                    delivPrice = deliv_price;
+                }
+
+                ListOrder listOrder = new ListOrder(item_no, name, img, price, class_name, class_price, count, deliv_price);
+                orderList.add(listOrder);
+                adapter.addItem(listOrder);
+
+            }
+
+            DecimalFormat decimalFormat = new DecimalFormat("###,###");
+
+            tv_item_price.setText(decimalFormat.format(itemPrice) + "원");
+            tv_item_deliv_price.setText(decimalFormat.format(delivPrice) + "원");
+            tv_item_all_price.setText(decimalFormat.format(allPrice) + "원");
+            setListViewHeightBasedOnChildren(lv_order_product);
+
+        } catch (JSONException e) {
+
+        }
+
     }
 
     private class GetData extends AsyncTask<String, Void, String> {
@@ -212,7 +533,7 @@ public class OrderActivity extends AppCompatActivity {
                 } else {
 
                     JSONString = result;
-//                    showResult();
+                    showResult();
 
                 }
             }
@@ -222,10 +543,11 @@ public class OrderActivity extends AppCompatActivity {
         protected String doInBackground(String... params) {
 
             String item_no = params[0];
-            String class_name = params[0];
+            String class_name = params[1];
 
             String serverURL = "http://" + IP_ADDRESS + "/ewoman-php/selectOrder.php";
             String postParameters = "item_no=" + item_no + "&class_name=" + class_name;
+            Log.d(TAG, "파라미터 : " + postParameters);
 
             try {
 

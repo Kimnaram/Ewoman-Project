@@ -17,8 +17,12 @@
         android:networkSecurityConfig="@xml/network_security_config"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".ItemUpdateActivity"></activity>
-        <activity android:name=".OrderActivity" />
+        <activity
+            android:name=".ItemUpdateActivity"
+            android:windowSoftInputMode="stateAlwaysHidden"></activity>
+        <activity
+            android:name=".OrderActivity"
+            android:windowSoftInputMode="stateAlwaysHidden"/>
         <activity
             android:name=".ItemAddActivity"
             android:windowSoftInputMode="stateAlwaysHidden" />
@@ -27,7 +31,9 @@
             android:name=".ReviewUpdateActivity"
             android:windowSoftInputMode="stateAlwaysHidden" />
         <activity android:name=".PostDetailActivity" />
-        <activity android:name=".PostCreateActivity" />
+        <activity
+            android:name=".PostCreateActivity"
+            android:windowSoftInputMode="stateAlwaysHidden" />
         <activity
             android:name=".PostListActivity"
             android:windowSoftInputMode="stateAlwaysHidden" />
