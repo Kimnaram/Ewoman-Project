@@ -77,7 +77,7 @@ public class ItemAddActivity extends AppCompatActivity {
 
     }
 
-    private static String IP_ADDRESS = "IP ADDRESS";
+    private static String IP_ADDRESS = "34.228.20.230";
 
     private DBOpenHelper dbOpenHelper;
 
@@ -402,6 +402,10 @@ public class ItemAddActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
+            case android.R.id.home: { //툴바 뒤로가기 동작
+                finish();
+                return true;
+            }
             case R.id.menu_login:
                 Intent main_to_login = new Intent(getApplicationContext(), LoginActivity.class);
 
@@ -459,6 +463,23 @@ public class ItemAddActivity extends AppCompatActivity {
             if (result.contains("새로운 상품을 추가했습니다.")) {
 
                 String[] classes = new String[allClass.size()];
+
+                if(allClass.size() == 0) {
+
+                    et_name_data.setText(null);
+                    et_price_data.setText(null);
+                    iv_image_data.setImageBitmap(null);
+                    rl_image_container.setVisibility(View.GONE);
+                    et_info_data.setText(null);
+                    et_delivery_method_data.setText(null);
+                    et_delivery_price_data.setText(null);
+                    et_delivery_inform_data.setText(null);
+                    et_minimum_quantity_data.setText(null);
+                    et_maximum_quantity_data.setText(null);
+
+                    Toast.makeText(getApplicationContext(), "추가 완료되었습니다.", Toast.LENGTH_SHORT).show();
+
+                }
 
                 for (int i = 0; i < allClass.size(); i++) {
 

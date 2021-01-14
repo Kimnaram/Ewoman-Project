@@ -19,7 +19,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="15dp"
             android:layout_marginRight="10dp"
-            android:fontFamily="@font/nanumsquare"
+            android:fontFamily="@font/nanumbarungothicbold"
             android:gravity="center_vertical"
             android:text="Item Add"
             android:textSize="23dp" />

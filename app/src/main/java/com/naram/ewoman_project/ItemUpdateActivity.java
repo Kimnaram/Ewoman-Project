@@ -12,6 +12,7 @@ import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -87,7 +88,7 @@ public class ItemUpdateActivity extends AppCompatActivity {
     private static final String TAG_MAX_QUANTITY = "maximum_quantity";
     private static final String TAG_CLASSNAME = "class_name";
     private static final String TAG_CLASSPRICE = "class_price";
-    private static String IP_ADDRESS = "IP ADDESS";
+    private static String IP_ADDRESS = "34.228.20.230";
 
     private String JSONString;
     private String JSONWISHString;
@@ -382,6 +383,48 @@ public class ItemUpdateActivity extends AppCompatActivity {
         allClass.add(et_data);
         ll_class_container.addView(et_data);
 
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home: { //툴바 뒤로가기 동작
+                finish();
+                return true;
+            }
+            case R.id.menu_login:
+                Intent main_to_login = new Intent(getApplicationContext(), LoginActivity.class);
+
+                startActivity(main_to_login);
+                return true;
+            case R.id.menu_signup:
+                Intent main_to_signup = new Intent(getApplicationContext(), SignupActivity.class);
+
+                startActivity(main_to_signup);
+                return true;
+            case R.id.menu_logout:
+
+                username = null;
+                useremail = null;
+                dbOpenHelper.deleteAllColumns();
+
+                final ProgressDialog mDialog = new ProgressDialog(ItemUpdateActivity.this);
+                mDialog.setMessage("로그아웃 중입니다.");
+                mDialog.show();
+
+                Intent logout_to_main = new Intent(getApplicationContext(), MainActivity.class);
+                mDialog.dismiss();
+
+                finish();
+                startActivity(logout_to_main);
+                return true;
+            case R.id.menu_cart:
+                startActivity(new Intent(getApplicationContext(), CartActivity.class));
+
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     private void showResult() {
