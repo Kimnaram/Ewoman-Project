@@ -64,13 +64,6 @@ public class OrderListAdapter extends BaseAdapter {
         if(displayItem.getClass_name() != null) {
             tv_class_name.setText(displayItem.getClass_name());
         }
-
-        if(tv_class_name.getText().toString().equals("")) {
-            tv_class_name.setVisibility(View.GONE);
-        } else {
-            tv_class_name.setVisibility(View.VISIBLE);
-        }
-
         DecimalFormat decimalFormat = new DecimalFormat("###,###");
         String price = decimalFormat.format(displayItem.getPrice());
         int class_price = displayItem.getClass_price();

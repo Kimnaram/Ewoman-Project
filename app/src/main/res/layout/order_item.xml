@@ -8,6 +8,8 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
         android:layout_marginTop="5dp"
         android:layout_marginBottom="5dp">
 
@@ -54,33 +56,31 @@
 
         </LinearLayout>
 
-        <LinearLayout
-            android:layout_width="match_parent"
+        <TextView
+            android:id="@+id/tv_class_name"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="5dp"
-            android:layout_below="@+id/ll_item_info_container"
-            android:layout_toRightOf="@id/iv_item_image">
+            android:layout_below="@id/ll_item_info_container"
+            android:text="클래스 이름"
+            android:layout_marginLeft="5dp"
+            android:layout_marginTop="5dp"
+            android:layout_toRightOf="@id/iv_item_image"
+            android:fontFamily="@font/nanumbarungothic"
+            android:textColor="@color/colorGray"
+            android:textSize="15dp" />
 
-            <TextView
-                android:id="@+id/tv_class_name"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginRight="20dp"
-                android:fontFamily="@font/nanumbarungothic"
-                android:textColor="@color/colorGray"
-                android:textSize="15dp"
-                android:layout_centerVertical="true" />
-
-            <TextView
-                android:id="@+id/tv_item_count"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/nanumbarungothic"
-                android:textColor="@color/colorGray"
-                android:textSize="15dp"
-                android:layout_centerVertical="true" />
-
-        </LinearLayout>
+        <TextView
+            android:id="@+id/tv_item_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/ll_item_info_container"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="5dp"
+            android:layout_toRightOf="@id/tv_class_name"
+            android:fontFamily="@font/nanumbarungothic"
+            android:text="수량"
+            android:textColor="@color/colorGray"
+            android:textSize="15dp" />
 
     </RelativeLayout>
 

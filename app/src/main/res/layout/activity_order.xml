@@ -19,19 +19,19 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="15dp"
             android:layout_marginRight="10dp"
-            android:fontFamily="@font/nanumbarungothic"
+            android:fontFamily="@font/nanumbarungothicbold"
             android:text="Order"
-            android:textSize="23dp"
-            android:textStyle="bold"></TextView>
+            android:textSize="23dp"></TextView>
 
     </androidx.appcompat.widget.Toolbar>
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_below="@id/toolbar">
 
         <RelativeLayout
+            android:id="@+id/rl_order_list_container"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_margin="5dp"
@@ -40,7 +40,7 @@
             <ListView
                 android:id="@+id/lv_order_product"
                 android:layout_width="match_parent"
-                android:layout_height="500dp"
+                android:layout_height="wrap_content"
                 android:layout_alignParentStart="true"
                 android:layout_marginBottom="10dp"
                 android:divider="@color/colorCocoa"
@@ -89,7 +89,7 @@
                         android:fontFamily="@font/nanumbarungothic"
                         android:gravity="right"
                         android:text="0원"
-                        android:textColor="@color/colorGray"
+                        android:textColor="@color/colorDeepGray"
                         android:textSize="15dp" />
 
                 </LinearLayout>
@@ -137,10 +137,10 @@
                         android:id="@+id/tv_item_all_price"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:fontFamily="@font/nanumbarungothic"
+                        android:fontFamily="@font/nanumbarungothicbold"
                         android:gravity="right"
                         android:text="0원"
-                        android:textColor="@color/colorCocoa"
+                        android:textColor="@color/colorDeepGray"
                         android:textSize="18dp" />
 
                 </LinearLayout>
@@ -190,6 +190,7 @@
                         android:fontFamily="@font/nanumbarungothic"
                         android:textSize="15dp"
                         android:textColor="@color/colorGray"
+                        android:inputType="text"
                         android:hint="이름을 입력해주세요." />
 
                 </LinearLayout>
@@ -198,7 +199,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="10dp"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    tools:context="kr.co.aiotlab.howmuchapplication.Activity_Search_Address">
 
                     <TextView
                         android:layout_width="90dp"
@@ -218,13 +220,14 @@
                         android:fontFamily="@font/nanumbarungothic"
                         android:textSize="15dp"
                         android:textColor="@color/colorGray"
+                        android:inputType="phone"
                         android:hint="휴대폰 번호를 입력해주세요." />
 
                 </LinearLayout>
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:layout_marginBottom="10dp"
                     android:orientation="horizontal">
 
@@ -239,14 +242,29 @@
 
                     <EditText
                         android:id="@+id/et_order_zipcode"
-                        android:layout_width="match_parent"
+                        android:layout_width="0dp"
                         android:layout_height="30dp"
+                        android:layout_weight="2"
                         android:background="@drawable/btn_style_border_line_white_background"
                         android:paddingLeft="5dp"
+                        android:layout_marginRight="5dp"
                         android:fontFamily="@font/nanumbarungothic"
                         android:textSize="15dp"
                         android:textColor="@color/colorGray"
+                        android:editable="false"
                         android:hint="" />
+
+                    <Button
+                        android:id="@+id/btn_order_zipcode"
+                        android:layout_width="0dp"
+                        android:layout_height="30dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/btn_style_border_line_white_background"
+                        android:fontFamily="@font/nanumbarungothic"
+                        android:textSize="15dp"
+                        android:textColor="@color/colorGray"
+                        android:layout_gravity="center"
+                        android:text="우편번호 검색" />
 
                 </LinearLayout>
 
@@ -275,7 +293,7 @@
                         android:textSize="15dp"
                         android:textColor="@color/colorGray"
                         android:editable="false"
-                        android:hint="" />
+                        android:hint="주소지를 입력해주세요." />
 
                 </LinearLayout>
 
@@ -303,6 +321,7 @@
                         android:fontFamily="@font/nanumbarungothic"
                         android:textSize="15dp"
                         android:textColor="@color/colorGray"
+                        android:inputType="text"
                         android:hint="상세주소를 입력해주세요." />
 
                 </LinearLayout>
@@ -325,7 +344,9 @@
                         android:id="@+id/sp_order_deliv_message"
                         android:layout_width="match_parent"
                         android:layout_height="30dp"
-                        android:background="@drawable/btn_style_border_line_white_background" />
+                        android:background="@drawable/btn_style_border_line_white_background"
+                        android:entries="@array/delivery_message"
+                        android:spinnerMode="dropdown" />
 
                 </LinearLayout>
 
@@ -339,6 +360,7 @@
                 android:layout_marginBottom="10dp"
                 android:orientation="horizontal"
                 android:gravity="center"
+                android:layout_alignParentEnd="true"
                 android:layout_below="@+id/ll_item_deliv_info_container">
 
                 <Button
@@ -369,5 +391,12 @@
         </RelativeLayout>
 
     </ScrollView>
+
+    <WebView
+        android:id="@+id/webView_address"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/toolbar"
+        android:visibility="gone"/>
 
 </RelativeLayout>
