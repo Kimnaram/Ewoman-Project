@@ -13,7 +13,6 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Message;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -21,9 +20,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.webkit.JavascriptInterface;
-import android.webkit.WebChromeClient;
-import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -61,7 +57,7 @@ public class OrderActivity extends AppCompatActivity {
     private static final String TAG_DELIVPRICE = "deliv_price";
     private static final String TAG_CLASSNAME = "class_name";
     private static final String TAG_CLASSPRICE = "class_price";
-    private static String IP_ADDRESS = "IP ADDRESS";
+    private static String IP_ADDRESS = "34.228.20.230";
 
     private String JSONString;
     private JSONArray orders = null;
@@ -239,13 +235,9 @@ public class OrderActivity extends AppCompatActivity {
         btn_order_zipcode.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // WebView 초기화
-                init_webView();
+                Intent intent = new Intent(getApplicationContext(), DaumAddressActivity.class);
 
-                daum_webView.setVisibility(View.VISIBLE);
-
-                // 핸들러를 통한 JavaScript 이벤트 반응
-                handler = new Handler();
+                startActivity(intent);
             }
         });
 
@@ -275,56 +267,6 @@ public class OrderActivity extends AppCompatActivity {
 
         dbOpenHelper = new DBOpenHelper(this);
         dbOpenHelper.open();
-
-    }
-
-    public void init_webView() {
-
-        // WebView 설정
-        daum_webView = (WebView) findViewById(R.id.webView_address);
-
-        WebSettings settings = daum_webView.getSettings();
-        settings.setJavaScriptEnabled(true);
-        settings.setJavaScriptCanOpenWindowsAutomatically(true);
-        settings.setSupportMultipleWindows(true);
-
-        // JavaScript 허용
-        daum_webView.getSettings().setJavaScriptEnabled(true);
-        // JavaScript의 window.open 허용
-        daum_webView.getSettings().setJavaScriptCanOpenWindowsAutomatically(true);
-        // JavaScript이벤트에 대응할 함수를 정의 한 클래스를 붙여줌
-        daum_webView.addJavascriptInterface(new AndroidBridge(), "TestApp");
-        // web client 를 chrome 으로 설정
-        daum_webView.setWebChromeClient(new WebChromeClient());
-        // webview url load. php 파일 주소
-        daum_webView.loadUrl("http://" + IP_ADDRESS + "/ewoman-php/daum_address.php");
-
-    }
-
-    private class AndroidBridge {
-
-        @JavascriptInterface
-
-        public void setAddress(final String arg1, final String arg2, final String arg3) {
-
-            handler.post(new Runnable() {
-
-                @Override
-
-                public void run() {
-
-                    et_order_zipcode.setText(String.format("(%s)", arg1));
-                    et_order_address1.setText(String.format("%s %s", arg2, arg3));
-
-                    // WebView를 초기화 하지않으면 재사용할 수 없음
-
-                    init_webView();
-
-                }
-
-            });
-
-        }
 
     }
 
