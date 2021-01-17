@@ -291,6 +291,7 @@
                         android:paddingLeft="5dp"
                         android:fontFamily="@font/nanumbarungothic"
                         android:textSize="15dp"
+                        android:inputType="text"
                         android:textColor="@color/colorGray"
                         android:editable="false"
                         android:hint="주소지를 입력해주세요." />

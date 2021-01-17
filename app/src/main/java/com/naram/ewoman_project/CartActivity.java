@@ -188,7 +188,7 @@ public class CartActivity extends AppCompatActivity {
 
                 if(count > 0) {
 
-                    for (int i = count - 1; i >= 0; i--) {
+                    for (int i = 0; i < count; i++) {
                         if (checkedItems.get(i)) {
                             int item_no = adapter.getItem(i).getItem_no();
                             String class_name = adapter.getItem(i).getClass_name();
@@ -458,6 +458,7 @@ public class CartActivity extends AppCompatActivity {
                     img = StringToBitmap(image);
                 }
                 String class_name = null;
+                int class_price = 0;
 
                 if (!item.isNull(TAG_CLASSNAME)) {
                     class_name = item.getString(TAG_CLASSNAME);
@@ -467,7 +468,7 @@ public class CartActivity extends AppCompatActivity {
                     class_price = Integer.parseInt(item.getString(TAG_CLASSPRICE));
                 }
 
-                listCart = new ListCart(item_no, name, date, img, count, class_price, class_name);
+                listCart = new ListCart(item_no, name, date, img, count, price, class_name, class_price);
 
                 items.add(listCart);
                 ArrayAdapter.add(items);

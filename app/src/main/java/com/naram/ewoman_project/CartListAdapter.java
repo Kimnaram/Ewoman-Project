@@ -69,10 +69,17 @@ public class CartListAdapter extends BaseAdapter {
         if(displayItem.getClass_name() != null) {
             tv_class_name.setText(displayItem.getClass_name());
         }
+
         DecimalFormat decimalFormat = new DecimalFormat("###,###");
-        String price = decimalFormat.format(displayItem.getPrice());
-        tv_item_price.setText(price + "\\");
-        tv_item_count.setText(Integer.toString(displayItem.getCount()) + "개");
+        if(displayItem.getClass_price() > 0) {
+            String price = decimalFormat.format(displayItem.getClass_price());
+            tv_item_price.setText(price + "\\");
+        } else {
+            String price = decimalFormat.format(displayItem.getPrice());
+            tv_item_price.setText(price + "\\");
+        }
+
+        tv_item_count.setText(displayItem.getCount() + "개");
         tv_item_date.setText(displayItem.getDate());
 
 

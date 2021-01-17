@@ -59,9 +59,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/ll_item_info_container"
-            android:text="클래스 이름"
             android:layout_marginLeft="5dp"
             android:layout_marginTop="5dp"
+            android:layout_marginRight="20dp"
             android:layout_toRightOf="@id/iv_item_image"
             android:fontFamily="@font/nanumbarungothic"
             android:textColor="@color/colorGray"
@@ -72,11 +72,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/ll_item_info_container"
-            android:layout_marginLeft="20dp"
             android:layout_marginTop="5dp"
             android:layout_toRightOf="@id/tv_class_name"
             android:fontFamily="@font/nanumbarungothic"
-            android:text="수량"
             android:textColor="@color/colorGray"
             android:textSize="15dp" />
 

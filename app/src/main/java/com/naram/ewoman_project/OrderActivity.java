@@ -48,6 +48,8 @@ public class OrderActivity extends AppCompatActivity {
 
     private static final String TAG = "OrderActivity";
 
+    private static final int SEARCH_ADDRESS_ACTIVITY = 1002;
+
     private static final String TAG_RESULTS = "result";
     private static final String TAG_ITEMNO = "item_no";
     private static final String TAG_NAME = "name";
@@ -57,7 +59,7 @@ public class OrderActivity extends AppCompatActivity {
     private static final String TAG_DELIVPRICE = "deliv_price";
     private static final String TAG_CLASSNAME = "class_name";
     private static final String TAG_CLASSPRICE = "class_price";
-    private static String IP_ADDRESS = "34.228.20.230";
+    private static String IP_ADDRESS = "IP ADDRESS";
 
     private String JSONString;
     private JSONArray orders = null;
@@ -237,7 +239,7 @@ public class OrderActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(getApplicationContext(), DaumAddressActivity.class);
 
-                startActivity(intent);
+                startActivityForResult(intent, SEARCH_ADDRESS_ACTIVITY);
             }
         });
 
@@ -301,6 +303,21 @@ public class OrderActivity extends AppCompatActivity {
         }
     }
 
+    public void onActivityResult(int requestCode, int resultCode, Intent intent) {
+        super.onActivityResult(requestCode, resultCode, intent);
+        switch (requestCode) {
+            case SEARCH_ADDRESS_ACTIVITY:
+                if (resultCode == RESULT_OK) {
+                    String data = intent.getExtras().getString("data");
+                    if (data != null) {
+                        et_order_zipcode.setText(data.substring(0, 5));
+                        et_order_address1.setText(data.substring(7));
+                    }
+                }
+                break;
+        }
+    }
+
     public static void setListViewHeightBasedOnChildren(ListView listView) {
         ListAdapter listAdapter = listView.getAdapter();
         if (listAdapter == null) {
@@ -342,14 +359,16 @@ public class OrderActivity extends AppCompatActivity {
                 return true;
             }
             case R.id.menu_login:
-                Intent cart_to_login = new Intent(getApplicationContext(), LoginActivity.class);
+                Intent order_to_login = new Intent(getApplicationContext(), LoginActivity.class);
 
-                startActivity(cart_to_login);
+                finish();
+                startActivity(order_to_login);
                 return true;
             case R.id.menu_signup:
-                Intent cart_to_signup = new Intent(getApplicationContext(), SignupActivity.class);
+                Intent order_to_signup = new Intent(getApplicationContext(), SignupActivity.class);
 
-                startActivity(cart_to_signup);
+                finish();
+                startActivity(order_to_signup);
                 return true;
             case R.id.menu_logout:
 
@@ -367,6 +386,10 @@ public class OrderActivity extends AppCompatActivity {
                 startActivity(logout_to_order);
                 return true;
             case R.id.menu_cart:
+                Intent order_to_cart = new Intent(getApplicationContext(), CartActivity.class);
+
+                finish();
+                startActivity(order_to_cart);
                 return true;
         }
         return super.onOptionsItemSelected(item);
@@ -407,6 +430,15 @@ public class OrderActivity extends AppCompatActivity {
                     itemPrice += class_price;
                 } else {
                     itemPrice += price;
+                }
+
+                for(int j = 0; j < orderList.size(); j++) {
+                    if (item_no == orderList.get(j).getItem_no()) {
+
+                        Log.d(TAG, orderList.get(j).getName() + " : " + orderList.get(j).getCount());
+
+                        count = orderList.get(j).getCount();
+                    }
                 }
 
                 if(class_price != 0 && class_price >= 50000) {
@@ -489,7 +521,6 @@ public class OrderActivity extends AppCompatActivity {
 
             String serverURL = "http://" + IP_ADDRESS + "/ewoman-php/selectOrder.php";
             String postParameters = "item_no=" + item_no + "&class_name=" + class_name;
-            Log.d(TAG, "파라미터 : " + postParameters);
 
             try {
 
