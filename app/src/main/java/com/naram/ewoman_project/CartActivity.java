@@ -142,7 +142,7 @@ public class CartActivity extends AppCompatActivity {
                 SparseBooleanArray checkedItems = lv_cart_product.getCheckedItemPositions();
                 int count = adapter.getCount();
 
-                for (int i = count - 1; i >= 0; i--) {
+                for (int i = 0; i < count; i++) {
                     if(checkedItems.get(i)) {
                         int item_no = adapter.getItem(i).getItem_no();
                         removeList.add(item_no);
@@ -186,30 +186,33 @@ public class CartActivity extends AppCompatActivity {
                 SparseBooleanArray checkedItems = lv_cart_product.getCheckedItemPositions();
                 int count = adapter.getCount();
 
-                for (int i = count - 1; i >= 0; i--) {
-                    if(checkedItems.get(i)) {
-                        int item_no = adapter.getItem(i).getItem_no();
-                        String class_name = adapter.getItem(i).getClass_name();
-                        int item_count = adapter.getItem(i).getCount();
-                        orderList.add(new ListOrder(item_no, class_name, item_count));
+                if(count > 0) {
 
-                        Log.d(TAG, "items : checkedItems[" + i + "] = " + checkedItems.get(i));
+                    for (int i = count - 1; i >= 0; i--) {
+                        if (checkedItems.get(i)) {
+                            int item_no = adapter.getItem(i).getItem_no();
+                            String class_name = adapter.getItem(i).getClass_name();
+                            int item_count = adapter.getItem(i).getCount();
+                            orderList.add(new ListOrder(item_no, class_name, item_count));
+
+                            Log.d(TAG, "items : checkedItems[" + i + "] = " + checkedItems.get(i));
+
+                        }
+                    }
+
+                    Intent intent = new Intent(getApplicationContext(), OrderActivity.class);
+                    intent.putExtra("prevPage", "cartPage");
+                    intent.putExtra("size", Integer.toString(orderList.size()));
+                    for (int i = 0; i < orderList.size(); i++) {
+
+                        intent.putExtra("itemNo[" + i + "]", Integer.toString(orderList.get(i).getItem_no()));
+                        intent.putExtra("className[" + i + "]", orderList.get(i).getClass_name());
+                        intent.putExtra("count[" + i + "]", Integer.toString(orderList.get(i).getCount()));
 
                     }
+
+                    startActivity(intent);
                 }
-
-                Intent intent = new Intent(getApplicationContext(), OrderActivity.class);
-                intent.putExtra("prevPage", "cartPage");
-                intent.putExtra("size", Integer.toString(orderList.size()));
-                for(int i = 0; i < orderList.size(); i++) {
-
-                    intent.putExtra("itemNo[" + i + "]", Integer.toString(orderList.get(i).getItem_no()));
-                    intent.putExtra("className[" + i + "]", orderList.get(i).getClass_name());
-                    intent.putExtra("count[" + i + "]", Integer.toString(orderList.get(i).getCount()));
-
-                }
-
-                startActivity(intent);
             }
         });
 
@@ -243,6 +246,10 @@ public class CartActivity extends AppCompatActivity {
 
         adapter.clearAllItems();
 
+        orderList.clear();
+
+        // 모든 선택 상태 초기화.
+        lv_cart_product.clearChoices();
         all_count = 0;
 
         GetData task = new GetData();
@@ -463,7 +470,7 @@ public class CartActivity extends AppCompatActivity {
                 listCart = new ListCart(item_no, name, date, img, count, class_price, class_name);
 
                 items.add(listCart);
-                ArrayAdapter.add(items) ;
+                ArrayAdapter.add(items);
                 adapter.addItem(listCart);
 
             }
