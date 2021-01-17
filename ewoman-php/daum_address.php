@@ -8,24 +8,27 @@ header("Content-Type: text/html; charset=UTF-8");
 
 <script>
 
-    new daum.Postcode({
+//    new daum.Postcode({
 
-        oncomplete: function(data) {
+//        oncomplete: function(data) {
 
-            if(data.userSelectedType=="R"){                
+daum.postcode.load(function(){
+        new daum.Postcode({
+	oncomplete: function(data) {
+		
+		if(data.userSelectedType=="R"){
+			
+			window.TestApp.setAddress(data.zonecode, data.roadAddress, data.buildingName);
 
-                window.TestApp.setAddress(data.zonecode, data.roadAddress, data.buildingName);
-
-            }
-
-            else{
-
-                window.TestApp.setAddress(data.zonecode, data.jibunAddress, data.buildingName);
-
-            }       	
+		}
+		else {
+			window.TestApp.setAddress(data.zonecode, data.jibunAddress, data.buildingName);
+		}       	
 
         }
 
-    }).open();
+     }
+
+}).open();
 
 </script>
