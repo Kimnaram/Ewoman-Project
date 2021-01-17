@@ -9,7 +9,6 @@ import android.content.Intent;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -73,7 +72,7 @@ public class CartListAdapter extends BaseAdapter {
         DecimalFormat decimalFormat = new DecimalFormat("###,###");
         String price = decimalFormat.format(displayItem.getPrice());
         tv_item_price.setText(price + "\\");
-        tv_item_count.setText(Integer.toString(displayItem.getCount()));
+        tv_item_count.setText(Integer.toString(displayItem.getCount()) + "개");
         tv_item_date.setText(displayItem.getDate());
 
 
