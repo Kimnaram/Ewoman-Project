@@ -27,6 +27,19 @@ if ($item_no != "") {
 
         $result = "삭제 성공";
         echo $result;
+
+        $altersql="alter table item auto_increment=1";
+        $stmt = $con->prepare($altersql);
+        $stmt->execute();
+
+        $setsql="set @count = 0";
+        $stmt = $con->prepare($setsql);
+        $stmt->execute();
+
+        $updatesql="update item set item_no = @count:=@count+1";
+        $stmt = $con->prepare($updatesql);
+        $stmt->execute();
+
   }
   else{
 
