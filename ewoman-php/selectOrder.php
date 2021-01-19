@@ -11,10 +11,10 @@ $android = strpos($_SERVER['HTTP_USER_AGENT'], "Android");
 
 if ($item_no != ""){
 
-  $sql = "select I.item_no as item_no, category, I.name as name, I.price as price, image, deliv_price, C.name as class_name, C.price as class_price 
+  $sql = "select I.item_no as item_no, category, I.name as name, I.price as price, image, deliv_price, IFNULL(C.name, '') as class_name, C.price as class_price 
 from item I left join class C 
  on I.name = C.item_name 
-where I.item_no in $item_no and (C.name is null or C.name in $class_name);";
+where I.item_no in $item_no and (C.name is null or C.name in $class_name)";
   $stmt = $con->prepare($sql);
   $stmt->execute();
 
@@ -57,7 +57,7 @@ where I.item_no in $item_no and (C.name is null or C.name in $class_name);";
     }
 }
 else {
-    echo "Cart : ";
+    echo "Order : ";
 }
 
 ?>
@@ -77,7 +77,7 @@ if (!$android){
       <form action="<?php $_PHP_SELF ?>" method="POST">
          item_no : <input type = "text" name = "item_no" />
          class_name : <input type = "text" name = "class_name" />
-         <input type = "submit" />
+	 <input type = "submit" />
       </form>
 
    </body>
