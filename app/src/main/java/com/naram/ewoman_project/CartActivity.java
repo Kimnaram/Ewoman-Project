@@ -141,13 +141,14 @@ public class CartActivity extends AppCompatActivity {
 
                 SparseBooleanArray checkedItems = lv_cart_product.getCheckedItemPositions();
                 int count = adapter.getCount();
+                Log.d(TAG, "adapter count : " + count);
 
                 for (int i = 0; i < count; i++) {
                     if(checkedItems.get(i)) {
                         int item_no = adapter.getItem(i).getItem_no();
                         removeList.add(item_no);
-                        adapter.clearItems(i);
-                        Log.d(TAG, "items : checkedItems[" + i + "] = " + checkedItems.get(i));
+                        Log.d(TAG, "item no : " + item_no);
+//                        adapter.clearItems(i);
                     }
                 }
 
@@ -158,19 +159,23 @@ public class CartActivity extends AppCompatActivity {
 
                 adapter.notifyDataSetChanged();
 
-                for (int i = 0; i < removeList.size(); i++) {
+                String items = "(";
 
-                    String items = "(";
+                for (int i = 0; i < removeList.size(); i++) {
 
                     if(i < removeList.size() - 1) {
 
                         items += removeList.get(i) + ",";
-
                     } else {
 
                         items += removeList.get(i) + ")";
                         DeleteData task = new DeleteData();
                         task.execute(items, useremail);
+
+                        adapter.clearAllItems();
+
+                        GetData getTask = new GetData();
+                        getTask.execute(useremail);
 
                     }
 

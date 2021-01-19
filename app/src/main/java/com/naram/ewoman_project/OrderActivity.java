@@ -83,6 +83,7 @@ public class OrderActivity extends AppCompatActivity {
     private EditText et_order_address2;
 
     private Button btn_order_zipcode;
+    private Button btn_billing_try;
 
     private Spinner sp_order_deliv_message;
 
@@ -243,6 +244,18 @@ public class OrderActivity extends AppCompatActivity {
             }
         });
 
+        btn_billing_try.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(et_order_name.getText().toString().isEmpty() || et_order_phone.getText().toString().isEmpty()  || et_order_zipcode.getText().toString().isEmpty()
+                        || et_order_address1.getText().toString().isEmpty() || et_order_address2.getText().toString().isEmpty()) {
+                    Toast.makeText(getApplicationContext(), "모든 입력항목을 채워야 합니다.", Toast.LENGTH_SHORT).show();
+                } else {
+                    // 결제 화면으로 이동
+                }
+            }
+        });
+
     }
 
     public void initAllComponent() {
@@ -264,6 +277,7 @@ public class OrderActivity extends AppCompatActivity {
         et_order_address2 = findViewById(R.id.et_order_address2);
 
         btn_order_zipcode = findViewById(R.id.btn_order_zipcode);
+        btn_billing_try = findViewById(R.id.btn_billing_try);
 
         sp_order_deliv_message = findViewById(R.id.sp_order_deliv_message);
 

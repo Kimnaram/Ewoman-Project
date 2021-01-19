@@ -167,6 +167,64 @@ public class SignupFormActivity extends AppCompatActivity {
                 }
             }
         });
+
+        et_user_pnumber.addTextChangedListener(new TextWatcher() {
+
+            private int _beforeLenght = 0;
+            private int _afterLenght = 0;
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                _beforeLenght = s.length();
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (s.length() <= 0) {
+                    Log.d("addTextChangedListener", "onTextChanged: Intput text is wrong (Type : Length)");
+                    return;
+                }
+
+                char inputChar = s.charAt(s.length() - 1);
+                if (inputChar != '-' && (inputChar < '0' || inputChar > '9')) {
+                    et_user_pnumber.getText().delete(s.length() - 1, s.length());
+                    Log.d("addTextChangedListener", "onTextChanged: Intput text is wrong (Type : Number)");
+                    return;
+                }
+
+                _afterLenght = s.length();
+
+                // 삭제 중
+                if (_beforeLenght > _afterLenght) {
+                    // 삭제 중에 마지막에 -는 자동으로 지우기
+                    if (s.toString().endsWith("-")) {
+                        et_user_pnumber.setText(s.toString().substring(0, s.length() - 1));
+                    }
+                }
+                // 입력 중
+                else if (_beforeLenght < _afterLenght) {
+                    if (_afterLenght == 4 && s.toString().indexOf("-") < 0) {
+                        et_user_pnumber.setText(s.toString().subSequence(0, 3) + "-" + s.toString().substring(3, s.length()));
+                    } else if (_afterLenght == 9) {
+                        et_user_pnumber.setText(s.toString().subSequence(0, 8) + "-" + s.toString().substring(8, s.length()));
+                    } else if (_afterLenght == 14) {
+                        et_user_pnumber.setText(s.toString().subSequence(0, 13) + "-" + s.toString().substring(13, s.length()));
+                    }
+                }
+                et_user_pnumber.setSelection(et_user_pnumber.length());
+
+//                if(s.length() == 18) {
+//                    et_user_pnumber.setBackground(
+//                            ContextCompat.getDrawable(OrderActivity.this, R.drawable.btn_active));
+//                }
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                // 생략
+            }
+        });
     }
 
     public void InitAllComponent() {
