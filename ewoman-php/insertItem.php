@@ -16,7 +16,7 @@
 	$image = $_POST['image'];
 	$inform = $_POST['inform'];
 	$deliv_method = $_POST['deliv_method'];
-	$deliv_price = $_POST['deliv_method'];
+	$deliv_price = $_POST['deliv_price'];
 	$deliv_inform = $_POST['deliv_inform'];
 	$minimum_quantity = $_POST['minimum_quantity'];
 	$maximum_quantity = $_POST['maximum_quantity'];
@@ -33,13 +33,18 @@
 
 	if(!isset($errMSG))	{
 		try {
-			$stmt = $con->prepare('INSERT INTO item(category, name, price, image, inform, deliv_method, deliv_price, deliv_inform, minimum_quantity, maximum_quantity) VALUES(:category, :name, $price, :image, :inform, :deliv_method, $deliv_price, :deliv_inform, $minimum_quantity, $maximum_quantity)');
+			$stmt = $con->prepare("INSERT INTO item(category, name, price, image, inform, deliv_method, deliv_price, deliv_inform, minimum_quantity, maximum_quantity) VALUES(:category, :name, $price, :image, :inform, :deliv_method, $deliv_price, :deliv_inform, $minimum_quantity, $maximum_quantity)");
+
 			$stmt->bindParam(':category', $category);
 			$stmt->bindParam(':name', $name);
+			#$stmt->bindParam(':price', $price);
 			$stmt->bindParam(':image', $image);
 			$stmt->bindParam(':inform', $inform);
 			$stmt->bindParam(':deliv_method', $deliv_method);
+			#$stmt->bindParam(':deliv_price', $deliv_price);
 			$stmt->bindParam(':deliv_inform', $deliv_inform);
+			#$stmt->bindParam(':minimum_quantity', $minimum_quantity);
+			#$stmt->bindParam(':maximum_quantity', $maximum_quantity);
 
 			if($stmt->execute()) {
 				$successMSG = "새로운 상품을 추가했습니다.";

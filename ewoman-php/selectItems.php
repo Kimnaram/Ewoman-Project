@@ -1,4 +1,5 @@
 <?php
+
 error_reporting(E_ALL);
 ini_set('display_errors',1);
 
@@ -8,21 +9,21 @@ include('dbcon.php');
 $category=isset($_POST['category']) ? $_POST['category'] : '';
 $android = strpos($_SERVER['HTTP_USER_AGENT'], "Android");
 
-if ($category != ""){
+if ($category != "") {
 
-  $sql="select I.item_no, I.name, I.image, I.price, count(*) as wishlist from item I, wishlist W where I.item_no = W.item_no and category='$category' group by I.item_no";
+  $sql="select I.item_no, I.name, I.image, I.price, count(email) as wishlist from item I left join wishlist W on I.item_no = W.item_no where category='$category' group by I.item_no";
   $stmt = $con->prepare($sql);
   $stmt->execute();
 
-  if ($stmt->rowCount() == 0){
+  if ($stmt->rowCount() == 0) {
 
         echo "결과가 없습니다.";
 
-  } else{
+  } else {
 
         $result = array();
 
-        while($row=$stmt->fetch(PDO::FETCH_ASSOC)){
+        while($row=$stmt->fetch(PDO::FETCH_ASSOC)) {
 
             extract($row);
 
@@ -35,17 +36,17 @@ if ($category != ""){
                 ));
         }
 
+      if (!$android) {
+             $json = json_encode(array("result"=>$result), JSON_UNESCAPED_UNICODE);
+             echo $json;
+      } else {
+             header('Content-Type: application/json; charset=utf8');
+             $json = json_encode(array("result"=>$result), JSON_UNESCAPED_UNICODE);
+             echo $json;
+     }
 
-        if (!$android) {
-          $json = json_encode(array("result"=>$result), JSON_UNESCAPED_UNICODE);
-          echo $json;
-        }else
-        {
-            header('Content-Type: application/json; charset=utf8');
-            $json = json_encode(array("result"=>$result), JSON_UNESCAPED_UNICODE);
-            echo $json;
-        }
-    }
+  } 
+
 }
 else {
     echo "Item : ";
@@ -72,7 +73,9 @@ if (!$android){
 
    </body>
 </html>
+
 <?php
 }
 
 ?>
+
