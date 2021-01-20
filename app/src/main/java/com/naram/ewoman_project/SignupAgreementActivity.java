@@ -242,4 +242,3 @@ public class SignupAgreementActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 }
-

@@ -1,14 +1,13 @@
 package com.naram.ewoman_project;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
@@ -16,64 +15,64 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.EditText;
-import android.widget.ListView;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
+import android.widget.ImageButton;
 import android.widget.Toast;
+
+import com.google.firebase.auth.FirebaseAuth;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.text.DecimalFormat;
 
-import static com.naram.ewoman_project.CartActivity.binaryStringToByteArray;
+public class PostListActivity extends AppCompatActivity {
 
-public class eProductActivity extends AppCompatActivity {
-
-    private static final String TAG = "eProductActivity";
+    private final static String TAG = "PostListActivity";
 
     private static final String TAG_RESULTS = "result";
-    private static final String TAG_ITEMNO = "item_no";
+    private static final String TAG_ID = "post_no";
     private static final String TAG_NAME = "name";
-    private static final String TAG_PRICE = "price";
-    private static final String TAG_IMAGE = "image";
-    private static final String TAG_WISHLIST = "wishlist";
+    private static final String TAG_TITLE = "title";
+    private static final String TAG_LIKE = "post_like";
     private static String IP_ADDRESS = "IP ADDRESS";
 
     private String JSONString;
-    private JSONArray items = null;
+    private JSONArray posts = null;
+
+    // Review list
+    private RecyclerView rv_review_container;
+    private RecyclerAdapter adapter;
+    private ListPost listPost;
+
+    // Other component
+    private EditText et_search_text;
+
+    private ImageButton ib_write_review;
+
+    // Database
+    private String useremail = null;
+    private int Post_no = -1;
+    private int Like = -1;
+    private boolean state = false;
 
     private DBOpenHelper dbOpenHelper;
-
-    private ListView lv_eProduct_product;
-    private ListViewAdapter adapter;
-    private ListItem listItem;
-
-    private RelativeLayout rl_warn_container;
-
-    private EditText et_search_text;
-    private TextView tv_search_btn;
-
-    private String useremail = null;
-    private Bitmap img = null;
+    private FirebaseAuth firebaseAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_e_product);
+        setContentView(R.layout.activity_post_list);
 
         //상단 툴바 설정
         setSupportActionBar((Toolbar) findViewById(R.id.toolbar));
@@ -83,68 +82,71 @@ public class eProductActivity extends AppCompatActivity {
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.common_backspace); //뒤로가기 버튼 모양 설정
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.parseColor("#FFFFFF"))); //툴바 배경색
 
-        InitAllComponent();
+        initAllComponent();
+
+        dbOpenHelper = new DBOpenHelper(this);
+        dbOpenHelper.open();
 
         Cursor iCursor = dbOpenHelper.selectColumns();
 
-        while (iCursor.moveToNext()) {
+        while(iCursor.moveToNext()) {
 
             String tempEmail = iCursor.getString(iCursor.getColumnIndex("email"));
             useremail = tempEmail;
 
         }
 
-        et_search_text.addTextChangedListener(new TextWatcher() {
+        adapter.setOnItemClickListener(new RecyclerAdapter.OnItemClickListener() {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                rl_warn_container.setVisibility(View.GONE);
-            }
+            public void onItemClick(View v, int pos) {
+                int _id = adapter.getItem(pos).get_id();
 
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                String search = et_search_text.getText().toString();
-                adapter.fillter(search);
-                if(adapter.getCount() == 0) {
-                    rl_warn_container.setVisibility(View.VISIBLE);
-                }
-            }
-        });
-
-        lv_eProduct_product.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent intent = new Intent(getApplicationContext(), ProductDetailActivity.class);
-
-                int number = adapter.getItem(position).getItem_no();
-
-                intent.putExtra("item_no", Integer.toString(number));
-
-                adapter.notifyDataSetChanged();
+                Intent intent = new Intent(getApplicationContext(), PostDetailActivity.class);
+                intent.putExtra("post_no", Integer.toString(_id));
+                Log.d(TAG, "_id : " + _id);
 
                 startActivity(intent);
             }
         });
 
-    }
+        et_search_text.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                if (keyCode == event.KEYCODE_ENTER) {
+                    return true;
+                }
+                return false;
+            }
+        });
 
-    public void InitAllComponent() {
+        et_search_text.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
-        rl_warn_container = findViewById(R.id.rl_warn_container);
+            }
 
-        lv_eProduct_product = findViewById(R.id.lv_eProduct_product);
-        et_search_text = findViewById(R.id.et_search_text);
-        tv_search_btn = findViewById(R.id.tv_search_btn);
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
 
-        adapter = new ListViewAdapter();
-        lv_eProduct_product.setAdapter(adapter);
+            @Override
+            public void afterTextChanged(Editable s) {
+                String search = et_search_text.getText().toString();
+                adapter.filter(search);
+            }
+        });
 
-        dbOpenHelper = new DBOpenHelper(this);
-        dbOpenHelper.open();
+
+        ib_write_review.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(useremail != null) {
+                    startActivity(new Intent(getApplicationContext(), PostCreateActivity.class));
+                } else {
+                    Toast.makeText(getApplicationContext(), "로그인이 필요한 기능입니다.", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
 
     }
 
@@ -165,14 +167,12 @@ public class eProductActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
 
-        super.onResume();
-
-        adapter.clearAllItems();
-
+        adapter.clearAllItem();
         GetData task = new GetData();
-        task.execute("eproduct");
-
+        task.execute();
         adapter.notifyDataSetChanged();
+
+        super.onResume();
 
     }
 
@@ -183,18 +183,23 @@ public class eProductActivity extends AppCompatActivity {
 
     }
 
-    public static Bitmap StringToBitmap(String ImageString) {
-        try {
+    public void initAllComponent() {
 
-            byte[] bytes = binaryStringToByteArray(ImageString);
-            ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
-            Bitmap bitmap = BitmapFactory.decodeStream(bais);
-            return bitmap;
+        dbOpenHelper = new DBOpenHelper(this);
+        dbOpenHelper.open();
 
-        } catch (Exception e) {
-            e.getMessage();
-            return null;
-        }
+        rv_review_container = findViewById(R.id.rv_review_container);
+
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
+        rv_review_container.setLayoutManager(linearLayoutManager);
+
+        adapter = new RecyclerAdapter();
+        rv_review_container.setAdapter(adapter);
+
+        et_search_text = findViewById(R.id.et_search_text);
+
+        ib_write_review = findViewById(R.id.ib_write_review);
+
     }
 
     @Override
@@ -216,29 +221,29 @@ public class eProductActivity extends AppCompatActivity {
                 return true;
             }
             case R.id.menu_login:
-                Intent main_to_login = new Intent(getApplicationContext(), LoginActivity.class);
+                Intent revlist_to_login = new Intent(getApplicationContext(), LoginActivity.class);
 
-                startActivity(main_to_login);
+                startActivity(revlist_to_login);
                 return true;
             case R.id.menu_signup:
-                Intent main_to_signup = new Intent(getApplicationContext(), SignupActivity.class);
+                Intent revlist_to_signup = new Intent(getApplicationContext(), SignupActivity.class);
 
-                startActivity(main_to_signup);
+                startActivity(revlist_to_signup);
                 return true;
             case R.id.menu_logout:
-
-                final ProgressDialog mDialog = new ProgressDialog(eProductActivity.this);
-                mDialog.setMessage("로그아웃 중입니다.");
-                mDialog.show();
 
                 useremail = null;
                 dbOpenHelper.deleteAllColumns();
 
-                Intent logout_to_main = new Intent(getApplicationContext(), eProductActivity.class);
+                final ProgressDialog mDialog = new ProgressDialog(PostListActivity.this);
+                mDialog.setMessage("로그아웃 중입니다.");
+                mDialog.show();
+
+                Intent logout_to_revlist = new Intent(getApplicationContext(), PostListActivity.class);
                 mDialog.dismiss();
 
                 finish();
-                startActivity(logout_to_main);
+                startActivity(logout_to_revlist);
                 return true;
             case R.id.menu_cart:
                 startActivity(new Intent(getApplicationContext(), CartActivity.class));
@@ -249,32 +254,6 @@ public class eProductActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    protected void showList() {
-        try {
-            JSONObject jsonObj = new JSONObject(JSONString);
-            items = jsonObj.getJSONArray(TAG_RESULTS);
-
-            for (int i = 0; i < items.length(); i++) {
-                JSONObject c = items.getJSONObject(i);
-                int item_no = Integer.parseInt(c.getString(TAG_ITEMNO));
-                String image = c.getString(TAG_IMAGE);
-                img = StringToBitmap(image);
-                String name = c.getString(TAG_NAME);
-                int price = Integer.parseInt(c.getString(TAG_PRICE));
-                DecimalFormat format = new DecimalFormat("###,###");
-                String real_price = format.format(price);
-                int wishlist = Integer.parseInt(c.getString(TAG_WISHLIST));
-
-                listItem = new ListItem(item_no, img, name, real_price, wishlist);
-                adapter.addItem(listItem);
-            }
-
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-    }
-
     private class GetData extends AsyncTask<String, Void, String> {
 
         ProgressDialog progressDialog;
@@ -283,7 +262,7 @@ public class eProductActivity extends AppCompatActivity {
         protected void onPreExecute() {
             super.onPreExecute();
 
-            progressDialog = new ProgressDialog(eProductActivity.this, R.style.AlertDialogStyle);
+            progressDialog = new ProgressDialog(PostListActivity.this, R.style.AlertDialogStyle);
             progressDialog.setTitle("로딩중입니다.");
             progressDialog.show();
 
@@ -292,11 +271,7 @@ public class eProductActivity extends AppCompatActivity {
         @Override
         protected String doInBackground(String... params) {
 
-            String category = params[0];
-
-            String serverURL = "http://" + IP_ADDRESS + "/ewoman-php/selectItems.php";
-
-            String postParameters = "category=" + category;
+            String serverURL = "http://" + IP_ADDRESS + "/ewoman-php/selectAllPost.php";
 
             try {
 
@@ -310,7 +285,6 @@ public class eProductActivity extends AppCompatActivity {
                 httpURLConnection.connect();
 
                 OutputStream outputStream = httpURLConnection.getOutputStream();
-                outputStream.write(postParameters.getBytes("UTF-8"));
                 outputStream.flush();
                 outputStream.close();
 
@@ -352,14 +326,12 @@ public class eProductActivity extends AppCompatActivity {
             Log.d(TAG, "response - " + result);
 
             if (result == null) {
-
                 Toast.makeText(getApplicationContext(), "오류가 발생했습니다!", Toast.LENGTH_SHORT).show();
-
             } else {
 
-                if(result.contains("결과가 없습니다.")) {
+                if(result.contains("리뷰가 없습니다.")) {
 
-                    rl_warn_container.setVisibility(View.VISIBLE);
+                    // 리뷰 없음을 보여주기
 
                 } else {
 
@@ -369,6 +341,29 @@ public class eProductActivity extends AppCompatActivity {
                 }
             }
         }
+    }
+
+    protected void showList() {
+        try {
+            JSONObject jsonObj = new JSONObject(JSONString);
+            posts = jsonObj.getJSONArray(TAG_RESULTS);
+
+            for (int i = 0; i < posts.length(); i++) {
+                JSONObject c = posts.getJSONObject(i);
+                String id = c.getString(TAG_ID);
+                int post_no = Integer.parseInt(id);
+                String name = c.getString(TAG_NAME);
+                String title = c.getString(TAG_TITLE);
+                String like = c.getString(TAG_LIKE);
+
+                listPost = new ListPost(post_no, title, name, Integer.parseInt(like));
+                adapter.addItem(listPost);
+            }
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
     }
 
 }

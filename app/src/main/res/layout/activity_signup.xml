@@ -21,8 +21,7 @@
             android:layout_marginRight="10dp"
             android:gravity="center_vertical"
             android:text="JOIN"
-            android:fontFamily="@font/nanumbarungothic"
-            android:textStyle="bold"
+            android:fontFamily="@font/nanumbarungothicbold"
             android:textSize="23dp">
         </TextView>
 
@@ -112,12 +111,12 @@
             android:layout_below="@+id/ll_social_signup_container"
             android:layout_marginTop="30dp">
 
-<!--            <View-->
-<!--                android:layout_width="100dp"-->
-<!--                android:layout_height="1dp"-->
-<!--                android:layout_toLeftOf="@id/tv_social_or"-->
-<!--                android:background="@color/colorGray"-->
-<!--                android:layout_marginTop="10dp"/>-->
+            <!--            <View-->
+            <!--                android:layout_width="100dp"-->
+            <!--                android:layout_height="1dp"-->
+            <!--                android:layout_toLeftOf="@id/tv_social_or"-->
+            <!--                android:background="@color/colorGray"-->
+            <!--                android:layout_marginTop="10dp"/>-->
 
             <TextView
                 android:id="@+id/tv_social_or"
@@ -131,12 +130,12 @@
                 android:layout_marginBottom="10dp"
                 android:textSize="18dp" />
 
-<!--            <View-->
-<!--                android:layout_width="100dp"-->
-<!--                android:layout_height="1dp"-->
-<!--                android:layout_toRightOf="@id/tv_social_or"-->
-<!--                android:background="@color/colorGray"-->
-<!--                android:layout_marginTop="10dp"/>-->
+            <!--            <View-->
+            <!--                android:layout_width="100dp"-->
+            <!--                android:layout_height="1dp"-->
+            <!--                android:layout_toRightOf="@id/tv_social_or"-->
+            <!--                android:background="@color/colorGray"-->
+            <!--                android:layout_marginTop="10dp"/>-->
 
             <TextView
                 android:id="@+id/tv_normal_signup"

@@ -21,7 +21,7 @@
             android:layout_marginRight="10dp"
             android:gravity="center_vertical"
             android:text="LOGIN"
-            android:fontFamily="@font/nanumsquare"
+            android:fontFamily="@font/nanumbarungothicbold"
             android:textSize="23dp"/>
 
     </androidx.appcompat.widget.Toolbar>

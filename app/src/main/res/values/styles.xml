@@ -3,9 +3,9 @@
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
+        <item name="colorPrimary">@color/colorCocoa</item>
+        <item name="colorPrimaryDark">@color/colorGray</item>
+        <item name="colorAccent">@color/colorCocoa</item>
 
         <!--Status Bar 배경색-->
         <item name="android:statusBarColor">@color/colorCocoa</item>
@@ -26,6 +26,18 @@
     <style name="NavigationViewStyle">
         <item name="android:fontFamily">@font/nanumbarungothic</item>
         <item name="android:textSize">18dp</item>
+    </style>
+
+    <style name="SpinnerDividerStyle" parent="android:style/Widget.ListView.DropDown">
+        <item name="android:divider">@color/colorGray</item> <!-- divider 색 -->
+        <item name="android:dividerHeight">0.5dp</item> <!-- divider 높이 -->
+    </style>
+
+    <style name="SpinnerTheme" parent="AppTheme">
+        <item name="android:dropDownListViewStyle">@style/SpinnerDividerStyle</item>
+        <item name="android:textColor">@color/colorGray</item>
+        <item name="android:fontFamily">@font/nanumbarungothicbold</item>
+        <item name="android:textSize">16dp</item>
     </style>
 
 </resources>

@@ -2,24 +2,51 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.naram.ewoman_project">
 
-    <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
 
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher_ewoman"
         android:label="ewoman"
+        android:networkSecurityConfig="@xml/network_security_config"
         android:roundIcon="@mipmap/ic_launcher_ewoman_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
-        <activity android:name=".ItemAddActivity" android:windowSoftInputMode="stateAlwaysHidden"></activity>
+        android:theme="@style/AppTheme"
+        android:usesCleartextTraffic="true"
+        android:hardwareAccelerated="true">
+        <activity android:name=".DaumAddressActivity"></activity>
+        <activity
+            android:name=".PaymentActivity"
+            android:windowSoftInputMode="stateAlwaysHidden" />
+        <activity
+            android:name=".ItemUpdateActivity"
+            android:windowSoftInputMode="stateAlwaysHidden" />
+        <activity
+            android:name=".OrderActivity"
+            android:windowSoftInputMode="stateAlwaysHidden" />
+        <activity
+            android:name=".ItemAddActivity"
+            android:windowSoftInputMode="stateAlwaysHidden" />
         <activity android:name=".CartActivity" />
-        <activity android:name=".ReviewUpdateActivity" android:windowSoftInputMode="stateAlwaysHidden"/>
-        <activity android:name=".ReviewDetailActivity" />
-        <activity android:name=".ReviewCreateActivity" />
-        <activity android:name=".ReviewListActivity" android:windowSoftInputMode="stateAlwaysHidden"/>
+        <activity
+            android:name=".ReviewUpdateActivity"
+            android:windowSoftInputMode="stateAlwaysHidden" />
+        <activity android:name=".PostDetailActivity" />
+        <activity
+            android:name=".PostCreateActivity"
+            android:windowSoftInputMode="stateAlwaysHidden" />
+        <activity
+            android:name=".PostListActivity"
+            android:windowSoftInputMode="stateAlwaysHidden" />
         <activity android:name=".ContactActivity" />
-        <activity android:name=".eProductActivity" android:windowSoftInputMode="stateAlwaysHidden"/>
+        <activity
+            android:name=".eProductActivity"
+            android:windowSoftInputMode="stateAlwaysHidden" />
         <activity android:name=".ProductDetailActivity" />
         <activity android:name=".OurstoryActivity" />
         <activity android:name=".SplashActivity">
@@ -29,11 +56,15 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".eCollegeActivity" android:windowSoftInputMode="stateAlwaysHidden"/>
+        <activity
+            android:name=".eCollegeActivity"
+            android:windowSoftInputMode="stateAlwaysHidden" />
         <activity android:name=".SignupAgreementActivity" />
         <activity android:name=".SignupFormActivity" />
         <activity android:name=".SignupActivity" />
-        <activity android:name=".LoginActivity" android:windowSoftInputMode="stateAlwaysHidden"/>
+        <activity
+            android:name=".LoginActivity"
+            android:windowSoftInputMode="stateAlwaysHidden" />
         <activity android:name=".MainActivity" />
 
         <meta-data

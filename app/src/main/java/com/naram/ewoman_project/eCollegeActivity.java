@@ -122,6 +122,7 @@ public class eCollegeActivity extends AppCompatActivity {
                 int number = adapter.getItem(position).getItem_no();
 
                 intent.putExtra("item_no", Integer.toString(number));
+                Log.d(TAG, "number : " + number);
 
                 onPause();
                 startActivity(intent);
@@ -182,17 +183,6 @@ public class eCollegeActivity extends AppCompatActivity {
 
     }
 
-    // 바이너리 바이트를 스트링으로
-    public static String byteToBinaryString(byte n) {
-        StringBuilder sb = new StringBuilder("00000000");
-        for (int bit = 0; bit < 8; bit++) {
-            if (((n >> bit) & 1) > 0) {
-                sb.setCharAt(7 - bit, '1');
-            }
-        }
-        return sb.toString();
-    }
-
     public static Bitmap StringToBitmap(String ImageString) {
         try {
 
@@ -238,12 +228,12 @@ public class eCollegeActivity extends AppCompatActivity {
                 return true;
             case R.id.menu_logout:
 
-                useremail = null;
-                dbOpenHelper.deleteAllColumns();
-
                 final ProgressDialog mDialog = new ProgressDialog(eCollegeActivity.this);
                 mDialog.setMessage("로그아웃 중입니다.");
                 mDialog.show();
+
+                useremail = null;
+                dbOpenHelper.deleteAllColumns();
 
                 Intent logout_to_main = new Intent(getApplicationContext(), eCollegeActivity.class);
                 mDialog.dismiss();
@@ -262,6 +252,7 @@ public class eCollegeActivity extends AppCompatActivity {
 
     protected void showList() {
         try {
+
             JSONObject jsonObj = new JSONObject(JSONString);
             items = jsonObj.getJSONArray(TAG_RESULTS);
 
@@ -306,7 +297,6 @@ public class eCollegeActivity extends AppCompatActivity {
             String category = params[0];
 
             String serverURL = "http://" + IP_ADDRESS + "/ewoman-php/selectItems.php";
-            Log.d(TAG, "serverURL : " + serverURL);
             String postParameters = "category=" + category;
 
             try {
@@ -366,10 +356,9 @@ public class eCollegeActivity extends AppCompatActivity {
                 Toast.makeText(getApplicationContext(), "오류가 발생했습니다!", Toast.LENGTH_SHORT).show();
             } else {
 
-                if (result.contains("결과가 없습니다.")) {
+                if(result.contains("결과가 없습니다.")) {
 
                     rl_warn_container.setVisibility(View.VISIBLE);
-
 
                 } else {
 

@@ -19,129 +19,128 @@
             android:layout_height="35dp"
             android:layout_marginTop="15dp"
             android:layout_marginRight="10dp"
-            android:fontFamily="@font/nanumbarungothic"
+            android:fontFamily="@font/nanumbarungothicbold"
             android:text="Contact"
-            android:textSize="23dp"
-            android:textStyle="bold"></TextView>
+            android:textSize="23dp"></TextView>
 
     </androidx.appcompat.widget.Toolbar>
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:layout_below="@+id/toolbar">
+
         <LinearLayout
+            android:id="@+id/rl_contact_container"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:layout_below="@+id/toolbar">
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:orientation="vertical">
 
-            <LinearLayout
-                android:id="@+id/rl_contact_container"
-                android:layout_width="match_parent"
+            <TextView
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:orientation="vertical">
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="10dp"
+                android:layout_marginTop="50dp"
+                android:fontFamily="@font/nanumbarungothicbold"
+                android:text="Customer Service"
+                android:textSize="22.5dp" />
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:layout_marginBottom="10dp"
-                    android:layout_marginTop="50dp"
-                    android:fontFamily="@font/nanumbarungothicbold"
-                    android:text="Customer Service"
-                    android:textSize="22dp" />
+            <TextView
+                android:id="@+id/tv_contact_email"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="10dp"
+                android:fontFamily="@font/nanumbarungothic"
+                android:text="suntteut@gmail.com"
+                android:textSize="18dp" />
 
-                <TextView
-                    android:id="@+id/tv_contact_email"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:layout_marginBottom="10dp"
-                    android:fontFamily="@font/nanumbarungothic"
-                    android:text="suntteut@gmail.com"
-                    android:textSize="18dp" />
+            <View
+                android:layout_width="250dp"
+                android:layout_height="2dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:background="@color/colorCocoa" />
 
-                <View
-                    android:layout_width="250dp"
-                    android:layout_height="2dp"
-                    android:layout_gravity="center_horizontal"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginBottom="10dp"
-                    android:background="@color/colorCocoa" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:fontFamily="@font/nanumbarungothicbold"
+                android:text="Offline Store"
+                android:textSize="22.5dp" />
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginBottom="10dp"
-                    android:fontFamily="@font/nanumbarungothicbold"
-                    android:text="Offline Store"
-                    android:textSize="22dp" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="10dp"
+                android:fontFamily="@font/nanumbarungothic"
+                android:text="OFFICE. 서울시 강남구 역삼로 165 해성빌딩 6F"
+                android:textSize="18dp" />
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:layout_marginBottom="10dp"
-                    android:fontFamily="@font/nanumbarungothic"
-                    android:text="OFFICE. 서울시 강남구 역삼로 165 해성빌딩 6F"
-                    android:textSize="18dp" />
+            <fragment
+                android:id="@+id/fr_office_map"
+                android:name="com.naver.maps.map.MapFragment"
+                android:layout_width="250dp"
+                android:layout_height="250dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="10dp"/>
 
-                <fragment
-                    android:id="@+id/fr_office_map"
-                    android:name="com.naver.maps.map.MapFragment"
-                    android:layout_width="250dp"
-                    android:layout_height="250dp"
-                    android:layout_gravity="center_horizontal"
-                    android:layout_marginBottom="10dp"/>
+            <View
+                android:layout_width="250dp"
+                android:layout_height="2dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:background="@color/colorCocoa" />
 
-                <View
-                    android:layout_width="250dp"
-                    android:layout_height="2dp"
-                    android:layout_gravity="center_horizontal"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginBottom="10dp"
-                    android:background="@color/colorCocoa" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:fontFamily="@font/nanumbarungothicbold"
+                android:text="Contact"
+                android:textSize="22.5dp" />
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginBottom="10dp"
-                    android:fontFamily="@font/nanumbarungothicbold"
-                    android:text="Contact"
-                    android:textSize="22dp" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="10dp"
+                android:fontFamily="@font/nanumbarungothic"
+                android:text="대표 : 정슬기"
+                android:textSize="18dp" />
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:layout_marginBottom="10dp"
-                    android:fontFamily="@font/nanumbarungothic"
-                    android:text="대표 : 정슬기"
-                    android:textSize="18dp" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="10dp"
+                android:fontFamily="@font/nanumbarungothic"
+                android:text="Fax 02-3440-7474"
+                android:textSize="18dp" />
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:layout_marginBottom="10dp"
-                    android:fontFamily="@font/nanumbarungothic"
-                    android:text="Fax 02-3440-7474"
-                    android:textSize="18dp" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:layout_marginBottom="50dp"
-                    android:fontFamily="@font/nanumbarungothic"
-                    android:text="suntteut@gmail.com"
-                    android:textSize="18dp" />
-
-            </LinearLayout>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="50dp"
+                android:fontFamily="@font/nanumbarungothic"
+                android:text="suntteut@gmail.com"
+                android:textSize="18dp" />
 
         </LinearLayout>
+
+    </LinearLayout>
 
 
 </RelativeLayout>

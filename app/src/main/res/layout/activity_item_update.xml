@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ItemAddActivity">
+    tools:context=".ItemUpdateActivity">
 
     <!--상단 툴바-->
     <androidx.appcompat.widget.Toolbar
@@ -21,7 +21,7 @@
             android:layout_marginRight="10dp"
             android:fontFamily="@font/nanumbarungothicbold"
             android:gravity="center_vertical"
-            android:text="Item Add"
+            android:text="Item Update"
             android:textSize="23dp" />
 
     </androidx.appcompat.widget.Toolbar>
@@ -72,11 +72,11 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="5dp"
-                    android:paddingLeft="5dp"
+                    android:button="@drawable/btn_style_radio"
                     android:fontFamily="@font/nanumbarungothicbold"
+                    android:paddingLeft="5dp"
                     android:text="e College"
                     android:textColor="@color/colorCocoa"
-                    android:button="@drawable/btn_style_radio"
                     android:textSize="18dp">
 
                 </RadioButton>
@@ -85,11 +85,11 @@
                     android:id="@+id/rb_category_eproduct"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:paddingLeft="5dp"
+                    android:button="@drawable/btn_style_radio"
                     android:fontFamily="@font/nanumbarungothicbold"
+                    android:paddingLeft="5dp"
                     android:text="e Product"
                     android:textColor="@color/colorCocoa"
-                    android:button="@drawable/btn_style_radio"
                     android:textSize="18dp">
 
                 </RadioButton>
@@ -123,10 +123,10 @@
                 android:layout_marginBottom="10dp"
                 android:background="@drawable/btn_style_border_line_white_background"
                 android:fontFamily="@font/nanumbarungothicbold"
-                android:textColor="@color/colorGray"
                 android:hint="Item Name"
                 android:inputType="text"
                 android:paddingLeft="5dp"
+                android:textColor="@color/colorGray"
                 android:textSize="18dp" />
 
             <EditText
@@ -137,10 +137,10 @@
                 android:layout_marginBottom="10dp"
                 android:background="@drawable/btn_style_border_line_white_background"
                 android:fontFamily="@font/nanumbarungothicbold"
-                android:textColor="@color/colorGray"
                 android:hint="Item Price"
-                android:paddingLeft="5dp"
                 android:inputType="text"
+                android:paddingLeft="5dp"
+                android:textColor="@color/colorGray"
                 android:textSize="18dp" />
 
             <TextView
@@ -160,8 +160,8 @@
                 android:id="@+id/rl_image_container"
                 android:layout_width="250dp"
                 android:layout_height="250dp"
-                android:layout_marginBottom="10dp"
                 android:layout_below="@+id/tv_upload_pic"
+                android:layout_marginBottom="10dp"
                 android:visibility="gone">
 
                 <ImageView
@@ -225,10 +225,10 @@
                 android:background="@drawable/btn_style_border_line_white_background"
                 android:fontFamily="@font/nanumbarungothicbold"
                 android:hint="Item Delivery Method"
-                android:textColor="@color/colorGray"
                 android:inputType="text"
-                android:textSize="18dp"
-                android:paddingLeft="5dp" />
+                android:paddingLeft="5dp"
+                android:textColor="@color/colorGray"
+                android:textSize="18dp" />
 
             <EditText
                 android:id="@+id/et_delivery_price_data"
@@ -239,10 +239,10 @@
                 android:background="@drawable/btn_style_border_line_white_background"
                 android:fontFamily="@font/nanumbarungothicbold"
                 android:hint="Item Delivery Price"
-                android:textColor="@color/colorGray"
                 android:inputType="text"
-                android:textSize="18dp"
-                android:paddingLeft="5dp" />
+                android:paddingLeft="5dp"
+                android:textColor="@color/colorGray"
+                android:textSize="18dp" />
 
             <EditText
                 android:id="@+id/et_delivery_inform_data"
@@ -253,10 +253,10 @@
                 android:background="@drawable/btn_style_border_line_white_background"
                 android:fontFamily="@font/nanumbarungothicbold"
                 android:hint="Item Delivery Inform"
-                android:textColor="@color/colorGray"
                 android:inputType="text"
-                android:textSize="18dp"
-                android:paddingLeft="5dp" />
+                android:paddingLeft="5dp"
+                android:textColor="@color/colorGray"
+                android:textSize="18dp" />
 
             <View
                 android:id="@+id/v_divide_line_3"
@@ -286,10 +286,10 @@
                 android:background="@drawable/btn_style_border_line_white_background"
                 android:fontFamily="@font/nanumbarungothicbold"
                 android:hint="Item Minimum Quantity"
-                android:textColor="@color/colorGray"
                 android:inputType="text"
-                android:textSize="18dp"
-                android:paddingLeft="5dp" />
+                android:paddingLeft="5dp"
+                android:textColor="@color/colorGray"
+                android:textSize="18dp" />
 
             <EditText
                 android:id="@+id/et_maximum_quantity_data"
@@ -300,10 +300,10 @@
                 android:background="@drawable/btn_style_border_line_white_background"
                 android:fontFamily="@font/nanumbarungothicbold"
                 android:hint="Item Maximum Quantity"
-                android:textColor="@color/colorGray"
                 android:inputType="text"
-                android:textSize="18dp"
-                android:paddingLeft="5dp" />
+                android:paddingLeft="5dp"
+                android:textColor="@color/colorGray"
+                android:textSize="18dp" />
 
             <View
                 android:id="@+id/v_divide_line_4"
@@ -328,31 +328,18 @@
                 android:id="@+id/ib_item_plus"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/item_plus"
-                android:background="@null"
+                android:layout_below="@+id/v_divide_line_4"
                 android:layout_alignParentRight="true"
-                android:layout_below="@+id/v_divide_line_4" />
+                android:background="@null"
+                android:src="@drawable/item_plus" />
 
             <LinearLayout
                 android:id="@+id/ll_class_container"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
                 android:layout_below="@+id/tv_class_info"
-                android:layout_marginBottom="30dp">
-
-                <EditText
-                    android:id="@+id/et_class_data"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/btn_style_border_line_white_background"
-                    android:paddingLeft="5dp"
-                    android:hint="클래스의 이름과 가격, 우선순위를 /로 구분해주세요."
-                    android:fontFamily="@font/nanumbarungothicbold"
-                    android:textColor="@color/colorGray"
-                    android:textSize="18dp"
-                    android:inputType="text"
-                    android:layout_marginBottom="15dp" />
+                android:layout_marginBottom="30dp"
+                android:orientation="vertical">
 
             </LinearLayout>
 

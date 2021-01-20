@@ -21,8 +21,7 @@
             android:layout_marginTop="15dp"
             android:layout_marginRight="10dp"
             android:text="e College"
-            android:fontFamily="@font/nanumbarungothic"
-            android:textStyle="bold"
+            android:fontFamily="@font/nanumbarungothicbold"
             android:textSize="23dp">
         </TextView>
 

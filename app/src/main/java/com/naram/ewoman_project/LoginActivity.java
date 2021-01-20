@@ -30,7 +30,6 @@ import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.GoogleAuthProvider;
-import com.google.firebase.database.FirebaseDatabase;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -111,7 +110,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
             }
         });
 
-       tv_login_try.setOnClickListener(new View.OnClickListener() {
+        tv_login_try.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String email = et_user_email.getText().toString();
@@ -133,13 +132,11 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
             public boolean onTouch(View v, MotionEvent event) {
                 switch (event.getAction()) {
                     case MotionEvent.ACTION_DOWN :
-                        tv_login_try.setBackground(getResources().getDrawable(R.color.colorCocoa));
-                        tv_login_try.setTextColor(getResources().getColor(R.color.colorWhite));
+                        tv_login_try.setBackground(getResources().getDrawable(R.drawable.btn_style_border_line_cocoa_background));
                         return false;
 
                     case MotionEvent.ACTION_UP :
-                        tv_login_try.setBackground(getResources().getDrawable(R.drawable.btn_style_border_line));
-                        tv_login_try.setTextColor(getResources().getColor(R.color.colorGray));
+                        tv_login_try.setBackground(getResources().getDrawable(R.drawable.btn_style_border_line_white_background));
                         return false;
                 }
                 return false;

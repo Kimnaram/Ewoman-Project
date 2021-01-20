@@ -309,4 +309,3 @@ public class SignupActivity extends AppCompatActivity implements GoogleApiClient
     }
 
 }
-
