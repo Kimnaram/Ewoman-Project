@@ -3,9 +3,21 @@ package com.naram.ewoman_project;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.Toast;
+
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
 import kr.co.bootpay.Bootpay;
 import kr.co.bootpay.BootpayAnalytics;
@@ -31,6 +43,8 @@ public class PaymentActivity extends AppCompatActivity {
     private int stock = 10;
 
     // Intent로 받아올 정보
+    private ArrayList<ListOrder> itemList = new ArrayList<ListOrder>();
+
     private String item_name = "";
     private String phone = "";
     private int price = 0;
@@ -42,11 +56,24 @@ public class PaymentActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
 
-        if(intent != null) {
+        if (intent != null) {
 
             item_name = intent.getStringExtra("item_name");
             phone = intent.getStringExtra("phone");
             price = Integer.parseInt(intent.getStringExtra("price"));
+
+            int size = Integer.parseInt(intent.getStringExtra("size"));
+            for (int i = 0; i < size; i++) {
+
+                int item_no = Integer.parseInt(intent.getStringExtra("itemNo[" + i + "]"));
+                String class_name = intent.getStringExtra("className[" + i + "]");
+                int count = Integer.parseInt(intent.getStringExtra("count[" + i + "]"));
+
+                ListOrder listOrder = new ListOrder(item_no, class_name, count);
+                Log.d(TAG, "상품 : " + listOrder.getItem_no());
+                itemList.add(listOrder);
+
+            }
 
         }
 
@@ -54,7 +81,7 @@ public class PaymentActivity extends AppCompatActivity {
         // 앱에서 확인하지 말고 꼭 웹 사이트에서 확인하자. 앱의 application id 갖다 쓰면 안됨!!!
         BootpayAnalytics.init(this, BILLING_API_KEY);
 
-        BootUser bootUser = new BootUser().setPhone("010-1234-5678"); // !! 자신의 핸드폰 번호로 바꾸기
+        BootUser bootUser = new BootUser().setPhone(phone); // !! 자신의 핸드폰 번호로 바꾸기
         BootExtra bootExtra = new BootExtra().setQuotas(new int[]{0, 2, 3});
 
         Bootpay.init(getFragmentManager())
@@ -108,5 +135,116 @@ public class PaymentActivity extends AppCompatActivity {
                         })
                 .request();
 
+    }
+
+    class InsertOrderData extends AsyncTask<String, Void, String> {
+
+        ProgressDialog progressDialog;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+
+            progressDialog = new ProgressDialog(PaymentActivity.this, R.style.AlertDialogStyle);
+            progressDialog.setTitle("주문중입니다.");
+            progressDialog.show();
+
+        }
+
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+
+            Log.d(TAG, "POST response  - " + result);
+
+            if (result.contains("주문 목록에 추가했습니다.")) {
+
+                Toast.makeText(getApplicationContext(), "추가 완료되었습니다.", Toast.LENGTH_SHORT).show();
+
+            } else {
+
+                if(result.contains("Integrity constraint violation: 1062 Duplicate entry")) {
+
+                    Toast.makeText(getApplicationContext(), "이미 주문 목록에 존재하는 상품입니다!", Toast.LENGTH_SHORT).show();
+
+                } else {
+
+                    Toast.makeText(getApplicationContext(), "오류가 발생했습니다.", Toast.LENGTH_SHORT).show();
+
+                }
+            }
+
+            progressDialog.dismiss();
+
+
+        }
+
+
+        @Override
+        protected String doInBackground(String... params) {
+
+            String item_no = (String) params[1];
+            String email = (String) params[2];
+            String count = (String) params[3];
+            String class_name = (String) params[4];
+
+            String serverURL = (String) params[0];
+            String postParameters = "item_no=" + item_no + "&email=" + email + "&count=" + count + "&class_name=" + class_name;
+
+            try {
+
+                URL url = new URL(serverURL);
+                HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
+
+
+                httpURLConnection.setReadTimeout(10000);
+                httpURLConnection.setConnectTimeout(10000);
+                httpURLConnection.setRequestMethod("POST");
+                httpURLConnection.connect();
+
+
+                OutputStream outputStream = httpURLConnection.getOutputStream();
+                outputStream.write(postParameters.getBytes("UTF-8"));
+                outputStream.flush();
+                outputStream.close();
+
+
+                int responseStatusCode = httpURLConnection.getResponseCode();
+                Log.d(TAG, "POST response code - " + responseStatusCode);
+
+                InputStream inputStream;
+                if (responseStatusCode == HttpURLConnection.HTTP_OK) {
+                    inputStream = httpURLConnection.getInputStream();
+                } else {
+                    inputStream = httpURLConnection.getErrorStream();
+                }
+
+
+                InputStreamReader inputStreamReader = new InputStreamReader(inputStream, "UTF-8");
+                BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+
+                StringBuilder sb = new StringBuilder();
+                String line = null;
+
+                while ((line = bufferedReader.readLine()) != null) {
+                    sb.append(line);
+                }
+
+
+                bufferedReader.close();
+
+
+                return sb.toString();
+
+
+            } catch (Exception e) {
+
+                Log.d(TAG, "InsertData: Error ", e);
+
+                return new String("Error: " + e.getMessage());
+            }
+
+        }
     }
 }
