@@ -3,6 +3,7 @@ package com.naram.ewoman_project;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 
@@ -38,6 +39,16 @@ public class PaymentActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_payment);
+
+        Intent intent = getIntent();
+
+        if(intent != null) {
+
+            item_name = intent.getStringExtra("item_name");
+            phone = intent.getStringExtra("phone");
+            price = Integer.parseInt(intent.getStringExtra("price"));
+
+        }
 
         // 초기설정 - 해당 프로젝트(안드로이드)의 application id 값을 설정합니다. 결제와 통계를 위해 꼭 필요합니다.
         // 앱에서 확인하지 말고 꼭 웹 사이트에서 확인하자. 앱의 application id 갖다 쓰면 안됨!!!

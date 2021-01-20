@@ -291,6 +291,7 @@
                         android:paddingLeft="5dp"
                         android:fontFamily="@font/nanumbarungothic"
                         android:textSize="15dp"
+                        android:inputType="text"
                         android:textColor="@color/colorGray"
                         android:editable="false"
                         android:hint="주소지를 입력해주세요." />
@@ -391,12 +392,5 @@
         </RelativeLayout>
 
     </ScrollView>
-
-    <WebView
-        android:id="@+id/webView_address"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@+id/toolbar"
-        android:visibility="gone"/>
 
 </RelativeLayout>

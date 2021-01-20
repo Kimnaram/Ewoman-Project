@@ -17,6 +17,7 @@
         android:networkSecurityConfig="@xml/network_security_config"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity android:name=".DaumAddressActivity"></activity>
         <activity
             android:name=".ItemUpdateActivity"
             android:windowSoftInputMode="stateAlwaysHidden"></activity>
@@ -27,9 +28,9 @@
             android:name=".ItemAddActivity"
             android:windowSoftInputMode="stateAlwaysHidden" />
         <activity android:name=".CartActivity" />
-        <activity
-            android:name=".ReviewUpdateActivity"
-            android:windowSoftInputMode="stateAlwaysHidden" />
+<!--        <activity-->
+<!--            android:name=".PostUpdateActivity"-->
+<!--            android:windowSoftInputMode="stateAlwaysHidden" />-->
         <activity android:name=".PostDetailActivity" />
         <activity
             android:name=".PostCreateActivity"

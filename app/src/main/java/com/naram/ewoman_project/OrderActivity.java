@@ -13,7 +13,6 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Message;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -21,9 +20,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.webkit.JavascriptInterface;
-import android.webkit.WebChromeClient;
-import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -51,6 +47,8 @@ import java.util.ArrayList;
 public class OrderActivity extends AppCompatActivity {
 
     private static final String TAG = "OrderActivity";
+
+    private static final int SEARCH_ADDRESS_ACTIVITY = 1002;
 
     private static final String TAG_RESULTS = "result";
     private static final String TAG_ITEMNO = "item_no";
@@ -85,6 +83,7 @@ public class OrderActivity extends AppCompatActivity {
     private EditText et_order_address2;
 
     private Button btn_order_zipcode;
+    private Button btn_billing_try;
 
     private Spinner sp_order_deliv_message;
 
@@ -177,7 +176,7 @@ public class OrderActivity extends AppCompatActivity {
                 ArrayAdapter.createFromResource(this, R.array.delivery_message, R.layout.spinner_item);
         sp_order_deliv_message.setAdapter(spinnerLargerAdapter);
         sp_order_deliv_message.setSelection(0);
-        
+
         et_order_phone.addTextChangedListener(new TextWatcher() {
 
             private int _beforeLenght = 0;
@@ -239,13 +238,39 @@ public class OrderActivity extends AppCompatActivity {
         btn_order_zipcode.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // WebView 초기화
-                init_webView();
+                Intent intent = new Intent(getApplicationContext(), DaumAddressActivity.class);
 
-                daum_webView.setVisibility(View.VISIBLE);
+                startActivityForResult(intent, SEARCH_ADDRESS_ACTIVITY);
+            }
+        });
 
-                // 핸들러를 통한 JavaScript 이벤트 반응
-                handler = new Handler();
+        btn_billing_try.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(et_order_name.getText().toString().isEmpty() || et_order_phone.getText().toString().isEmpty()  || et_order_zipcode.getText().toString().isEmpty()
+                        || et_order_address1.getText().toString().isEmpty() || et_order_address2.getText().toString().isEmpty()) {
+                    Toast.makeText(getApplicationContext(), "모든 입력항목을 채워야 합니다.", Toast.LENGTH_SHORT).show();
+                } else {
+                    // 결제 화면으로 이동
+                    String price = tv_item_all_price.getText().toString().replace(",", "").split("원")[0];
+                    String phone = et_order_phone.getText().toString();
+
+
+                    Intent intent = new Intent(getApplicationContext(), PaymentActivity.class);
+
+                    intent.putExtra("item_name", "테스트");
+                    intent.putExtra("price", price);
+                    intent.putExtra("phone", phone);
+                    intent.putExtra("size", Integer.toString(orderList.size()));
+                    for(int i = 0; i < orderList.size(); i++) {
+
+                        intent.putExtra("itemNo[" + i + "]", Integer.toString(orderList.get(i).getItem_no()));
+                        intent.putExtra("className[" + i + "]", orderList.get(i).getClass_name());
+                        intent.putExtra("count[" + i + "]", Integer.toString(orderList.get(i).getCount()));
+
+                    }
+
+                }
             }
         });
 
@@ -270,61 +295,12 @@ public class OrderActivity extends AppCompatActivity {
         et_order_address2 = findViewById(R.id.et_order_address2);
 
         btn_order_zipcode = findViewById(R.id.btn_order_zipcode);
+        btn_billing_try = findViewById(R.id.btn_billing_try);
 
         sp_order_deliv_message = findViewById(R.id.sp_order_deliv_message);
 
         dbOpenHelper = new DBOpenHelper(this);
         dbOpenHelper.open();
-
-    }
-
-    public void init_webView() {
-
-        // WebView 설정
-        daum_webView = (WebView) findViewById(R.id.webView_address);
-
-        WebSettings settings = daum_webView.getSettings();
-        settings.setJavaScriptEnabled(true);
-        settings.setJavaScriptCanOpenWindowsAutomatically(true);
-        settings.setSupportMultipleWindows(true);
-
-        // JavaScript 허용
-        daum_webView.getSettings().setJavaScriptEnabled(true);
-        // JavaScript의 window.open 허용
-        daum_webView.getSettings().setJavaScriptCanOpenWindowsAutomatically(true);
-        // JavaScript이벤트에 대응할 함수를 정의 한 클래스를 붙여줌
-        daum_webView.addJavascriptInterface(new AndroidBridge(), "TestApp");
-        // web client 를 chrome 으로 설정
-        daum_webView.setWebChromeClient(new WebChromeClient());
-        // webview url load. php 파일 주소
-        daum_webView.loadUrl("http://" + IP_ADDRESS + "/ewoman-php/daum_address.php");
-
-    }
-
-    private class AndroidBridge {
-
-        @JavascriptInterface
-
-        public void setAddress(final String arg1, final String arg2, final String arg3) {
-
-            handler.post(new Runnable() {
-
-                @Override
-
-                public void run() {
-
-                    et_order_zipcode.setText(String.format("(%s)", arg1));
-                    et_order_address1.setText(String.format("%s %s", arg2, arg3));
-
-                    // WebView를 초기화 하지않으면 재사용할 수 없음
-
-                    init_webView();
-
-                }
-
-            });
-
-        }
 
     }
 
@@ -356,6 +332,21 @@ public class OrderActivity extends AppCompatActivity {
         } catch (Exception e) {
             e.getMessage();
             return null;
+        }
+    }
+
+    public void onActivityResult(int requestCode, int resultCode, Intent intent) {
+        super.onActivityResult(requestCode, resultCode, intent);
+        switch (requestCode) {
+            case SEARCH_ADDRESS_ACTIVITY:
+                if (resultCode == RESULT_OK) {
+                    String data = intent.getExtras().getString("data");
+                    if (data != null) {
+                        et_order_zipcode.setText(data.substring(0, 5));
+                        et_order_address1.setText(data.substring(7));
+                    }
+                }
+                break;
         }
     }
 
@@ -400,14 +391,16 @@ public class OrderActivity extends AppCompatActivity {
                 return true;
             }
             case R.id.menu_login:
-                Intent cart_to_login = new Intent(getApplicationContext(), LoginActivity.class);
+                Intent order_to_login = new Intent(getApplicationContext(), LoginActivity.class);
 
-                startActivity(cart_to_login);
+                finish();
+                startActivity(order_to_login);
                 return true;
             case R.id.menu_signup:
-                Intent cart_to_signup = new Intent(getApplicationContext(), SignupActivity.class);
+                Intent order_to_signup = new Intent(getApplicationContext(), SignupActivity.class);
 
-                startActivity(cart_to_signup);
+                finish();
+                startActivity(order_to_signup);
                 return true;
             case R.id.menu_logout:
 
@@ -425,6 +418,10 @@ public class OrderActivity extends AppCompatActivity {
                 startActivity(logout_to_order);
                 return true;
             case R.id.menu_cart:
+                Intent order_to_cart = new Intent(getApplicationContext(), CartActivity.class);
+
+                finish();
+                startActivity(order_to_cart);
                 return true;
         }
         return super.onOptionsItemSelected(item);
@@ -465,6 +462,15 @@ public class OrderActivity extends AppCompatActivity {
                     itemPrice += class_price;
                 } else {
                     itemPrice += price;
+                }
+
+                for(int j = 0; j < orderList.size(); j++) {
+                    if (item_no == orderList.get(j).getItem_no()) {
+
+                        Log.d(TAG, orderList.get(j).getName() + " : " + orderList.get(j).getCount());
+
+                        count = orderList.get(j).getCount();
+                    }
                 }
 
                 if(class_price != 0 && class_price >= 50000) {
@@ -547,7 +553,6 @@ public class OrderActivity extends AppCompatActivity {
 
             String serverURL = "http://" + IP_ADDRESS + "/ewoman-php/selectOrder.php";
             String postParameters = "item_no=" + item_no + "&class_name=" + class_name;
-            Log.d(TAG, "파라미터 : " + postParameters);
 
             try {
 
