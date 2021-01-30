@@ -9,6 +9,7 @@ public class ListPost {
     private String title;
     private String name;
     private String content;
+    private String detailurl;
     private int like;
 
     public ListPost() {
@@ -18,9 +19,10 @@ public class ListPost {
         like = 0;
     }
 
-    public ListPost(String title, String content) {
+    public ListPost(String title, String content, String detailurl) {
         this.title = title;
         this.content = content;
+        this.detailurl = detailurl;
     }
 
     public ListPost(int _id, String title, String name, int like) {
@@ -64,6 +66,14 @@ public class ListPost {
 
     public void setContent(String content) {
         this.content = content;
+    }
+
+    public String getDetailurl() {
+        return detailurl;
+    }
+
+    public void setDetailurl(String detailurl) {
+        this.detailurl = detailurl;
     }
 
 }

@@ -3,6 +3,8 @@ package com.naram.ewoman_project;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,9 +18,19 @@ public class eTodayListAdapter extends RecyclerView.Adapter<eTodayListAdapter.It
     // adapter에 들어갈 list 입니다.
     private ArrayList<ListPost> listeTodayArrayList = new ArrayList<>(); // 커스텀 리스너 인터페이스
 
+    private Context context;
+
     // 리스너 객체 참조를 저장하는 변수
-    private OnItemClickListener mListener = null;
-    private OnItemLongClickListener mLongListener = null;
+//    private OnItemClickListener mListener = null;
+//    private OnItemLongClickListener mLongListener = null;
+
+    public eTodayListAdapter(){
+
+    }
+
+    public eTodayListAdapter(Context context){
+        this.context = context;
+    }
 
     @NonNull
     @Override
@@ -73,14 +85,14 @@ public class eTodayListAdapter extends RecyclerView.Adapter<eTodayListAdapter.It
             itemView.setOnClickListener(new View.OnClickListener()
             {
                 @Override
-                public void onClick(View v)
-                {
+                public void onClick(View view) {
+                    int position = getAdapterPosition();
+                    ListPost listetoday = listeTodayArrayList.get(position);
 
-                    int pos = getAdapterPosition();
-                    if (pos != RecyclerView.NO_POSITION)
-                    {
-                        mListener.onItemClick(v, pos);
-                    }
+                    Intent intent = new Intent(context, eTodayDetailActivity.class);
+                    intent.putExtra("title", listetoday.getTitle());
+                    intent.putExtra("detail_url", listetoday.getDetailurl());
+                    context.startActivity(intent);
 
                 }
             });
@@ -94,27 +106,26 @@ public class eTodayListAdapter extends RecyclerView.Adapter<eTodayListAdapter.It
 
     }
 
-    public interface OnItemClickListener
-    {
-        void onItemClick(View v, int pos);
-    }
+//    public interface OnItemClickListener
+//    {
+//        void onItemClick(View v, int pos);
+//    }
+//
+//    public interface OnItemLongClickListener
+//    {
+//        void onItemLongClick(View v, int pos);
+//    }
+//
+//    public void setOnItemClickListener(OnItemClickListener listener)
+//    {
+//        this.mListener = listener;
+//    }
+//
+//    public void setOnItemLongClickListener(OnItemLongClickListener listener)
+//    {
+//        this.mLongListener = listener;
+//    }
 
-    public interface OnItemLongClickListener
-    {
-        void onItemLongClick(View v, int pos);
-    }
-
-    public void setOnItemClickListener(OnItemClickListener listener)
-    {
-        this.mListener = listener;
-    }
-
-    public void setOnItemLongClickListener(OnItemLongClickListener listener)
-    {
-        this.mLongListener = listener;
-    }
-
-    //
     public void TextAdapter(ArrayList<ListPost> list)
     {
         listeTodayArrayList = list;

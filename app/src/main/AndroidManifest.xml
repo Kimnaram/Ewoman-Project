@@ -17,7 +17,8 @@
         android:roundIcon="@mipmap/ic_launcher_ewoman_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".eTodayActivity"></activity>
+        <activity android:name=".eTodayDetailActivity"></activity>
+        <activity android:name=".eTodayActivity" />
         <activity android:name=".DaumAddressActivity" />
         <activity android:name=".PaymentActivity" />
         <activity
@@ -65,8 +66,7 @@
 
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
-            android:value="@string/facebook_app_id"/>
-
+            android:value="@string/facebook_app_id" />
         <meta-data
             android:name="com.naver.maps.map.CLIENT_ID"
             android:value="" />

@@ -86,7 +86,7 @@ public class eTodayActivity extends AppCompatActivity {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         rv_etoday_container.setLayoutManager(linearLayoutManager);
 
-        adapter = new eTodayListAdapter();
+        adapter = new eTodayListAdapter(eTodayActivity.this);
         rv_etoday_container.setAdapter(adapter);
 
         progressBar = findViewById(R.id.progressBar);
@@ -178,8 +178,6 @@ public class eTodayActivity extends AppCompatActivity {
                 p = Jsoup.connect(url).get();
                 Elements pages = p.select("ul.pagination").select("li");
 
-                Log.d(TAG, "page size : " + pages.size());
-
                 for (int i = 0; i < pages.size(); i++) {
 
                     Element page = pages.get(i);
@@ -205,7 +203,6 @@ public class eTodayActivity extends AppCompatActivity {
                                     .attr("href");
 
                             String detailLink = "https://www.ewoman.kr" + href;
-                            Log.d(TAG, "href = " + detailLink);
 
                             String title = inner_content.select("div")
                                     .select("a")
@@ -222,11 +219,7 @@ public class eTodayActivity extends AppCompatActivity {
                                 issue_no = issue_no.split("N")[0];
                                 String allTitle = "오늘의 상식 #" + issue_no;
 
-                                Log.d(TAG, "title = " + allTitle);
-                                Log.d(TAG, "simple content = " + simple_content);
-
-                                ListPost listeToday = new ListPost(allTitle, simple_content);
-//                            listeTodays.add(listeToday);
+                                ListPost listeToday = new ListPost(allTitle, simple_content, detailLink);
                                 adapter.addItem(listeToday);
                             }
 
