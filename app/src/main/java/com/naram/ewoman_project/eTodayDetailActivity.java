@@ -3,6 +3,7 @@ package com.naram.ewoman_project;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -13,6 +14,8 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
@@ -108,6 +111,58 @@ public class eTodayDetailActivity extends AppCompatActivity {
 
         tv_item_title = findViewById(R.id.tv_item_title);
         tv_item_content = findViewById(R.id.tv_item_content);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        if (useremail == null) {
+            getMenuInflater().inflate(R.menu.toolbar_bl_menu, menu);
+        } else if (useremail != null) {
+            getMenuInflater().inflate(R.menu.toolbar_al_menu, menu);
+        }
+
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home: { //툴바 뒤로가기 동작
+                finish();
+                return true;
+            }
+            case R.id.menu_login:
+                Intent etodaylist_to_login = new Intent(getApplicationContext(), LoginActivity.class);
+
+                startActivity(etodaylist_to_login);
+                return true;
+            case R.id.menu_signup:
+                Intent etodaylist_to_signup = new Intent(getApplicationContext(), SignupActivity.class);
+
+                startActivity(etodaylist_to_signup);
+                return true;
+            case R.id.menu_logout:
+
+                useremail = null;
+                dbOpenHelper.deleteAllColumns();
+
+                final ProgressDialog mDialog = new ProgressDialog(eTodayDetailActivity.this);
+                mDialog.setMessage("로그아웃 중입니다.");
+                mDialog.show();
+
+                Intent logout_to_revlist = new Intent(getApplicationContext(), eTodayDetailActivity.class);
+                mDialog.dismiss();
+
+                finish();
+                startActivity(logout_to_revlist);
+                return true;
+            case R.id.menu_cart:
+                startActivity(new Intent(getApplicationContext(), CartActivity.class));
+                finish();
+
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     private class eToday extends AsyncTask<String, Void, Void> {

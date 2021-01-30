@@ -130,7 +130,7 @@ public class eTodayActivity extends AppCompatActivity {
                 mDialog.setMessage("로그아웃 중입니다.");
                 mDialog.show();
 
-                Intent logout_to_revlist = new Intent(getApplicationContext(), PostListActivity.class);
+                Intent logout_to_revlist = new Intent(getApplicationContext(), eTodayActivity.class);
                 mDialog.dismiss();
 
                 finish();
