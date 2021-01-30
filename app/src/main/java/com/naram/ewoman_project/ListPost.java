@@ -8,6 +8,8 @@ public class ListPost {
     private int _id;
     private String title;
     private String name;
+    private String content;
+    private String detailurl;
     private int like;
 
     public ListPost() {
@@ -15,6 +17,12 @@ public class ListPost {
         title = "";
         name = "";
         like = 0;
+    }
+
+    public ListPost(String title, String content, String detailurl) {
+        this.title = title;
+        this.content = content;
+        this.detailurl = detailurl;
     }
 
     public ListPost(int _id, String title, String name, int like) {
@@ -50,6 +58,22 @@ public class ListPost {
 
     public int get_id() {
         return _id;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
+
+    public String getDetailurl() {
+        return detailurl;
+    }
+
+    public void setDetailurl(String detailurl) {
+        this.detailurl = detailurl;
     }
 
 }
