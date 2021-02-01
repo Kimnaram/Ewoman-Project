@@ -10,21 +10,26 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.Point;
 import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.Display;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -46,6 +51,8 @@ public class PostCreateActivity extends AppCompatActivity {
 
     private RelativeLayout rl_image_container;
 
+    private Spinner sp_post_category;
+
     private EditText et_review_title;
     private EditText et_review_content;
     private TextView tv_post_content_length;
@@ -58,6 +65,8 @@ public class PostCreateActivity extends AppCompatActivity {
 
     private String username = "";
     private String useremail = "";
+
+    private String category = "";
 
     private Bitmap img = null;
 
@@ -84,6 +93,36 @@ public class PostCreateActivity extends AppCompatActivity {
             useremail = tempEmail;
 
         }
+
+        Display display = getWindowManager().getDefaultDisplay();
+        Point size = new Point();
+        display.getRealSize(size);
+        int width = size.x; // Device width
+
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+
+        int margin_px = dpToPx(18);
+
+        double r = width / 100.0; // 비율
+        double u_width = 75 * r - margin_px; // et_review_title의 width
+
+        Log.d(TAG, "width : " + u_width);
+
+        btn_image_upload.setWidth((int)u_width);
+        btn_image_upload.setHeight(40);
+
+        sp_post_category.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                category = parent.getItemAtPosition(position).toString();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
 
         et_review_title.setOnKeyListener(new View.OnKeyListener() {
             @Override
@@ -126,7 +165,7 @@ public class PostCreateActivity extends AppCompatActivity {
                     String content = et_review_content.getText().toString();
 
                     InsertData task = new InsertData();
-                    task.execute("http://" + IP_ADDRESS + "/ewoman-php/insertPost.php", title, content, useremail, image);
+                    task.execute("http://" + IP_ADDRESS + "/ewoman-php/insertPost.php", title, content, useremail, image, category);
 
                 } else {
                     if (et_review_title.getText().toString().isEmpty() && et_review_content.getText().toString().isEmpty()) {
@@ -177,6 +216,8 @@ public class PostCreateActivity extends AppCompatActivity {
 
         rl_image_container = findViewById(R.id.rl_image_container);
 
+        sp_post_category = findViewById(R.id.sp_post_category);
+
         et_review_title = findViewById(R.id.et_review_title);
         et_review_content = findViewById(R.id.et_review_content);
 
@@ -190,6 +231,14 @@ public class PostCreateActivity extends AppCompatActivity {
         btn_review_upload = findViewById(R.id.btn_review_upload);
 
     }
+
+    public int dpToPx(int dp) {
+
+        float density = getResources().getDisplayMetrics().density;
+
+        return Math.round((float) dp * density);
+    }
+
 
     // 바이너리 바이트 배열을 스트링으로
     public static String byteArrayToBinaryString(byte[] b) {
@@ -332,9 +381,10 @@ public class PostCreateActivity extends AppCompatActivity {
             String content = (String)params[2];
             String email = (String)params[3];
             String image = (String)params[4];
+            String category = (String)params[5];
 
             String serverURL = (String)params[0];
-            String postParameters = "title=" + title + "&content=" + content + "&email=" + email + "&image=" +image;
+            String postParameters = "category=" + category + "&title=" + title + "&content=" + content + "&email=" + email + "&image=" +image;
 
             try {
 

@@ -65,9 +65,6 @@
         <activity android:name=".MainActivity" />
 
         <meta-data
-            android:name="com.facebook.sdk.ApplicationId"
-            android:value="@string/facebook_app_id" />
-        <meta-data
             android:name="com.naver.maps.map.CLIENT_ID"
             android:value="" />
     </application>

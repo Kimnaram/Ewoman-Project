@@ -30,13 +30,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.material.navigation.NavigationView;
-import com.google.firebase.auth.FirebaseAuth;
 
 public class MainActivity extends AppCompatActivity {
 
     private final static String TAG = "MainActivity";
 
-    private FirebaseAuth firebaseAuth;
     private DBOpenHelper dbOpenHelper;
 
     private NavigationView navigationView;
@@ -66,8 +64,6 @@ public class MainActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true); //툴바 메뉴버튼 생성
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.common_menu); // 메뉴 버튼 모양 설정
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.parseColor("#FFFFFF"))); //툴바 배경색
-
-        firebaseAuth = FirebaseAuth.getInstance();
 
         LinearLayout ll_navigation_container = (LinearLayout) LayoutInflater.from(this).inflate(R.layout.navigation_item, null);
         ll_navigation_container.setBackground(getResources().getDrawable(R.color.colorCocoa));
@@ -173,6 +169,8 @@ public class MainActivity extends AppCompatActivity {
                     startActivity(new Intent(getApplicationContext(), ContactActivity.class));
                 } else if (id == R.id.item_add) {
                     startActivity(new Intent(getApplicationContext(), ItemAddActivity.class));
+                } else if (id == R.id.item_e_today) {
+                    startActivity(new Intent(getApplicationContext(), eTodayActivity.class));
                 }
 
                 return true;

@@ -241,6 +241,7 @@ public class CartActivity extends AppCompatActivity {
     public void onResume() {
         super.onResume();
 
+        lv_cart_product.clearChoices();
         adapter.clearAllItems();
 
         all_count = 0;
@@ -437,11 +438,14 @@ public class CartActivity extends AppCompatActivity {
 
             for (int i = 0; i < cart.length(); i++) {
 
+                int cart_price = 0;
+
                 JSONObject item = cart.getJSONObject(i);
 
                 int item_no = Integer.parseInt(item.getString(TAG_ITEMNO));
                 String name = item.getString(TAG_NAME);
                 int price = Integer.parseInt(item.getString(TAG_PRICE));
+                cart_price = price;
                 int count = Integer.parseInt(item.getString(TAG_COUNT));
                 String date = item.getString(TAG_DATE);
                 String image = "";
@@ -451,6 +455,7 @@ public class CartActivity extends AppCompatActivity {
                     img = StringToBitmap(image);
                 }
                 String class_name = null;
+                int class_price = 0;
 
                 if (!item.isNull(TAG_CLASSNAME)) {
                     class_name = item.getString(TAG_CLASSNAME);
@@ -458,9 +463,10 @@ public class CartActivity extends AppCompatActivity {
 
                 if (!item.isNull(TAG_CLASSPRICE)) {
                     class_price = Integer.parseInt(item.getString(TAG_CLASSPRICE));
+                    cart_price = class_price;
                 }
 
-                listCart = new ListCart(item_no, name, date, img, count, class_price, class_name);
+                listCart = new ListCart(item_no, name, date, img, count, cart_price, class_name);
 
                 items.add(listCart);
                 ArrayAdapter.add(items) ;

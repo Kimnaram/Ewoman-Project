@@ -15,6 +15,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ItemVi
 
     // adapter에 들어갈 list 입니다.
     private ArrayList<ListPost> listPostArrayList = new ArrayList<>(); // 커스텀 리스너 인터페이스
+    private ArrayList<ListPost> displayPostArrayList = new ArrayList<>();
 
     // 리스너 객체 참조를 저장하는 변수
     private OnItemClickListener mListener = null;
@@ -32,28 +33,30 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ItemVi
     @Override
     public void onBindViewHolder(@NonNull ItemViewHolder holder, int position) {
         // Item을 하나, 하나 보여주는(bind 되는) 함수입니다.
-        holder.onBind(listPostArrayList.get(position));
+        holder.onBind(displayPostArrayList.get(position));
     }
 
     @Override
     public int getItemCount() {
         // RecyclerView의 총 개수 입니다.
-        return listPostArrayList.size();
+        return displayPostArrayList.size();
     }
 
     public void addItem(ListPost listPost) {
         // 외부에서 item을 추가시킬 함수입니다.
         listPostArrayList.add(listPost);
+        displayPostArrayList.add(listPost);
         notifyDataSetChanged();
     }
 
     public ListPost getItem(int position) {
-        return listPostArrayList.get(position) ;
+        return displayPostArrayList.get(position) ;
     }
 
     public void clearAllItem() {
 
         listPostArrayList.clear();
+        displayPostArrayList.clear();
         notifyDataSetChanged();
     }
 
@@ -61,8 +64,10 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ItemVi
     // 여기서 subView를 setting 해줍니다.
     class ItemViewHolder extends RecyclerView.ViewHolder {
 
+        private TextView tv_item_category;
         private TextView tv_item_title;
         private TextView tv_item_userid;
+        private TextView tv_item_like;
         private ImageView iv_item_image;
 
         ItemViewHolder(View itemView) {
@@ -70,6 +75,8 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ItemVi
 
             tv_item_title = itemView.findViewById(R.id.tv_item_title);
             tv_item_userid = itemView.findViewById(R.id.tv_item_userid);
+            tv_item_category = itemView.findViewById(R.id.tv_item_category);
+            tv_item_like = itemView.findViewById(R.id.tv_item_like);
             iv_item_image = itemView.findViewById(R.id.iv_item_image);
 
             itemView.setOnClickListener(new View.OnClickListener()
@@ -90,8 +97,10 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ItemVi
         }
 
         void onBind(ListPost listPost) {
+            tv_item_category.setText(listPost.getCategory());
             tv_item_title.setText(listPost.getTitle());
             tv_item_userid.setText(listPost.getName());
+            tv_item_like.setText(Integer.toString(listPost.getLike()));
         }
 
     }
@@ -121,11 +130,22 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ItemVi
     {
         listPostArrayList = list;
     }
-    
+
     public void filter(String search) {
-        
-        
-        
+
+        if(!search.isEmpty()) {
+
+            displayPostArrayList.clear();
+
+            for (int i = 0; i < listPostArrayList.size(); i++) {
+                if (search.contains(listPostArrayList.get(i).getName())
+                        || search.contains(listPostArrayList.get(i).getTitle())) {
+                    displayPostArrayList.add(listPostArrayList.get(i));
+                }
+            }
+
+        }
+
     }
 
 }

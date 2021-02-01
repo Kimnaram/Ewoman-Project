@@ -18,6 +18,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -110,7 +111,7 @@ public class ProductDetailActivity extends AppCompatActivity {
     private TextView tv_item_detail;
     private TextView tv_item_deliv_method_is;
     private TextView tv_item_deliv_price_is;
-    private TextView tv_buy_try;
+    private TextView tv_order_try;
     private TextView tv_cart_try;
     private TextView tv_wishlist_try;
     private TextView tv_update_try;
@@ -126,15 +127,18 @@ public class ProductDetailActivity extends AppCompatActivity {
     private Bitmap img = null;
 
     private List<Class> classList_order = new ArrayList<Class>();
-    private List<String> classList = new ArrayList<String>();
 
+    private String useremail = null;
     private String item_no = null;
     private String item_name = null;
+    private String class_name = null;
+
     private int count = 0;
+    private int class_price = 0;
     private int min_quantity = 1;
     private int max_quantity = 10;
+
     private boolean Wishlist = false;
-    private String useremail = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -173,9 +177,9 @@ public class ProductDetailActivity extends AppCompatActivity {
             item_no = intent.getStringExtra("item_no");
 
             if (tv_category_name.getText().toString().equals("e-College")) {
-                tv_buy_try.setText("예약하기");
+                tv_order_try.setText("예약하기");
             } else {
-                tv_buy_try.setText("구매하기");
+                tv_order_try.setText("구매하기");
             }
 
             tv_category_name.setOnClickListener(new View.OnClickListener() {
@@ -206,6 +210,23 @@ public class ProductDetailActivity extends AppCompatActivity {
             });
 
         }
+
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                String strClass = parent.getItemAtPosition(position).toString();
+                class_name = strClass.split("\\|")[0];
+                String cls_price = strClass.split("\\|")[1].replace(",", "");
+                Log.d(TAG, "class name : " + class_name + ", class_price : " + class_price);
+                class_price = Integer.parseInt(cls_price);
+                Log.d(TAG, "selected class : " + strClass);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
 
         tv_wishlist_try.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -263,7 +284,7 @@ public class ProductDetailActivity extends AppCompatActivity {
                     String count = tv_count_view.getText().toString();
 
                     InsertCartData cartTask = new InsertCartData();
-                    cartTask.execute("http://" + IP_ADDRESS + "/ewoman-php/insertCart.php", item_no, useremail, count, now);
+                    cartTask.execute("http://" + IP_ADDRESS + "/ewoman-php/insertCart.php", item_no, useremail, count, now, class_name);
 
                 } else {
 
@@ -273,30 +294,40 @@ public class ProductDetailActivity extends AppCompatActivity {
             }
         });
 
-        tv_buy_try.setOnClickListener(new View.OnClickListener() {
+        tv_order_try.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String tv_price = tv_item_price.getText().toString();
-                String after_price = tv_price.replaceAll("\\,","");
+                String after_price = tv_price.replaceAll("\\,","").split("원")[0];
                 Log.d(TAG, "price : " + after_price);
-                int price = Integer.parseInt(after_price);
+                int price = 0;
+                if(class_price == 0) {
+                    price = Integer.parseInt(after_price);
+                } else {
+                    price = class_price;
+                }
                 int count = Integer.parseInt(tv_count_view.getText().toString());
                 String tv_deliv_price = tv_item_deliv_price_is.getText().toString();
                 int deliv_price = 0;
                 if(!tv_deliv_price.isEmpty()) {
-                    deliv_price = Integer.parseInt(tv_item_deliv_price_is.getText().toString());
+                    if (tv_item_deliv_price_is.getText().toString().equals("무료")) {
+                        deliv_price = 0;
+                    } else {
+                        deliv_price = Integer.parseInt(tv_item_deliv_price_is.getText().toString());
+                    }
                 }
 
-                if (tv_buy_try.getText().toString().equals("예약하기")) {
+                if (tv_order_try.getText().toString().equals("예약하기")) {
                     // 예약하기 화면으로 넘어가기
                 } else {
                     // 주문하기 화면으로 넘어가기
-                    int allPrice = count * price + deliv_price;
-
                     Intent intent = new Intent(getApplicationContext(), OrderActivity.class);
-                    intent.putExtra("prevPage", "DetailPage");
-                    intent.putExtra("item_no", item_no);
-                    intent.putExtra("price", Integer.toString(allPrice));
+
+                    intent.putExtra("prevPage", "cartPage");
+                    intent.putExtra("size", "1");
+                    intent.putExtra("itemNo[0]", item_no);
+                    intent.putExtra("className[0]", class_name);
+                    intent.putExtra("count[0]", Integer.toString(count));
 
                     startActivity(intent);
 
@@ -409,7 +440,7 @@ public class ProductDetailActivity extends AppCompatActivity {
         tv_item_deliv_method_is = findViewById(R.id.tv_item_deliv_method_is);
         tv_item_deliv_price_is = findViewById(R.id.tv_item_deliv_price_is);
 
-        tv_buy_try = findViewById(R.id.tv_buy_try);
+        tv_order_try = findViewById(R.id.tv_order_try);
         tv_cart_try = findViewById(R.id.tv_cart_try);
         tv_wishlist_try = findViewById(R.id.tv_wishlist_try);
         tv_update_try = findViewById(R.id.tv_update_try);
@@ -507,6 +538,8 @@ public class ProductDetailActivity extends AppCompatActivity {
             JSONObject jsonObject = new JSONObject(JSONString);
             item = jsonObject.getJSONArray(TAG_RESULTS);
 
+            List<String> classList = new ArrayList<String>();
+
             for (int i = 0; i < item.length(); i++) {
 
                 JSONObject component = item.getJSONObject(i);
@@ -540,8 +573,9 @@ public class ProductDetailActivity extends AppCompatActivity {
                 int minimum_quantity;
                 int maximum_quantity;
                 int wishlist;
+
                 String class_name = null;
-                int class_price;
+                int class_price = 0;
 
                 if (!component.isNull(TAG_DELIV_METHOD)) {
                     deliv_method = component.getString(TAG_DELIV_METHOD);
@@ -577,9 +611,9 @@ public class ProductDetailActivity extends AppCompatActivity {
                     String decimal_price = decimalFormat.format(class_price);
                     String strClass = null;
                     if(!decimal_price.equals("0")) {
-                        strClass = class_name + "    " + decimal_price;
+                        strClass = class_name + "|" + decimal_price;
                     } else {
-                        strClass = class_name;
+                        strClass = class_name + "|" + "0";
                     }
                     Class classObject = new Class(class_name, class_price);
 
@@ -721,6 +755,7 @@ public class ProductDetailActivity extends AppCompatActivity {
 
             progressDialog.dismiss();
             Log.d(TAG, "response - " + result);
+
         }
 
         @Override
@@ -834,9 +869,10 @@ public class ProductDetailActivity extends AppCompatActivity {
             String email = (String) params[2];
             String count = (String) params[3];
             String date = (String) params[4];
+            String class_name = (String) params[5];
 
             String serverURL = (String) params[0];
-            String postParameters = "item_no=" + item_no + "&email=" + email + "&count=" + count + "&date=" + date;
+            String postParameters = "item_no=" + item_no + "&email=" + email + "&count=" + count + "&date=" + date + "&class_name=" + class_name;
 
             try {
 

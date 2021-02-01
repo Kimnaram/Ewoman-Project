@@ -7,4 +7,11 @@
         <item>배달 전에 연락을 남겨주세요.</item>
     </string-array>
 
+    <!-- post의 category 리스트 -->
+    <string-array name = "post_category">
+        <item>슬기로운 후기</item>
+        <item>어쩌고..</item>
+        <item>저쩌고...</item>
+    </string-array>
+
 </resources>

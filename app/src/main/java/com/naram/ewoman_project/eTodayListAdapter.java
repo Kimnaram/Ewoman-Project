@@ -75,10 +75,12 @@ public class eTodayListAdapter extends RecyclerView.Adapter<eTodayListAdapter.It
 
         private TextView tv_item_title;
         private TextView tv_item_content;
+        private ImageView iv_item_thumbnail;
 
         ItemViewHolder(View itemView) {
             super(itemView);
 
+            iv_item_thumbnail = itemView.findViewById(R.id.iv_item_thumbnail);
             tv_item_title = itemView.findViewById(R.id.tv_item_title);
             tv_item_content = itemView.findViewById(R.id.tv_item_content);
 
@@ -100,6 +102,7 @@ public class eTodayListAdapter extends RecyclerView.Adapter<eTodayListAdapter.It
         }
 
         void onBind(ListPost listPost) {
+            iv_item_thumbnail.setImageBitmap(listPost.getThumbnail());
             tv_item_title.setText(listPost.getTitle());
             tv_item_content.setText(listPost.getContent());
         }

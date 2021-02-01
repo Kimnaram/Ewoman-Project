@@ -1,11 +1,14 @@
 package com.naram.ewoman_project;
 
+import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.media.Image;
 
 public class ListPost {
 
     private int _id;
+    private String category;
+    private Bitmap thumbnail;
     private String title;
     private String name;
     private String content;
@@ -19,17 +22,27 @@ public class ListPost {
         like = 0;
     }
 
-    public ListPost(String title, String content, String detailurl) {
+    public ListPost(Bitmap thumbnail, String title, String content, String detailurl) {
+        this.thumbnail = thumbnail;
         this.title = title;
         this.content = content;
         this.detailurl = detailurl;
     }
 
-    public ListPost(int _id, String title, String name, int like) {
+    public ListPost(int _id, String category, String title, String name, int like) {
         this._id = _id;
+        this.category = category;
         this.title = title;
         this.name = name;
         this.like = like;
+    }
+
+    public Bitmap getThumbnail() {
+        return thumbnail;
+    }
+
+    public void setThumbnail(Bitmap thumbnail) {
+        this.thumbnail = thumbnail;
     }
 
     public String getTitle() {
@@ -74,6 +87,14 @@ public class ListPost {
 
     public void setDetailurl(String detailurl) {
         this.detailurl = detailurl;
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
     }
 
 }

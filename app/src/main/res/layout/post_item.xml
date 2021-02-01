@@ -23,6 +23,15 @@
             android:orientation="vertical">
 
             <TextView
+                android:id="@+id/tv_item_category"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="2dp"
+                android:text="CATEGORY"
+                android:textColor="@color/colorLightGray"
+                android:textSize="12sp" />
+
+            <TextView
                 android:id="@+id/tv_item_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -30,8 +39,7 @@
                 android:fontFamily="@font/nanumbarungothicbold"
                 android:text="TITLE"
                 android:textColor="@color/colorGray"
-                android:textSize="22sp"
-                android:textStyle="bold" />
+                android:textSize="22sp" />
 
             <RelativeLayout
                 android:layout_width="wrap_content"
