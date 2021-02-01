@@ -32,10 +32,21 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+        <TextView
+            android:id="@+id/tv_etoday_main"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:text="@string/eToday_main"
+            android:gravity="center"
+            android:fontFamily="@font/nanumbarungothic"
+            android:textSize="15sp"/>
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_etoday_container"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_below="@+id/tv_etoday_main"
             android:padding="10dp" />
 
         <ProgressBar

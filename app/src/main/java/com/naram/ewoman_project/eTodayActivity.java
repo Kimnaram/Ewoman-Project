@@ -8,6 +8,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
@@ -25,6 +27,7 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.io.IOException;
+import java.net.URL;
 import java.util.ArrayList;
 
 public class eTodayActivity extends AppCompatActivity {
@@ -204,6 +207,22 @@ public class eTodayActivity extends AppCompatActivity {
 
                             String detailLink = "https://www.ewoman.kr" + href;
 
+                            String img = inner_content.select("div")
+                                    .select("a")
+                                    .select("div.card_wrapper")
+                                    .attr("style");
+
+                            int begin = img.indexOf("https");
+                            int end = img.indexOf(")");
+                            img = img.substring(begin, end);
+
+                            Log.d(TAG, "image : " + img);
+
+                            Bitmap bmp = null;
+
+                            URL imgUrl = new URL(img);
+                            bmp = BitmapFactory.decodeStream(imgUrl.openConnection().getInputStream());
+
                             String title = inner_content.select("div")
                                     .select("a")
                                     .select("div.title")
@@ -219,7 +238,7 @@ public class eTodayActivity extends AppCompatActivity {
                                 issue_no = issue_no.split("N")[0];
                                 String allTitle = "오늘의 상식 #" + issue_no;
 
-                                ListPost listeToday = new ListPost(allTitle, simple_content, detailLink);
+                                ListPost listeToday = new ListPost(bmp, allTitle, simple_content, detailLink);
                                 adapter.addItem(listeToday);
                             }
 

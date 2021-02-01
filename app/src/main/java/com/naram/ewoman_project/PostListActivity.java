@@ -45,6 +45,7 @@ public class PostListActivity extends AppCompatActivity {
     private static final String TAG_NAME = "name";
     private static final String TAG_TITLE = "title";
     private static final String TAG_LIKE = "post_like";
+    private static final String TAG_CATEGORY = "category";
     private static String IP_ADDRESS = "IP ADDRESS";
 
     private String JSONString;
@@ -103,7 +104,6 @@ public class PostListActivity extends AppCompatActivity {
 
                 Intent intent = new Intent(getApplicationContext(), PostDetailActivity.class);
                 intent.putExtra("post_no", Integer.toString(_id));
-                Log.d(TAG, "_id : " + _id);
 
                 startActivity(intent);
             }
@@ -151,28 +151,14 @@ public class PostListActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onStart() {
-
-        super.onStart();
-
-    }
-
-    @Override
-    protected void onPause() {
-
-        super.onPause();
-
-    }
-
-    @Override
     protected void onResume() {
+
+        super.onResume();
 
         adapter.clearAllItem();
         GetData task = new GetData();
         task.execute();
         adapter.notifyDataSetChanged();
-
-        super.onResume();
 
     }
 
@@ -355,8 +341,9 @@ public class PostListActivity extends AppCompatActivity {
                 String name = c.getString(TAG_NAME);
                 String title = c.getString(TAG_TITLE);
                 String like = c.getString(TAG_LIKE);
+                String category = c.getString(TAG_CATEGORY);
 
-                listPost = new ListPost(post_no, title, name, Integer.parseInt(like));
+                listPost = new ListPost(post_no, category, title, name, Integer.parseInt(like));
                 adapter.addItem(listPost);
             }
 

@@ -69,7 +69,7 @@
                     android:layout_height="match_parent"
                     android:fontFamily="@font/nanumbarungothic"
                     android:gravity="top|left"
-                    android:lineSpacingExtra="5dp"
+                    android:lineSpacingExtra="10dp"
                     android:textSize="17sp" />
 
             </LinearLayout>

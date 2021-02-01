@@ -27,10 +27,19 @@
 
     </androidx.appcompat.widget.Toolbar>
 
+    <Spinner
+        android:id="@+id/sp_post_category"
+        android:layout_width="250dp"
+        android:layout_height="40dp"
+        android:layout_margin="5dp"
+        android:layout_alignParentRight="true"
+        android:entries="@array/post_category"
+        android:layout_below="@id/toolbar"/>
+
     <ScrollView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/toolbar">
+        android:layout_below="@+id/sp_post_category">
 
         <RelativeLayout
             android:id="@+id/rl_review_container"
@@ -38,10 +47,18 @@
             android:layout_height="wrap_content"
             android:padding="5dp">
 
+            <LinearLayout
+                android:id="@+id/ll_title_save_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:weightSum="4"
+                android:orientation="horizontal">
+
             <EditText
                 android:id="@+id/et_review_title"
-                android:layout_width="300dp"
+                android:layout_width="0dp"
                 android:layout_height="40dp"
+                android:layout_weight="3"
                 android:background="@drawable/btn_style_border_line_white_background"
                 android:fontFamily="@font/nanumbarungothicbold"
                 android:gravity="center_vertical"
@@ -52,8 +69,9 @@
 
             <Button
                 android:id="@+id/btn_review_upload"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="40dp"
+                android:layout_weight="1"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="5dp"
                 android:layout_toRightOf="@+id/et_review_title"
@@ -63,11 +81,13 @@
                 android:textColor="@color/colorWhite"
                 android:textSize="18sp" />
 
+            </LinearLayout>
+
             <Button
                 android:id="@+id/btn_image_upload"
-                android:layout_width="300dp"
+                android:layout_width="wrap_content"
                 android:layout_height="40dp"
-                android:layout_below="@+id/et_review_title"
+                android:layout_below="@+id/ll_title_save_container"
                 android:layout_marginTop="5dp"
                 android:background="@color/colorCocoa"
                 android:fontFamily="@font/nanumbarungothicbold"

@@ -180,7 +180,7 @@
         android:text="가입하기"
         android:fontFamily="@font/nanumbarungothic"
         android:textColor="@color/colorWhite"
-        android:background="@drawable/btn_style_border_line"
+        android:background="@drawable/btn_style_border_line_white"
         android:backgroundTint="@color/colorCocoa"
         android:layout_marginTop="20dp"
         android:layout_marginLeft="14dp"

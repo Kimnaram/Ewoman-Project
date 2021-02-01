@@ -7,6 +7,7 @@ import androidx.appcompat.widget.Toolbar;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -15,7 +16,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
-import com.google.firebase.auth.FirebaseAuth;
 import com.naver.maps.geometry.LatLng;
 import com.naver.maps.map.CameraPosition;
 import com.naver.maps.map.MapFragment;
@@ -25,9 +25,11 @@ import com.naver.maps.map.overlay.Marker;
 
 public class ContactActivity extends AppCompatActivity implements OnMapReadyCallback {
 
-    private FirebaseAuth firebaseAuth;
+    private DBOpenHelper dbOpenHelper;
 
     private TextView tv_contact_email;
+
+    private String useremail = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,6 +54,15 @@ public class ContactActivity extends AppCompatActivity implements OnMapReadyCall
 
         initAllComponent();
 
+        Cursor iCursor = dbOpenHelper.selectColumns();
+
+        while (iCursor.moveToNext()) {
+
+            String tempEmail = iCursor.getString(iCursor.getColumnIndex("email"));
+            useremail = tempEmail;
+
+        }
+
         tv_contact_email.setOnClickListener(new TextView.OnClickListener() {
             public void onClick(View view) {
                 Intent email = new Intent(Intent.ACTION_SEND);
@@ -65,9 +76,10 @@ public class ContactActivity extends AppCompatActivity implements OnMapReadyCall
 
     public void initAllComponent() {
 
-        tv_contact_email = findViewById(R.id.tv_contact_email);
+        dbOpenHelper = new DBOpenHelper(this);
+        dbOpenHelper.open();
 
-        firebaseAuth = FirebaseAuth.getInstance();
+        tv_contact_email = findViewById(R.id.tv_contact_email);
 
     }
 
@@ -88,9 +100,9 @@ public class ContactActivity extends AppCompatActivity implements OnMapReadyCall
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        if (firebaseAuth.getCurrentUser() == null) {
+        if (useremail == null) {
             getMenuInflater().inflate(R.menu.toolbar_bl_menu, menu);
-        } else if (firebaseAuth.getCurrentUser() != null) {
+        } else if (useremail != null) {
             getMenuInflater().inflate(R.menu.toolbar_al_menu, menu);
         }
 
@@ -118,7 +130,10 @@ public class ContactActivity extends AppCompatActivity implements OnMapReadyCall
                 return true;
             case R.id.menu_logout:
 
-                FirebaseAuth.getInstance().signOut();
+                dbOpenHelper.deleteAllColumns();
+                dbOpenHelper.close();
+
+                useremail = null;
 
                 final ProgressDialog mDialog = new ProgressDialog(ContactActivity.this);
                 mDialog.setMessage("로그아웃 중입니다.");
