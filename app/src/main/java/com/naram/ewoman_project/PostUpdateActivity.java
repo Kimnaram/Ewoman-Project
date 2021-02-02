@@ -1,31 +1,34 @@
 package com.naram.ewoman_project;
 
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import android.app.ProgressDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.Point;
 import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.Display;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.animation.AnimationUtils;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.ScrollView;
+import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 
@@ -35,26 +38,25 @@ import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-public class PostDetailActivity extends AppCompatActivity {
+public class PostUpdateActivity extends AppCompatActivity {
 
-    private final static String TAG = "PostDetailActivity";
+    private static final String TAG = "PostUpdateActivity";
 
-    // JSON
     private static final String TAG_RESULTS = "result";
     private static final String TAG_CATEGORY = "category";
-    private static final String TAG_NAME = "name";
-    private static final String TAG_EMAIL = "email";
     private static final String TAG_TITLE = "title";
     private static final String TAG_IMAGE = "image";
     private static final String TAG_CONTENT = "content";
-    private static final String TAG_LIKE = "post_like";
     private static String IP_ADDRESS = "IP ADDRESS";
+
+    private static final int REQUEST_CODE = 1001;
 
     private String JSONString;
     private JSONArray post = null;
@@ -62,30 +64,33 @@ public class PostDetailActivity extends AppCompatActivity {
     // Database
     private DBOpenHelper dbOpenHelper;
 
+    private RelativeLayout rl_image_container;
+
     // Other component
     private ScrollView sv_post_container;
 
     private LinearLayout ll_progressbar_container;
-    private LinearLayout btn_review_like;
+
+    private Spinner sp_post_category;
 
     private ProgressBar progressBar;
 
     private ImageView iv_review_image;
-    private TextView tv_review_category;
-    private TextView tv_review_title;
-    private TextView tv_review_user;
-    private TextView tv_review_content;
-    private TextView tv_like_count;
-    private Button btn_review_delete;
+    private TextView et_review_title;
+    private TextView et_review_content;
+    private Button btn_image_upload;
     private Button btn_review_update;
 
-    private String useremail;
+    private Bitmap img;
+
+    private String useremail = "";
     private String post_no;
+    private String category = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_post_detail);
+        setContentView(R.layout.activity_post_update);
 
         //상단 툴바 설정
         setSupportActionBar((Toolbar) findViewById(R.id.toolbar));
@@ -114,15 +119,46 @@ public class PostDetailActivity extends AppCompatActivity {
 
         }
 
+        Display display = getWindowManager().getDefaultDisplay();
+        Point size = new Point();
+        display.getRealSize(size);
+        int width = size.x; // Device width
+
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+
+        int margin_px = dpToPx(18);
+
+        double r = width / 100.0; // 비율
+        double u_width = 75 * r - margin_px; // et_review_title의 width
+
+        Log.d(TAG, "width : " + u_width);
+
+        btn_image_upload.setWidth((int)u_width);
+        btn_image_upload.setHeight(40);
+
         GetData task = new GetData();
         task.execute(post_no);
 
-        btn_review_like.setOnClickListener(new View.OnClickListener() {
+        btn_image_upload.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Intent intent = new Intent();
+                intent.setType("image/*");
+                intent.setAction(Intent.ACTION_GET_CONTENT);
+                startActivityForResult(intent, REQUEST_CODE);
+            }
+        });
 
-                DoPostLikeData doTask = new DoPostLikeData();
-                doTask.execute(post_no, useremail);
+        sp_post_category.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                category = parent.getSelectedItem().toString();
+                Log.d(TAG, "category : " + category);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
 
             }
         });
@@ -130,55 +166,24 @@ public class PostDetailActivity extends AppCompatActivity {
         btn_review_update.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // 수정 화면으로 이동
-                Intent detail_to_update = new Intent(getApplicationContext(), PostUpdateActivity.class);
-                detail_to_update.putExtra("post_no", post_no);
-//
-                startActivity(detail_to_update);
+
+                String title = et_review_title.getText().toString();
+                String content = et_review_content.getText().toString();
+                String image = "";
+
+                if (iv_review_image.getDrawable() != null) {
+
+                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                    img.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+                    byte[] bytes = baos.toByteArray();
+                    image = "&image=" + byteArrayToBinaryString(bytes);
+
+                }
+
+                UpdateData task = new UpdateData();
+                task.execute(post_no, title, content, image, category);
             }
         });
-
-        btn_review_delete.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                // 다이얼로그 바디
-                AlertDialog.Builder deleteBuilder = new AlertDialog.Builder(PostDetailActivity.this, R.style.AlertDialogStyle);
-                // 메세지
-                deleteBuilder.setTitle("삭제하시겠습니까?");
-
-                deleteBuilder.setPositiveButton("예", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-
-                        DeleteData deleteTask = new DeleteData();
-                        deleteTask.execute(post_no);
-
-                        finish();
-
-                    }
-                });
-                // "아니오" 버튼을 누르면 실행되는 리스너
-                deleteBuilder.setNegativeButton("아니오", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        return; // 아무런 작업도 하지 않고 돌아간다
-                    }
-                });
-
-                deleteBuilder.show();
-
-            }
-        });
-
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-
-        GetData task = new GetData();
-        task.execute(post_no);
 
     }
 
@@ -188,23 +193,30 @@ public class PostDetailActivity extends AppCompatActivity {
 
         ll_progressbar_container = findViewById(R.id.ll_progressbar_container);
 
+        rl_image_container = findViewById(R.id.rl_image_container);
+
         progressBar = findViewById(R.id.progressBar);
 
         iv_review_image = findViewById(R.id.iv_review_image);
 
-        tv_review_category = findViewById(R.id.tv_review_category);
-        tv_review_title = findViewById(R.id.tv_review_title);
-        tv_review_user = findViewById(R.id.tv_review_user);
-        tv_review_content = findViewById(R.id.tv_review_content);
-        tv_like_count = findViewById(R.id.tv_like_count);
+        sp_post_category = findViewById(R.id.sp_post_category);
 
+        et_review_title = findViewById(R.id.et_review_title);
+        et_review_content = findViewById(R.id.et_review_content);
+
+        btn_image_upload = findViewById(R.id.btn_image_upload);
         btn_review_update = findViewById(R.id.btn_review_update);
-        btn_review_delete = findViewById(R.id.btn_review_delete);
-        btn_review_like = findViewById(R.id.btn_review_like);
 
         dbOpenHelper = new DBOpenHelper(this);
         dbOpenHelper.open();
 
+    }
+
+    public int dpToPx(int dp) {
+
+        float density = getResources().getDisplayMetrics().density;
+
+        return Math.round((float) dp * density);
     }
 
     public static byte[] binaryStringToByteArray(String s) {
@@ -225,6 +237,27 @@ public class PostDetailActivity extends AppCompatActivity {
         }
         return total;
     }
+    // String to ByteArray
+
+
+    public static String byteArrayToBinaryString(byte[] b) {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < b.length; ++i) {
+            sb.append(byteToBinaryString(b[i]));
+        }
+        return sb.toString();
+    }
+
+    public static String byteToBinaryString(byte n) {
+        StringBuilder sb = new StringBuilder("00000000");
+        for (int bit = 0; bit < 8; bit++) {
+            if (((n >> bit) & 1) > 0) {
+                sb.setCharAt(7 - bit, '1');
+            }
+        }
+        return sb.toString();
+    }
+    // ByteArray to String
 
     public static Bitmap StringToBitmap(String ImageString) {
         try {
@@ -238,6 +271,45 @@ public class PostDetailActivity extends AppCompatActivity {
         }
     }
 
+    private Bitmap resize(Bitmap bm){
+        Configuration config=getResources().getConfiguration();
+        if(config.smallestScreenWidthDp>=800)
+            bm = Bitmap.createScaledBitmap(bm, 500, 400, true);
+        else if(config.smallestScreenWidthDp>=600)
+            bm = Bitmap.createScaledBitmap(bm, 400, 300, true);
+        else if(config.smallestScreenWidthDp>=400)
+            bm = Bitmap.createScaledBitmap(bm, 300, 200, true);
+        else if(config.smallestScreenWidthDp>=360)
+            bm = Bitmap.createScaledBitmap(bm, 200, 150, true);
+        else
+            bm = Bitmap.createScaledBitmap(bm, 160, 96, true);
+        return bm;
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        // Check which request we're responding to
+        if (requestCode == REQUEST_CODE) {
+            // Make sure the request was successful
+            if (resultCode == RESULT_OK) {
+                try {
+                    // 선택한 이미지에서 비트맵 생성
+                    InputStream in = getContentResolver().openInputStream(data.getData());
+                    img = BitmapFactory.decodeStream(in);
+                    img = resize(img);
+                    in.close();
+                    // 이미지 표시
+                    rl_image_container.setVisibility(View.VISIBLE);
+                    iv_review_image.setImageBitmap(img);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         if(useremail == null) {
@@ -248,7 +320,7 @@ public class PostDetailActivity extends AppCompatActivity {
 
         return true;
     }
-    
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()){
@@ -270,14 +342,13 @@ public class PostDetailActivity extends AppCompatActivity {
 
                 FirebaseAuth.getInstance().signOut();
 
-                final ProgressDialog mDialog = new ProgressDialog(PostDetailActivity.this);
+                final ProgressDialog mDialog = new ProgressDialog(PostUpdateActivity.this);
                 mDialog.setMessage("로그아웃 중입니다.");
                 mDialog.show();
-
-                Intent logout_to_revdetail = new Intent(getApplicationContext(), PostDetailActivity.class);
                 mDialog.dismiss();
 
-                startActivity(logout_to_revdetail);
+                finish();
+
                 return true;
             case R.id.menu_cart :
                 startActivity(new Intent(getApplicationContext(), CartActivity.class));
@@ -297,19 +368,13 @@ public class PostDetailActivity extends AppCompatActivity {
 
                 JSONObject item = jsonArray.getJSONObject(i);
 
-                String category = item.getString(TAG_CATEGORY);
-                tv_review_category.setText(category);
-
-                String name = item.getString(TAG_NAME);
-                tv_review_user.setText(name);
-
-                String email = item.getString(TAG_EMAIL);
+                final String category = item.getString(TAG_CATEGORY);
 
                 String title = item.getString(TAG_TITLE);
-                tv_review_title.setText(title);
+                et_review_title.setText(title);
 
                 String content = item.getString(TAG_CONTENT);
-                tv_review_content.setText(content);
+                et_review_content.setText(content);
 
                 String image = null;
                 boolean imcheck = item.isNull(TAG_IMAGE);
@@ -317,30 +382,11 @@ public class PostDetailActivity extends AppCompatActivity {
                     image = item.getString(TAG_IMAGE);
                 }
 
-                String like = item.getString(TAG_LIKE);
-                tv_like_count.setText(like);
-
-                if (useremail != null) {
-                    if (email.equals(useremail)) {
-                        btn_review_update.setVisibility(View.VISIBLE);
-                        btn_review_delete.setVisibility(View.VISIBLE);
-                        btn_review_like.setVisibility(View.GONE);
-                    } else {
-                        btn_review_update.setVisibility(View.GONE);
-                        btn_review_delete.setVisibility(View.GONE);
-                        btn_review_like.setVisibility(View.VISIBLE);
-                    }
-                } else if (useremail == null) {
-                    btn_review_update.setVisibility(View.GONE);
-                    btn_review_delete.setVisibility(View.GONE);
-                    btn_review_like.setVisibility(View.VISIBLE);
-                }
-
-                if (image != null) {
-                    Bitmap bitmap = StringToBitmap(image);
-                    iv_review_image.setImageBitmap(bitmap);
+                if (imcheck != false) {
+                    img = StringToBitmap(image);
+                    iv_review_image.setImageBitmap(img);
                     iv_review_image.setScaleType(ImageView.ScaleType.CENTER_CROP);
-                    iv_review_image.setVisibility(View.VISIBLE);
+                    rl_image_container.setVisibility(View.VISIBLE);
                 }
 
             }
@@ -361,7 +407,7 @@ public class PostDetailActivity extends AppCompatActivity {
         protected void onPreExecute() {
             super.onPreExecute();
 
-            progressDialog = ProgressDialog.show(PostDetailActivity.this,
+            progressDialog = ProgressDialog.show(PostUpdateActivity.this,
                     "로딩중입니다.", null, true, true);
         }
 
@@ -440,145 +486,37 @@ public class PostDetailActivity extends AppCompatActivity {
         }
     }
 
-    private class DeleteData extends AsyncTask<String, Void, String> {
-
-        String errorString = null;
+    class UpdateData extends AsyncTask<String, Void, String> {
 
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
 
-            ll_progressbar_container.setVisibility(View.VISIBLE);
-            progressBar.startAnimation(AnimationUtils.loadAnimation(PostDetailActivity.this, android.R.anim.fade_in));
-
         }
+
 
         @Override
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
 
-            ll_progressbar_container.setVisibility(View.GONE);
-            progressBar.startAnimation(AnimationUtils.loadAnimation(PostDetailActivity.this, android.R.anim.fade_out));
-            Log.d(TAG, "response - " + result);
-        }
-
-        @Override
-        protected String doInBackground(String... params) {
-
-            String post_no = params[0];
-
-            String serverURL = "http://" + IP_ADDRESS + "/ewoman-php/deletePost.php";
-            String postParameters = "post_no=" + post_no;
-
-            try {
-
-                URL url = new URL(serverURL);
-                HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
-
-                httpURLConnection.setReadTimeout(5000);
-                httpURLConnection.setConnectTimeout(5000);
-                httpURLConnection.setRequestMethod("POST");
-                httpURLConnection.setDoInput(true);
-                httpURLConnection.connect();
-
-                OutputStream outputStream = httpURLConnection.getOutputStream();
-                outputStream.write(postParameters.getBytes("UTF-8"));
-                outputStream.flush();
-                outputStream.close();
-
-                int responseStatusCode = httpURLConnection.getResponseCode();
-                Log.d(TAG, "response code - " + responseStatusCode);
-
-                InputStream inputStream;
-                if (responseStatusCode == HttpURLConnection.HTTP_OK) {
-                    inputStream = httpURLConnection.getInputStream();
-                } else {
-                    inputStream = httpURLConnection.getErrorStream();
-                }
-
-                InputStreamReader inputStreamReader = new InputStreamReader(inputStream, "UTF-8");
-                BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
-
-                StringBuilder sb = new StringBuilder();
-                String line;
-
-                while ((line = bufferedReader.readLine()) != null) {
-                    sb.append(line);
-                }
-
-                bufferedReader.close();
-
-                return sb.toString().trim();
-
-            } catch (Exception e) {
-
-                Log.d(TAG, "DeleteData: Error ", e);
-                errorString = e.toString();
-
-                return null;
-            }
-
-        }
-    }
-
-    public void showLikeResult(String result) {
-
-        int count = Integer.parseInt(tv_like_count.getText().toString());
-
-        if (result.equals("포스트를 추천했습니다.")) {
-
-            Toast.makeText(getApplicationContext(), "해당 글을 추천했습니다!", Toast.LENGTH_SHORT).show();
-            count += 1;
-
-            tv_like_count.setText(Integer.toString(count));
-
-        } else if (result.equals("포스트 추천을 취소했습니다.")) {
-
-            Toast.makeText(getApplicationContext(), "추천을 취소했습니다!", Toast.LENGTH_SHORT).show();
-            count -= 1;
-
-            tv_like_count.setText(Integer.toString(count));
-
-        } else {
-
-            Toast.makeText(getApplicationContext(), "오류가 발생했습니다!", Toast.LENGTH_SHORT).show();
-
-        }
-
-    }
-
-    class DoPostLikeData extends AsyncTask<String, Void, String> {
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-
-            ll_progressbar_container.setVisibility(View.VISIBLE);
-            progressBar.startAnimation(AnimationUtils.loadAnimation(PostDetailActivity.this, android.R.anim.fade_in));
-
-        }
-
-        @Override
-        protected void onPostExecute(String result) {
-            super.onPostExecute(result);
-
-            ll_progressbar_container.setVisibility(View.GONE);
-            progressBar.startAnimation(AnimationUtils.loadAnimation(PostDetailActivity.this, android.R.anim.fade_out));
+            finish();
 
             Log.d(TAG, "POST response  - " + result);
-            showLikeResult(result);
-
         }
 
 
         @Override
         protected String doInBackground(String... params) {
 
-            String post_no = (String) params[0];
-            String email = (String) params[1];
+            String post_no = (String)params[0];
+            String title = (String)params[1];
+            String content = (String)params[2];
+            String image = (String)params[3];
+            String category = (String)params[4];
 
-            String serverURL = "http://" + IP_ADDRESS + "/ewoman-php/doPostLike.php";
-            String postParameters = "post_no=" + post_no + "&email=" + email;
+            String serverURL = "http://" + IP_ADDRESS + "/ewoman-php/updatePost.php";
+            String postParameters = "post_no=" + post_no + "&category=" + category + "&title=" + title + "&content=" + content + image;
+
 
             try {
 
@@ -591,20 +529,24 @@ public class PostDetailActivity extends AppCompatActivity {
                 httpURLConnection.setRequestMethod("POST");
                 httpURLConnection.connect();
 
+
                 OutputStream outputStream = httpURLConnection.getOutputStream();
                 outputStream.write(postParameters.getBytes("UTF-8"));
                 outputStream.flush();
                 outputStream.close();
+
 
                 int responseStatusCode = httpURLConnection.getResponseCode();
                 Log.d(TAG, "POST response code - " + responseStatusCode);
 
                 InputStream inputStream;
-                if (responseStatusCode == HttpURLConnection.HTTP_OK) {
+                if(responseStatusCode == HttpURLConnection.HTTP_OK) {
                     inputStream = httpURLConnection.getInputStream();
-                } else {
+                }
+                else{
                     inputStream = httpURLConnection.getErrorStream();
                 }
+
 
                 InputStreamReader inputStreamReader = new InputStreamReader(inputStream, "UTF-8");
                 BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
@@ -612,22 +554,24 @@ public class PostDetailActivity extends AppCompatActivity {
                 StringBuilder sb = new StringBuilder();
                 String line = null;
 
-                while ((line = bufferedReader.readLine()) != null) {
+                while((line = bufferedReader.readLine()) != null){
                     sb.append(line);
                 }
 
+
                 bufferedReader.close();
+
 
                 return sb.toString();
 
+
             } catch (Exception e) {
 
-                Log.d(TAG, "Error ", e);
+                Log.d(TAG, "UpdateData: Error ", e);
 
                 return new String("Error: " + e.getMessage());
             }
 
         }
     }
-    
 }

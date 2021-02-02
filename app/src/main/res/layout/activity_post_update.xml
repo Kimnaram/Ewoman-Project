@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".PostCreateActivity">
+    tools:context=".PostUpdateActivity">
 
     <!--상단 툴바-->
     <androidx.appcompat.widget.Toolbar
@@ -51,7 +51,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:weightSum="4"
-                android:layout_below="@+id/sp_post_category"
+                android:layout_below="@id/sp_post_category"
                 android:orientation="horizontal">
 
                 <EditText
@@ -68,7 +68,7 @@
                     android:textSize="18sp" />
 
                 <Button
-                    android:id="@+id/btn_review_upload"
+                    android:id="@+id/btn_review_update"
                     android:layout_width="0dp"
                     android:layout_height="40dp"
                     android:layout_weight="1"
@@ -152,5 +152,20 @@
         </RelativeLayout>
 
     </ScrollView>
+
+    <LinearLayout
+        android:id="@+id/ll_progressbar_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <ProgressBar
+            android:id="@+id/progressBar"
+            android:layout_width="100dp"
+            android:layout_height="100dp" />
+
+    </LinearLayout>
 
 </LinearLayout>

@@ -138,8 +138,8 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ItemVi
             displayPostArrayList.clear();
 
             for (int i = 0; i < listPostArrayList.size(); i++) {
-                if (search.contains(listPostArrayList.get(i).getName())
-                        || search.contains(listPostArrayList.get(i).getTitle())) {
+                if (listPostArrayList.get(i).getName().contains(search)
+                        || (listPostArrayList.get(i).getTitle().contains(search))) {
                     displayPostArrayList.add(listPostArrayList.get(i));
                 }
             }

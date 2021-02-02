@@ -17,7 +17,8 @@
         android:roundIcon="@mipmap/ic_launcher_ewoman_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".eTodayDetailActivity"></activity>
+        <activity android:name=".PostUpdateActivity"></activity>
+        <activity android:name=".eTodayDetailActivity" />
         <activity android:name=".eTodayActivity" />
         <activity android:name=".DaumAddressActivity" />
         <activity android:name=".PaymentActivity" />

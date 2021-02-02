@@ -384,7 +384,7 @@ public class PostCreateActivity extends AppCompatActivity {
             String category = (String)params[5];
 
             String serverURL = (String)params[0];
-            String postParameters = "category=" + category + "&title=" + title + "&content=" + content + "&email=" + email + "&image=" +image;
+            String postParameters = "category=" + category + "&title=" + title + "&content=" + content + "&email=" + email + image;
 
             try {
 
